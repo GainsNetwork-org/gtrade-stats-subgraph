@@ -3,12 +3,25 @@
   "version": "0.0.1",
   "description": "A subgraph that indexes gTrade point system based on on-chain events",
   "main": "build/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
+  "license": "GPL-3.0",
+  "directories": {
+    "src": "src"
+  },
+  "scripts": {
+    "clean": "rimraf ./src/types ./build subgraph.yaml",
+    "build": "npx graph build",
+    "codegen": "npx graph codegen --output-dir src/types/",
+    "deploy": "npx graph deploy --debug --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/",
+    "deploy:hosted": "npx graph deploy --product hosted-service --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ --access-token ${GRAPH_ACCESS_TOKEN}",
+    "configure:mumbai": "pnpm clean && pnpm prepare:mumbai && pnpm codegen",
+    "configure:arbitrum": "pnpm clean && pnpm prepare:arbitrum && pnpm codegen",
+    "prepare:mumbai": "mustache config/mumbai.json subgraph.yaml.mustache > subgraph.yaml",
+    "prepare:arbitrum": "mustache config/arbitrum.json subgraph.yaml.mustache > subgraph.yaml",
+    "deploy:mumbai": "pnpm clean && pnpm configure:mumbai && pnpm deploy:hosted thebuidler/gtoken-mumbai",
+    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:hosted thebuidler/gtoken-arbitrum"
+  },
+  "devDependencies": {
     "@graphprotocol/graph-cli": "^0.58.0",
     "@graphprotocol/graph-ts": "^0.31.0",
     "@graphql-tools/load-files": "^7.0.0",

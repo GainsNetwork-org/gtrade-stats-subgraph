@@ -17,8 +17,14 @@ type AggregateTradingStats @entity {
   "Total Volume"
   totalVolume: BigDecimal!
 
-  "Total Fees"
-  totalFees: BigDecimal!
+  "Total Open Fees"
+  totalOpenFees: BigDecimal!
+
+  "Total Close Fees"
+  totalCloseFees: BigDecimal!
+
+  "Total Borrowing Fees"
+  totalBorrowingFees: BigDecimal!
 
   "Total Trades"
   totalTrades: Int!
