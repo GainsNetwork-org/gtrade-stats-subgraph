@@ -1,0 +1,34 @@
+enum EpochType {
+  DAY
+  WEEK
+  MONTH
+}
+
+type AggregateTradingStats @entity {
+  "Address-type-number"
+  id: ID!
+
+  "Epoch Type"
+  epochType: EpochType!
+
+  "Epoch Number"
+  epochNumber: Int!
+
+  "Total Volume"
+  totalVolume: BigDecimal!
+
+  "Total Fees"
+  totalFees: BigDecimal!
+
+  "Total Trades"
+  totalTrades: Int!
+
+  "Pairs Traded"
+  pairsTraded: [Int!]!
+
+  "Total PnL"
+  totalPnl: BigDecimal!
+
+  "Total PnL Percentage"
+  totalPnlPercentage: BigDecimal!
+}
