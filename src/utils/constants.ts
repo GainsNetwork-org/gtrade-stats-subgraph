@@ -4,7 +4,17 @@ export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const ZERO_BD = BigDecimal.fromString("0");
 export const PROTOCOL = "protocol";
 
-export const ARBITRUM = "arbitrum-one";
+class Networks {
+  POLYGON!: string;
+  MUMBAI!: string;
+  ARBITRUM!: string;
+}
+
+export const NETWORKS: Networks = {
+  POLYGON: "matic",
+  MUMBAI: "mumbai",
+  ARBITRUM: "arbitrum-one",
+};
 
 class NetworkAddresses {
   gnsPairsStorageV6!: string;
