@@ -49,10 +49,7 @@ export function getTotalCloseFeeP(
     pairsStorageContract.pairCloseFeeP(pairIndex)
   );
   if (isLiq) {
-    // @todo change
-    pairCloseFeeP = convertPercentage(
-      pairsStorageContract.pairCloseFeeP(pairIndex)
-    );
+    pairCloseFeeP = BigDecimal.fromString("5");
   }
   const pairNftLimitOrderFeeP = convertPercentage(
     pairsStorageContract.pairNftLimitOrderFeeP(pairIndex)
