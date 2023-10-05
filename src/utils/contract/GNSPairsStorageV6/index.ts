@@ -60,3 +60,8 @@ export function getTotalCloseFeeP(
 
   return pairCloseFeeP.plus(pairNftLimitOrderFeeP);
 }
+
+export function getGroupIndex(pairIndex: BigInt): BigInt {
+  const pairsStorageContract = getPairsStorageContract();
+  return pairsStorageContract.pairs(pairIndex).getGroupIndex();
+}

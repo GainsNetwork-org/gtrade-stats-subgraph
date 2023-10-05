@@ -1,7 +1,11 @@
-import { BigDecimal } from "@graphprotocol/graph-ts";
-
+import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const ZERO_BD = BigDecimal.fromString("0");
+export const DAI_DECIMALS = 18;
+export const DAI_DECIMALS_BD = exponentToBigDecimal(DAI_DECIMALS);
+export const PRECISION_DECIMALS = 10;
+export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
+
 export const PROTOCOL = "protocol";
 
 class Networks {
@@ -54,3 +58,17 @@ export const determineEpochNumber = (
   const epochNumber = (timestamp - epochZero) / epochDuration;
   return Math.floor(epochNumber);
 };
+
+export function exponentToBigDecimal(decimals: number): BigDecimal {
+  let bd = BigDecimal.fromString("1");
+  for (let i = 0; i < decimals; i++) {
+    bd = bd.times(BigDecimal.fromString("10"));
+  }
+  return bd;
+}
+
+export function toDecimal(value: BigInt, decimals: number): BigDecimal {
+  return value
+    .toBigDecimal()
+    .div(exponentToBigDecimal(decimals).truncate(decimals));
+}

@@ -51,7 +51,7 @@ export function createOrLoadAggregateTradingStats(
 /**
  * @dev This function is called when a user opens a trade
  */
-export class HandleOpenTradeInput {
+export class addOpenTradeStatsInput {
   address: string;
   pairIndex: number;
   groupIndex: number;
@@ -59,8 +59,8 @@ export class HandleOpenTradeInput {
   openFee: BigDecimal;
   timestamp: number;
 }
-export function handleOpenTrade(
-  data: HandleOpenTradeInput,
+export function addOpenTradeStats(
+  data: addOpenTradeStatsInput,
   save: boolean
 ): void {
   const address = data.address;
@@ -68,12 +68,10 @@ export function handleOpenTrade(
   const volume = data.volume;
   const openFee = data.openFee;
   const timestamp = data.timestamp;
-  log.info("[handleOpenTrade] address {} pairIndex {}, volume {}, openFee {}", [
-    address,
-    pairIndex.toString(),
-    volume.toString(),
-    openFee.toString(),
-  ]);
+  log.info(
+    "[addOpenTradeStats] address {} pairIndex {}, volume {}, openFee {}",
+    [address, pairIndex.toString(), volume.toString(), openFee.toString()]
+  );
 
   // Daily stats
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
@@ -115,7 +113,7 @@ export function handleOpenTrade(
   _addOpenTradeStats(data, weeklyProtocolStats);
 }
 
-export class HandleCloseTradeInput {
+export class addCloseTradeStatsInput {
   address: string;
   pairIndex: number;
   groupIndex: number;
@@ -130,8 +128,8 @@ export class HandleCloseTradeInput {
 /**
  * @dev This function is called when a user closes a trade
  */
-export function handleCloseTrade(
-  data: HandleCloseTradeInput,
+export function addCloseTradeStats(
+  data: addCloseTradeStatsInput,
   save: boolean
 ): void {
   const address = data.address;
@@ -143,7 +141,7 @@ export function handleCloseTrade(
   const pnlPercentage = data.pnlPercentage;
   const timestamp = data.timestamp;
   log.info(
-    "[handleCloseTrade] address {} pairIndex {}, volume {}, closeFee {}, borrowingFee {}, pnl {}, pnlPercentage {}",
+    "[addCloseTradeStats] address {} pairIndex {}, volume {}, closeFee {}, borrowingFee {}, pnl {}, pnlPercentage {}",
     [
       address,
       pairIndex.toString(),
@@ -198,7 +196,7 @@ export function handleCloseTrade(
  * Internal handler for adding open trade stats
  */
 function _addOpenTradeStats(
-  data: HandleOpenTradeInput,
+  data: addOpenTradeStatsInput,
   currentStats: AggregateTradingStats
 ): AggregateTradingStats {
   const address = data.address;
@@ -249,7 +247,7 @@ function _addOpenTradeStats(
  * Internal handler for adding close trade stats
  */
 function _addCloseTradeStats(
-  data: HandleCloseTradeInput,
+  data: addCloseTradeStatsInput,
   currentStats: AggregateTradingStats
 ): AggregateTradingStats {
   const address = data.address;
