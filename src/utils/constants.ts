@@ -40,7 +40,7 @@ export const EPOCH_TYPE: EpochTypes = {
 };
 
 // Establish epoch 0 for day, week, and month
-// @todo - update epoch zero for mainnet
+// @todo - update epoch zero for mainnet - move to network specific constants
 class EpochNumbers {
   DAY!: i32;
   WEEK!: i32;

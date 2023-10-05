@@ -1,8 +1,13 @@
 import { BigDecimal, log, BigInt } from "@graphprotocol/graph-ts";
-import { addCloseTradeStats, addOpenTradeStats } from "../../utils/access";
+import {
+  addBorrowingFeeStats,
+  addCloseTradeStats,
+  addOpenTradeStats,
+} from "../../utils/access";
 import {
   MarketExecuted,
   LimitExecuted,
+  BorrowingFeeCharged,
 } from "../../types/GNSTradingCallbacksV6_4_1/GNSTradingCallbacksV6_4_1";
 import {
   convertDai,
@@ -68,6 +73,16 @@ export function handleLimitExecuted(event: LimitExecuted): void {
       orderType == 2
     );
   }
+}
+
+export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
+  const trader = event.params.trader.toHexString();
+  const borrowingFee = convertDai(event.params.feeValueDai);
+  const timestamp = event.block.timestamp.toI32();
+  log.info("[handleBorrowingFeeCharged] {}", [
+    event.transaction.hash.toHexString(),
+  ]);
+  addBorrowingFeeStats(trader, borrowingFee, timestamp);
 }
 
 function _handleOpenTrade(

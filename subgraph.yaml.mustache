@@ -27,4 +27,6 @@ dataSources:
           handler: handleMarketExecuted
         - event: LimitExecuted(indexed uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256,uint256),indexed address,uint8,uint256,uint256,uint256,int256,uint256,bool)
           handler: handleLimitExecuted
+        - event: BorrowingFeeCharged(indexed address,uint256,uint256)
+          handler: handleBorrowingFeeCharged
       file: ./src/handlers/GNSTradingCallbacksV6_4_1/index.ts

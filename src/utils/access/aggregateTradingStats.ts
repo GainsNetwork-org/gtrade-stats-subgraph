@@ -160,7 +160,6 @@ export function addCloseTradeStats(
     currentDayNumber,
     false
   );
-
   _addCloseTradeStats(data, dailyStats);
 
   // Weekly stats
@@ -284,4 +283,55 @@ function _addCloseTradeStats(
 
   currentStats.save();
   return currentStats;
+}
+
+export function addBorrowingFeeStats(
+  address: string,
+  borrowingFee: BigDecimal,
+  timestamp: i32
+): AggregateTradingStats[] {
+  const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
+  const dailyStats = createOrLoadAggregateTradingStats(
+    address,
+    EPOCH_TYPE.DAY,
+    currentDayNumber,
+    false
+  );
+  dailyStats.totalBorrowingFees =
+    dailyStats.totalBorrowingFees.plus(borrowingFee);
+
+  const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
+  const weeklyStats = createOrLoadAggregateTradingStats(
+    address,
+    EPOCH_TYPE.WEEK,
+    currentWeekNumber,
+    false
+  );
+  weeklyStats.totalBorrowingFees =
+    weeklyStats.totalBorrowingFees.plus(borrowingFee);
+
+  const dailyProtocolStats = createOrLoadAggregateTradingStats(
+    PROTOCOL,
+    EPOCH_TYPE.DAY,
+    currentDayNumber,
+    false
+  );
+  dailyProtocolStats.totalBorrowingFees =
+    dailyProtocolStats.totalBorrowingFees.plus(borrowingFee);
+
+  const weeklyProtocolStats = createOrLoadAggregateTradingStats(
+    PROTOCOL,
+    EPOCH_TYPE.WEEK,
+    currentWeekNumber,
+    false
+  );
+  weeklyProtocolStats.totalBorrowingFees =
+    weeklyProtocolStats.totalBorrowingFees.plus(borrowingFee);
+
+  dailyStats.save();
+  weeklyStats.save();
+  dailyProtocolStats.save();
+  weeklyProtocolStats.save();
+
+  return [dailyStats, weeklyStats, dailyProtocolStats, weeklyProtocolStats];
 }
