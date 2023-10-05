@@ -2,10 +2,10 @@
   "network": "arbitrum-one",
   "gnsTradingCallbacksV6_4_1": {
     "address": "0x298a695906e16aeA0a184A2815A76eAd1a0b7522",
-    "startBlock": 130171407
+    "startBlock": 136728867
   },
   "gnsPairsStorageV6": {
     "address": "0xf67Df2a4339eC1591615d94599081Dd037960d4b",
-    "startBlock": 130171407
+    "startBlock": 136728867
   }
 }
