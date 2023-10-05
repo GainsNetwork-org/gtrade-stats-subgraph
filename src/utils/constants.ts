@@ -34,9 +34,9 @@ class EpochTypes {
   MONTH!: string;
 }
 export const EPOCH_TYPE: EpochTypes = {
-  DAY: "DAY",
-  WEEK: "WEEK",
-  MONTH: "MONTH",
+  DAY: "day",
+  WEEK: "week",
+  MONTH: "month",
 };
 
 // Establish epoch 0 for day, week, and month
@@ -47,9 +47,9 @@ class EpochNumbers {
   MONTH!: i32;
 }
 export const EPOCH_ZERO: EpochNumbers = {
-  DAY: 1696371257,
-  WEEK: 1696371257,
-  MONTH: 1696371257,
+  DAY: 1696464000,
+  WEEK: 1696118400,
+  MONTH: 1696118400,
 };
 
 const getEpochZero = (epochType: string): i32 => {
