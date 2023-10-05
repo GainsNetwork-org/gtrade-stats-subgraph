@@ -11,7 +11,7 @@ import {
   getTotalOpenFeeP,
 } from "../../utils/contract";
 
-export function handleMarketExecuted(event: MarketExecuted) {
+export function handleMarketExecuted(event: MarketExecuted): void {
   const trade = event.params.t;
   const open = event.params.open;
   const daiSentToTrader = convertDai(event.params.daiSentToTrader);
@@ -41,7 +41,7 @@ export function handleMarketExecuted(event: MarketExecuted) {
   }
 }
 
-export function handleLimitExecuted(event: LimitExecuted) {
+export function handleLimitExecuted(event: LimitExecuted): void {
   const trade = event.params.t;
   const orderType = event.params.orderType;
   const daiSentToTrader = convertDai(event.params.daiSentToTrader);
@@ -76,7 +76,7 @@ function _handleOpenTrade(
   positionSizeDai: BigDecimal,
   volume: BigDecimal,
   timestamp: number
-) {
+): void {
   const openFeesP = getTotalOpenFeeP(pairIndex);
 
   const initialDai = positionSizeDai.div(
@@ -106,7 +106,7 @@ function _handleCloseTrade(
   timestamp: number,
   daiSentToTrader: BigDecimal,
   isLiq: boolean
-) {
+): void {
   const closeFeesP = getTotalCloseFeeP(pairIndex, isLiq);
   const closeFee = positionSizeDai
     .div(

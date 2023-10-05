@@ -28,7 +28,12 @@ export const ARBITRUM_ADDRESSES: NetworkAddresses = {
   gnsPairsStorageV6: "0xf67Df2a4339eC1591615d94599081Dd037960d4b",
 };
 
-export const EPOCH_TYPE = {
+class EpochTypes {
+  DAY!: string;
+  WEEK!: string;
+  MONTH!: string;
+}
+export const EPOCH_TYPE: EpochTypes = {
   DAY: "DAY",
   WEEK: "WEEK",
   MONTH: "MONTH",
@@ -36,25 +41,50 @@ export const EPOCH_TYPE = {
 
 // Establish epoch 0 for day, week, and month
 // @todo - update epoch zero for mainnet
-export const EPOCH_ZERO = {
+class EpochNumbers {
+  DAY!: number;
+  WEEK!: number;
+  MONTH!: number;
+}
+export const EPOCH_ZERO: EpochNumbers = {
   DAY: 1696371257,
   WEEK: 1696371257,
   MONTH: 1696371257,
 };
 
+const getEpochZero = (epochType: string): number => {
+  if (epochType == EPOCH_TYPE.DAY) {
+    return EPOCH_ZERO.DAY;
+  } else if (epochType == EPOCH_TYPE.WEEK) {
+    return EPOCH_ZERO.WEEK;
+  } else {
+    return EPOCH_ZERO.MONTH;
+  }
+};
+
 // Establish epoch duration for day, week, and month
-export const EPOCH_DURATION = {
+export const EPOCH_DURATION: EpochNumbers = {
   DAY: 86400,
   WEEK: 604800,
   MONTH: 2629746,
+};
+
+const getEpochDuration = (epochType: string): number => {
+  if (epochType == EPOCH_TYPE.DAY) {
+    return EPOCH_DURATION.DAY;
+  } else if (epochType == EPOCH_TYPE.WEEK) {
+    return EPOCH_DURATION.WEEK;
+  } else {
+    return EPOCH_DURATION.MONTH;
+  }
 };
 
 export const determineEpochNumber = (
   timestamp: number,
   epochType: string
 ): number => {
-  const epochZero = EPOCH_ZERO[epochType];
-  const epochDuration = EPOCH_DURATION[epochType];
+  const epochZero = getEpochZero(epochType); // @todo - why does EPOCH_ZERO[epochType] fail to compile?
+  const epochDuration = getEpochDuration(epochType);
   const epochNumber = (timestamp - epochZero) / epochDuration;
   return Math.floor(epochNumber);
 };

@@ -20,9 +20,6 @@ type AggregateTradingStats @entity {
   "Total Volume"
   totalVolumePerGroup: [BigDecimal!]!
 
-  "Total Trades"
-  totalTradesPerGroup: [Int!]!
-
   "Total open fees"
   totalOpenFees: BigDecimal!
 

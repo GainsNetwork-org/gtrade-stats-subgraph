@@ -14,12 +14,9 @@
     "codegen": "npx graph codegen --output-dir src/types/",
     "deploy": "npx graph deploy --debug --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/",
     "deploy:hosted": "npx graph deploy --product hosted-service --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ --access-token ${GRAPH_ACCESS_TOKEN}",
-    "configure:mumbai": "pnpm clean && pnpm prepare:mumbai && pnpm codegen",
     "configure:arbitrum": "pnpm clean && pnpm prepare:arbitrum && pnpm codegen",
-    "prepare:mumbai": "mustache config/mumbai.json subgraph.yaml.mustache > subgraph.yaml",
     "prepare:arbitrum": "mustache config/arbitrum.json subgraph.yaml.mustache > subgraph.yaml",
-    "deploy:mumbai": "pnpm clean && pnpm configure:mumbai && pnpm deploy:hosted thebuidler/gtoken-mumbai",
-    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:hosted thebuidler/gtoken-arbitrum"
+    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-arbitrum"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.58.0",

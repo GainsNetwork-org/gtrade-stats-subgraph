@@ -18,7 +18,7 @@ export function generateAggregateTradingStatsId(
 export function createOrLoadAggregateTradingStats(
   address: string,
   epochType: string,
-  epochNumber: number,
+  epochNumber: i32,
   save: boolean
 ): AggregateTradingStats {
   log.info(
@@ -33,7 +33,6 @@ export function createOrLoadAggregateTradingStats(
     aggregateTradingStats.epochType = epochType;
     aggregateTradingStats.epochNumber = epochNumber;
     aggregateTradingStats.totalVolumePerGroup = [];
-    aggregateTradingStats.totalTradesPerGroup = [];
     aggregateTradingStats.totalOpenFees = ZERO_BD;
     aggregateTradingStats.totalCloseFees = ZERO_BD;
     aggregateTradingStats.totalBorrowingFees = ZERO_BD;
@@ -219,18 +218,6 @@ function _addOpenTradeStats(
     volumePerGroupArray[groupIndex].plus(volume);
   currentStats.totalVolumePerGroup = volumePerGroupArray;
 
-  // Same for totalTradesPerGroup
-  const totalTradesPerGroupArray = currentStats.totalTradesPerGroup;
-  if (totalTradesPerGroupArray.length <= groupIndex) {
-    for (let i = totalTradesPerGroupArray.length; i <= groupIndex; i++) {
-      totalTradesPerGroupArray.push(ZERO_BD);
-    }
-  }
-  totalTradesPerGroupArray[groupIndex] = totalTradesPerGroupArray[
-    groupIndex
-  ].plus(BigDecimal.fromString("1"));
-  currentStats.totalTradesPerGroup = totalTradesPerGroupArray;
-
   // Add open fee
   currentStats.totalOpenFees = currentStats.totalOpenFees.plus(openFee);
 
@@ -271,17 +258,6 @@ function _addCloseTradeStats(
   // Add volume to group
   volumePerGroupArray[groupIndex] =
     volumePerGroupArray[groupIndex].plus(volume);
-
-  // Same for totalTradesPerGroup
-  const totalTradesPerGroupArray = currentStats.totalTradesPerGroup;
-  if (totalTradesPerGroupArray.length <= groupIndex) {
-    for (let i = totalTradesPerGroupArray.length; i <= groupIndex; i++) {
-      totalTradesPerGroupArray.push(ZERO_BD);
-    }
-  }
-  totalTradesPerGroupArray[groupIndex] = totalTradesPerGroupArray[
-    groupIndex
-  ].plus(BigDecimal.fromString("1"));
 
   // Add close fee
   currentStats.totalCloseFees = currentStats.totalCloseFees.plus(closeFee);
