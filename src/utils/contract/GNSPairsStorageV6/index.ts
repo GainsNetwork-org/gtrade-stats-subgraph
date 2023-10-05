@@ -1,6 +1,12 @@
-import { Address, dataSource, BigInt } from "@graphprotocol/graph-ts";
+import {
+  Address,
+  dataSource,
+  BigInt,
+  BigDecimal,
+} from "@graphprotocol/graph-ts";
 import { NETWORKS, ARBITRUM_ADDRESSES } from "../../constants";
 import { GNSPairsStorageV6 } from "../../../types/GNSTradingCallbacksV6_4_1/GNSPairsStorageV6";
+import { convertPercentage } from "../.";
 
 export function getPairsStorageContract(): GNSPairsStorageV6 {
   const config =
@@ -15,13 +21,18 @@ export function getPairsStorageContract(): GNSPairsStorageV6 {
  * @param pairIndex
  * @returns totalOpenFeeP = pairOpenFeeP * 2 + pairNftLimitOrderFeeP
  */
-export function getTotalOpenFeeP(pairIndex: BigInt): BigInt {
+export function getTotalOpenFeeP(pairIndex: BigInt): BigDecimal {
   const pairsStorageContract = getPairsStorageContract();
-  const pairOpenFeeP = pairsStorageContract.pairOpenFeeP(pairIndex);
-  const pairNftLimitOrderFeeP =
-    pairsStorageContract.pairNftLimitOrderFeeP(pairIndex);
+  const pairOpenFeeP = convertPercentage(
+    pairsStorageContract.pairOpenFeeP(pairIndex)
+  );
+  const pairNftLimitOrderFeeP = convertPercentage(
+    pairsStorageContract.pairNftLimitOrderFeeP(pairIndex)
+  );
 
-  return pairOpenFeeP.times(BigInt.fromI32(2)).plus(pairNftLimitOrderFeeP);
+  return pairOpenFeeP
+    .times(BigDecimal.fromString("2"))
+    .plus(pairNftLimitOrderFeeP);
 }
 
 /**
@@ -29,15 +40,23 @@ export function getTotalOpenFeeP(pairIndex: BigInt): BigInt {
  * @param isLiq
  * @returns totalCloseFeeP = pairCloseFeeP + pairNftLimitOrderFeeP
  */
-export function getTotalCloseFeeP(pairIndex: BigInt, isLiq: boolean): BigInt {
+export function getTotalCloseFeeP(
+  pairIndex: BigInt,
+  isLiq: boolean
+): BigDecimal {
   const pairsStorageContract = getPairsStorageContract();
-  let pairCloseFeeP = pairsStorageContract.pairCloseFeeP(pairIndex);
+  let pairCloseFeeP = convertPercentage(
+    pairsStorageContract.pairCloseFeeP(pairIndex)
+  );
   if (isLiq) {
     // @todo change
-    pairCloseFeeP = pairsStorageContract.pairCloseFeeP(pairIndex);
+    pairCloseFeeP = convertPercentage(
+      pairsStorageContract.pairCloseFeeP(pairIndex)
+    );
   }
-  const pairNftLimitOrderFeeP =
-    pairsStorageContract.pairNftLimitOrderFeeP(pairIndex);
+  const pairNftLimitOrderFeeP = convertPercentage(
+    pairsStorageContract.pairNftLimitOrderFeeP(pairIndex)
+  );
 
   return pairCloseFeeP.plus(pairNftLimitOrderFeeP);
 }
