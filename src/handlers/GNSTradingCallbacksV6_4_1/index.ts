@@ -81,9 +81,6 @@ function _handleOpenTrade(
     BigDecimal.fromString("100")
   );
 
-  // (lev * open fees * positionSizeDai)
-  // (positionSizeDai + openFee) * lev * openFeesP = openFee
-  // openFee = positionSizeDai * lev * openFeesP / (1 - lev * openFeesP)
   const leverage = positionSize.div(collateral);
   const openFee = collateral
     .times(leverage)

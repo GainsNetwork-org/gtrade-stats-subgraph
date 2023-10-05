@@ -47,9 +47,9 @@ class EpochNumbers {
   MONTH!: i32;
 }
 export const EPOCH_ZERO: EpochNumbers = {
-  DAY: 1696464000,
-  WEEK: 1696118400,
-  MONTH: 1696118400,
+  DAY: 1694390400, // Sep 11 (time of contract deploy)
+  WEEK: 1694304000, // Sep 10 (start of week)
+  MONTH: 1693526400, // Sep 1 (start of month)
 };
 
 const getEpochZero = (epochType: string): i32 => {
