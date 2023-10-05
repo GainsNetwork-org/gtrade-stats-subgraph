@@ -199,7 +199,6 @@ function _addOpenTradeStats(
   data: addOpenTradeStatsInput,
   currentStats: AggregateTradingStats
 ): AggregateTradingStats {
-  const  = data.address;
   const pairIndex = data.pairIndex;
   const groupIndex = data.groupIndex;
   const positionSize = data.positionSize;
@@ -222,9 +221,11 @@ function _addOpenTradeStats(
   // Add open fee
   currentStats.totalOpenFees = currentStats.totalOpenFees.plus(openFee);
 
-  // Mark pair as traded if not already
-  if (!currentStats.pairsTraded.includes(pairIndex)) {
-    currentStats.pairsTraded.push(pairIndex);
+  // Mark pair as traded if it's not already
+  const pairsTradedArray = currentStats.pairsTraded;
+  if (!pairsTradedArray.includes(pairIndex)) {
+    pairsTradedArray.push(pairIndex);
+    currentStats.pairsTraded = pairsTradedArray;
   }
 
   currentStats.save();
@@ -258,6 +259,7 @@ function _addCloseTradeStats(
   // Add volume to group
   volumePerGroupArray[groupIndex] =
     volumePerGroupArray[groupIndex].plus(positionSize);
+  currentStats.totalVolumePerGroup = volumePerGroupArray;
 
   // Add close fee
   currentStats.totalCloseFees = currentStats.totalCloseFees.plus(closeFee);
@@ -274,8 +276,10 @@ function _addCloseTradeStats(
     currentStats.totalPnlPercentage.plus(pnlPercentage);
 
   // Mark pair as traded if it's not already
-  if (!currentStats.pairsTraded.includes(pairIndex)) {
-    currentStats.pairsTraded.push(pairIndex);
+  const pairsTradedArray = currentStats.pairsTraded;
+  if (!pairsTradedArray.includes(pairIndex)) {
+    pairsTradedArray.push(pairIndex);
+    currentStats.pairsTraded = pairsTradedArray;
   }
 
   currentStats.save();
