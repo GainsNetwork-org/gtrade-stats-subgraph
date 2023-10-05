@@ -2,12 +2,22 @@ import { BigDecimal, log, BigInt } from "@graphprotocol/graph-ts";
 import {
   addBorrowingFeeStats,
   addCloseTradeStats,
+  addGovFeeStats,
+  addLpFeeStats,
   addOpenTradeStats,
+  addReferralFeeStats,
+  addStakerFeeStats,
+  addTriggerFeeStats,
 } from "../../utils/access";
 import {
   MarketExecuted,
   LimitExecuted,
   BorrowingFeeCharged,
+  GovFeeCharged,
+  ReferralFeeCharged,
+  TriggerFeeCharged,
+  SssFeeCharged,
+  DaiVaultFeeCharged,
 } from "../../types/GNSTradingCallbacksV6_4_1/GNSTradingCallbacksV6_4_1";
 import {
   convertDai,
@@ -83,6 +93,52 @@ export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
     event.transaction.hash.toHexString(),
   ]);
   addBorrowingFeeStats(trader, borrowingFee, timestamp);
+}
+
+export function handleGovFeeCharged(event: GovFeeCharged): void {
+  const trader = event.params.trader.toHexString();
+  const govFee = convertDai(event.params.valueDai);
+  const timestamp = event.block.timestamp.toI32();
+  log.info("[handleGovFeeCharged] {}", [event.transaction.hash.toHexString()]);
+  addGovFeeStats(trader, govFee, timestamp);
+}
+
+export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
+  const trader = event.params.trader.toHexString();
+  const referralFee = convertDai(event.params.valueDai);
+  const timestamp = event.block.timestamp.toI32();
+  log.info("[handleReferralFeeCharged] {}", [
+    event.transaction.hash.toHexString(),
+  ]);
+  addReferralFeeStats(trader, referralFee, timestamp);
+}
+
+export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
+  const trader = event.params.trader.toHexString();
+  const triggerFee = convertDai(event.params.valueDai);
+  const timestamp = event.block.timestamp.toI32();
+  log.info("[handleTriggerFeeCharged] {}", [
+    event.transaction.hash.toHexString(),
+  ]);
+  addTriggerFeeStats(trader, triggerFee, timestamp);
+}
+
+export function handleStakerFeeCharged(event: SssFeeCharged): void {
+  const trader = event.params.trader.toHexString();
+  const stakerFee = convertDai(event.params.valueDai);
+  const timestamp = event.block.timestamp.toI32();
+  log.info("[handleStakerFeeCharged] {}", [
+    event.transaction.hash.toHexString(),
+  ]);
+  addStakerFeeStats(trader, stakerFee, timestamp);
+}
+
+export function handleLpFeeCharged(event: DaiVaultFeeCharged): void {
+  const trader = event.params.trader.toHexString();
+  const lpFee = convertDai(event.params.valueDai);
+  const timestamp = event.block.timestamp.toI32();
+  log.info("[handleLpFeeCharged] {}", [event.transaction.hash.toHexString()]);
+  addLpFeeStats(trader, lpFee, timestamp);
 }
 
 function _handleOpenTrade(

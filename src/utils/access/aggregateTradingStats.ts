@@ -39,6 +39,12 @@ export function createOrLoadAggregateTradingStats(
     aggregateTradingStats.pairsTraded = [];
     aggregateTradingStats.totalPnl = ZERO_BD;
     aggregateTradingStats.totalPnlPercentage = ZERO_BD;
+    // Add govFees, referralFees, triggerFees, lpFees, stakerFees
+    aggregateTradingStats.totalGovFees = ZERO_BD;
+    aggregateTradingStats.totalReferralFees = ZERO_BD;
+    aggregateTradingStats.totalTriggerFees = ZERO_BD;
+    aggregateTradingStats.totalLpFees = ZERO_BD;
+    aggregateTradingStats.totalStakerFees = ZERO_BD;
 
     if (save) {
       aggregateTradingStats.save();
@@ -290,6 +296,55 @@ export function addBorrowingFeeStats(
   borrowingFee: BigDecimal,
   timestamp: i32
 ): AggregateTradingStats[] {
+  return _addStat(address, borrowingFee, timestamp, "totalBorrowingFees");
+}
+
+export function addGovFeeStats(
+  address: string,
+  govFee: BigDecimal,
+  timestamp: i32
+): AggregateTradingStats[] {
+  return _addStat(address, govFee, timestamp, "totalGovFees");
+}
+
+export function addReferralFeeStats(
+  address: string,
+  referralFee: BigDecimal,
+  timestamp: i32
+): AggregateTradingStats[] {
+  return _addStat(address, referralFee, timestamp, "totalReferralFees");
+}
+
+export function addTriggerFeeStats(
+  address: string,
+  triggerFee: BigDecimal,
+  timestamp: i32
+): AggregateTradingStats[] {
+  return _addStat(address, triggerFee, timestamp, "totalTriggerFees");
+}
+
+export function addLpFeeStats(
+  address: string,
+  lpFee: BigDecimal,
+  timestamp: i32
+): AggregateTradingStats[] {
+  return _addStat(address, lpFee, timestamp, "totalLpFees");
+}
+
+export function addStakerFeeStats(
+  address: string,
+  stakerFee: BigDecimal,
+  timestamp: i32
+): AggregateTradingStats[] {
+  return _addStat(address, stakerFee, timestamp, "totalStakerFees");
+}
+
+function _addStat(
+  address: string,
+  stat: any,
+  timestamp: i32,
+  statName: string
+): AggregateTradingStats[] {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
   const dailyStats = createOrLoadAggregateTradingStats(
     address,
@@ -297,8 +352,7 @@ export function addBorrowingFeeStats(
     currentDayNumber,
     false
   );
-  dailyStats.totalBorrowingFees =
-    dailyStats.totalBorrowingFees.plus(borrowingFee);
+  dailyStats[statName] = dailyStats[statName].plus(stat);
 
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
   const weeklyStats = createOrLoadAggregateTradingStats(
@@ -307,8 +361,7 @@ export function addBorrowingFeeStats(
     currentWeekNumber,
     false
   );
-  weeklyStats.totalBorrowingFees =
-    weeklyStats.totalBorrowingFees.plus(borrowingFee);
+  weeklyStats[statName] = weeklyStats[statName].plus(stat);
 
   const dailyProtocolStats = createOrLoadAggregateTradingStats(
     PROTOCOL,
@@ -316,8 +369,7 @@ export function addBorrowingFeeStats(
     currentDayNumber,
     false
   );
-  dailyProtocolStats.totalBorrowingFees =
-    dailyProtocolStats.totalBorrowingFees.plus(borrowingFee);
+  dailyProtocolStats[statName] = dailyProtocolStats[statName].plus(stat);
 
   const weeklyProtocolStats = createOrLoadAggregateTradingStats(
     PROTOCOL,
@@ -325,8 +377,7 @@ export function addBorrowingFeeStats(
     currentWeekNumber,
     false
   );
-  weeklyProtocolStats.totalBorrowingFees =
-    weeklyProtocolStats.totalBorrowingFees.plus(borrowingFee);
+  weeklyProtocolStats[statName] = weeklyProtocolStats[statName].plus(stat);
 
   dailyStats.save();
   weeklyStats.save();

@@ -37,4 +37,19 @@ type AggregateTradingStats @entity {
 
   "Total PnL Percentage"
   totalPnlPercentage: BigDecimal!
+
+  "Total gov fees"
+  totalGovFees: BigDecimal!
+
+  "Total referral fees"
+  totalReferralFees: BigDecimal!
+
+  "Total trigger fees"
+  totalTriggerFees: BigDecimal!
+
+  "Total staker fees"
+  totalStakerFees: BigDecimal!
+
+  "Total lp fees"
+  totalLpFees: BigDecimal!
 }
