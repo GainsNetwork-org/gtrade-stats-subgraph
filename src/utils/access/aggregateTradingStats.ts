@@ -296,7 +296,7 @@ export function addBorrowingFeeStats(
   borrowingFee: BigDecimal,
   timestamp: i32
 ): AggregateTradingStats[] {
-  return _addStat(address, borrowingFee, timestamp, "totalBorrowingFees");
+  return _addStats(address, borrowingFee, timestamp, "totalBorrowingFees");
 }
 
 export function addGovFeeStats(
@@ -304,7 +304,7 @@ export function addGovFeeStats(
   govFee: BigDecimal,
   timestamp: i32
 ): AggregateTradingStats[] {
-  return _addStat(address, govFee, timestamp, "totalGovFees");
+  return _addStats(address, govFee, timestamp, "totalGovFees");
 }
 
 export function addReferralFeeStats(
@@ -312,7 +312,7 @@ export function addReferralFeeStats(
   referralFee: BigDecimal,
   timestamp: i32
 ): AggregateTradingStats[] {
-  return _addStat(address, referralFee, timestamp, "totalReferralFees");
+  return _addStats(address, referralFee, timestamp, "totalReferralFees");
 }
 
 export function addTriggerFeeStats(
@@ -320,7 +320,7 @@ export function addTriggerFeeStats(
   triggerFee: BigDecimal,
   timestamp: i32
 ): AggregateTradingStats[] {
-  return _addStat(address, triggerFee, timestamp, "totalTriggerFees");
+  return _addStats(address, triggerFee, timestamp, "totalTriggerFees");
 }
 
 export function addLpFeeStats(
@@ -328,7 +328,7 @@ export function addLpFeeStats(
   lpFee: BigDecimal,
   timestamp: i32
 ): AggregateTradingStats[] {
-  return _addStat(address, lpFee, timestamp, "totalLpFees");
+  return _addStats(address, lpFee, timestamp, "totalLpFees");
 }
 
 export function addStakerFeeStats(
@@ -336,48 +336,48 @@ export function addStakerFeeStats(
   stakerFee: BigDecimal,
   timestamp: i32
 ): AggregateTradingStats[] {
-  return _addStat(address, stakerFee, timestamp, "totalStakerFees");
+  return _addStats(address, stakerFee, timestamp, "totalStakerFees");
 }
 
-function _addStat(
+function _addStats(
   address: string,
-  stat: any,
+  stat: BigDecimal,
   timestamp: i32,
   statName: string
 ): AggregateTradingStats[] {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
-  const dailyStats = createOrLoadAggregateTradingStats(
+  let dailyStats = createOrLoadAggregateTradingStats(
     address,
     EPOCH_TYPE.DAY,
     currentDayNumber,
     false
   );
-  dailyStats[statName] = dailyStats[statName].plus(stat);
+  dailyStats = _addStat(stat, statName, dailyStats);
 
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
-  const weeklyStats = createOrLoadAggregateTradingStats(
+  let weeklyStats = createOrLoadAggregateTradingStats(
     address,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
     false
   );
-  weeklyStats[statName] = weeklyStats[statName].plus(stat);
+  weeklyStats = _addStat(stat, statName, weeklyStats);
 
-  const dailyProtocolStats = createOrLoadAggregateTradingStats(
+  let dailyProtocolStats = createOrLoadAggregateTradingStats(
     PROTOCOL,
     EPOCH_TYPE.DAY,
     currentDayNumber,
     false
   );
-  dailyProtocolStats[statName] = dailyProtocolStats[statName].plus(stat);
+  dailyProtocolStats = _addStat(stat, statName, dailyProtocolStats);
 
-  const weeklyProtocolStats = createOrLoadAggregateTradingStats(
+  let weeklyProtocolStats = createOrLoadAggregateTradingStats(
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
     false
   );
-  weeklyProtocolStats[statName] = weeklyProtocolStats[statName].plus(stat);
+  weeklyProtocolStats = _addStat(stat, statName, weeklyProtocolStats);
 
   dailyStats.save();
   weeklyStats.save();
@@ -385,4 +385,27 @@ function _addStat(
   weeklyProtocolStats.save();
 
   return [dailyStats, weeklyStats, dailyProtocolStats, weeklyProtocolStats];
+}
+
+function _addStat(
+  stat: BigDecimal,
+  statName: string,
+  currentStats: AggregateTradingStats
+): AggregateTradingStats {
+  if (statName == "totalBorrowingFees") {
+    currentStats.totalBorrowingFees =
+      currentStats.totalBorrowingFees.plus(stat);
+  } else if (statName == "totalGovFees") {
+    currentStats.totalGovFees = currentStats.totalGovFees.plus(stat);
+  } else if (statName == "totalReferralFees") {
+    currentStats.totalReferralFees = currentStats.totalReferralFees.plus(stat);
+  } else if (statName == "totalTriggerFees") {
+    currentStats.totalTriggerFees = currentStats.totalTriggerFees.plus(stat);
+  } else if (statName == "totalLpFees") {
+    currentStats.totalLpFees = currentStats.totalLpFees.plus(stat);
+  } else if (statName == "totalStakerFees") {
+    currentStats.totalStakerFees = currentStats.totalStakerFees.plus(stat);
+  }
+
+  return currentStats;
 }
