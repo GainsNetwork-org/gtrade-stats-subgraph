@@ -73,24 +73,29 @@ export function handleLimitExecuted(event: LimitExecuted): void {
 function _handleOpenTrade(
   trader: string,
   pairIndex: BigInt,
-  positionSizeDai: BigDecimal,
-  volume: BigDecimal,
+  collateral: BigDecimal,
+  positionSize: BigDecimal,
   timestamp: i32
 ): void {
-  const openFeesP = getTotalOpenFeeP(pairIndex);
-
-  const initialDai = positionSizeDai.div(
-    BigDecimal.fromString("1").minus(
-      openFeesP.div(BigDecimal.fromString("100"))
-    )
+  const openFeesDecimal = getTotalOpenFeeP(pairIndex).div(
+    BigDecimal.fromString("100")
   );
-  const openFee = initialDai.minus(positionSizeDai);
+
+  // (lev * open fees * positionSizeDai)
+  // (positionSizeDai + openFee) * lev * openFeesP = openFee
+  // openFee = positionSizeDai * lev * openFeesP / (1 - lev * openFeesP)
+  const leverage = positionSize.div(collateral);
+  const openFee = collateral
+    .times(leverage)
+    .times(openFeesDecimal)
+    .div(BigDecimal.fromString("1").minus(leverage.times(openFeesDecimal)));
+
   addOpenTradeStats(
     {
       address: trader,
       pairIndex: pairIndex.toI32(),
       groupIndex: getGroupIndex(pairIndex).toI32(),
-      volume,
+      positionSize,
       openFee,
       timestamp,
     },
@@ -101,33 +106,29 @@ function _handleOpenTrade(
 function _handleCloseTrade(
   trader: string,
   pairIndex: BigInt,
-  positionSizeDai: BigDecimal,
-  volume: BigDecimal,
+  collateral: BigDecimal,
+  positionSize: BigDecimal,
   timestamp: i32,
   daiSentToTrader: BigDecimal,
   isLiq: boolean
 ): void {
-  const closeFeesP = getTotalCloseFeeP(pairIndex, isLiq);
-  const closeFee = positionSizeDai
-    .div(
-      BigDecimal.fromString("1").minus(
-        closeFeesP.div(BigDecimal.fromString("100"))
-      )
-    )
-    .minus(positionSizeDai);
+  const closeFeesDecimal = getTotalCloseFeeP(pairIndex, isLiq).div(
+    BigDecimal.fromString("100")
+  );
+  const closeFee = positionSize.times(closeFeesDecimal);
 
   // @todo Get borrowing fee
   const borrowingFee = BigDecimal.fromString("0");
 
-  const pnl = daiSentToTrader.minus(positionSizeDai);
-  const pnlPercentage = pnl.div(positionSizeDai);
+  const pnl = daiSentToTrader.minus(collateral);
+  const pnlPercentage = pnl.div(collateral).times(BigDecimal.fromString("100"));
 
   addCloseTradeStats(
     {
       address: trader,
       pairIndex: pairIndex.toI32(),
       groupIndex: getGroupIndex(pairIndex).toI32(),
-      volume,
+      positionSize,
       closeFee,
       borrowingFee,
       pnl,

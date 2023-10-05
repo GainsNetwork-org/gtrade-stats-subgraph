@@ -54,7 +54,7 @@ export class addOpenTradeStatsInput {
   address: string;
   pairIndex: i32;
   groupIndex: i32;
-  volume: BigDecimal;
+  positionSize: BigDecimal;
   openFee: BigDecimal;
   timestamp: i32;
 }
@@ -64,12 +64,12 @@ export function addOpenTradeStats(
 ): void {
   const address = data.address;
   const pairIndex = data.pairIndex;
-  const volume = data.volume;
+  const positionSize = data.positionSize;
   const openFee = data.openFee;
   const timestamp = data.timestamp;
   log.info(
-    "[addOpenTradeStats] address {} pairIndex {}, volume {}, openFee {}",
-    [address, pairIndex.toString(), volume.toString(), openFee.toString()]
+    "[addOpenTradeStats] address {} pairIndex {}, positionSize {}, openFee {}",
+    [address, pairIndex.toString(), positionSize.toString(), openFee.toString()]
   );
 
   // Daily stats
@@ -116,7 +116,7 @@ export class addCloseTradeStatsInput {
   address: string;
   pairIndex: i32;
   groupIndex: i32;
-  volume: BigDecimal;
+  positionSize: BigDecimal;
   closeFee: BigDecimal;
   borrowingFee: BigDecimal;
   pnl: BigDecimal;
@@ -133,18 +133,18 @@ export function addCloseTradeStats(
 ): void {
   const address = data.address;
   const pairIndex = data.pairIndex;
-  const volume = data.volume;
+  const positionSize = data.positionSize;
   const closeFee = data.closeFee;
   const borrowingFee = data.borrowingFee;
   const pnl = data.pnl;
   const pnlPercentage = data.pnlPercentage;
   const timestamp = data.timestamp;
   log.info(
-    "[addCloseTradeStats] address {} pairIndex {}, volume {}, closeFee {}, borrowingFee {}, pnl {}, pnlPercentage {}",
+    "[addCloseTradeStats] address {} pairIndex {}, positionSize {}, closeFee {}, borrowingFee {}, pnl {}, pnlPercentage {}",
     [
       address,
       pairIndex.toString(),
-      volume.toString(),
+      positionSize.toString(),
       closeFee.toString(),
       borrowingFee.toString(),
       pnl.toString(),
@@ -189,6 +189,7 @@ export function addCloseTradeStats(
     currentWeekNumber,
     false
   );
+  _addCloseTradeStats(data, weeklyProtocolStats);
 }
 
 /**
@@ -198,10 +199,10 @@ function _addOpenTradeStats(
   data: addOpenTradeStatsInput,
   currentStats: AggregateTradingStats
 ): AggregateTradingStats {
-  const address = data.address;
+  const  = data.address;
   const pairIndex = data.pairIndex;
   const groupIndex = data.groupIndex;
-  const volume = data.volume;
+  const positionSize = data.positionSize;
   const openFee = data.openFee;
   const timestamp = data.timestamp;
 
@@ -215,7 +216,7 @@ function _addOpenTradeStats(
 
   // Add volume to group
   volumePerGroupArray[groupIndex] =
-    volumePerGroupArray[groupIndex].plus(volume);
+    volumePerGroupArray[groupIndex].plus(positionSize);
   currentStats.totalVolumePerGroup = volumePerGroupArray;
 
   // Add open fee
@@ -237,10 +238,9 @@ function _addCloseTradeStats(
   data: addCloseTradeStatsInput,
   currentStats: AggregateTradingStats
 ): AggregateTradingStats {
-  const address = data.address;
   const pairIndex = data.pairIndex;
   const groupIndex = data.groupIndex;
-  const volume = data.volume;
+  const positionSize = data.positionSize;
   const closeFee = data.closeFee;
   const borrowingFee = data.borrowingFee;
   const pnl = data.pnl;
@@ -257,7 +257,7 @@ function _addCloseTradeStats(
 
   // Add volume to group
   volumePerGroupArray[groupIndex] =
-    volumePerGroupArray[groupIndex].plus(volume);
+    volumePerGroupArray[groupIndex].plus(positionSize);
 
   // Add close fee
   currentStats.totalCloseFees = currentStats.totalCloseFees.plus(closeFee);
