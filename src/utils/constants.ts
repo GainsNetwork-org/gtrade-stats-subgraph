@@ -42,9 +42,9 @@ export const EPOCH_TYPE: EpochTypes = {
 // Establish epoch 0 for day, week, and month
 // @todo - update epoch zero for mainnet
 class EpochNumbers {
-  DAY!: number;
-  WEEK!: number;
-  MONTH!: number;
+  DAY!: i32;
+  WEEK!: i32;
+  MONTH!: i32;
 }
 export const EPOCH_ZERO: EpochNumbers = {
   DAY: 1696371257,
@@ -52,7 +52,7 @@ export const EPOCH_ZERO: EpochNumbers = {
   MONTH: 1696371257,
 };
 
-const getEpochZero = (epochType: string): number => {
+const getEpochZero = (epochType: string): i32 => {
   if (epochType == EPOCH_TYPE.DAY) {
     return EPOCH_ZERO.DAY;
   } else if (epochType == EPOCH_TYPE.WEEK) {
@@ -69,7 +69,7 @@ export const EPOCH_DURATION: EpochNumbers = {
   MONTH: 2629746,
 };
 
-const getEpochDuration = (epochType: string): number => {
+const getEpochDuration = (epochType: string): i32 => {
   if (epochType == EPOCH_TYPE.DAY) {
     return EPOCH_DURATION.DAY;
   } else if (epochType == EPOCH_TYPE.WEEK) {
@@ -80,16 +80,16 @@ const getEpochDuration = (epochType: string): number => {
 };
 
 export const determineEpochNumber = (
-  timestamp: number,
+  timestamp: i32,
   epochType: string
-): number => {
+): i32 => {
   const epochZero = getEpochZero(epochType); // @todo - why does EPOCH_ZERO[epochType] fail to compile?
   const epochDuration = getEpochDuration(epochType);
   const epochNumber = (timestamp - epochZero) / epochDuration;
-  return Math.floor(epochNumber);
+  return Math.floor(epochNumber) as i32;
 };
 
-export function exponentToBigDecimal(decimals: number): BigDecimal {
+export function exponentToBigDecimal(decimals: i32): BigDecimal {
   let bd = BigDecimal.fromString("1");
   for (let i = 0; i < decimals; i++) {
     bd = bd.times(BigDecimal.fromString("10"));
@@ -97,7 +97,7 @@ export function exponentToBigDecimal(decimals: number): BigDecimal {
   return bd;
 }
 
-export function toDecimal(value: BigInt, decimals: number): BigDecimal {
+export function toDecimal(value: BigInt, decimals: i32): BigDecimal {
   return value
     .toBigDecimal()
     .div(exponentToBigDecimal(decimals).truncate(decimals));

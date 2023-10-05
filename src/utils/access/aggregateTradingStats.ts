@@ -10,7 +10,7 @@ import {
 export function generateAggregateTradingStatsId(
   address: string,
   epochType: string,
-  epochNumber: number
+  epochNumber: i32
 ): string {
   return address + "-" + epochType + "-" + epochNumber.toString();
 }
@@ -52,11 +52,11 @@ export function createOrLoadAggregateTradingStats(
  */
 export class addOpenTradeStatsInput {
   address: string;
-  pairIndex: number;
-  groupIndex: number;
+  pairIndex: i32;
+  groupIndex: i32;
   volume: BigDecimal;
   openFee: BigDecimal;
-  timestamp: number;
+  timestamp: i32;
 }
 export function addOpenTradeStats(
   data: addOpenTradeStatsInput,
@@ -114,14 +114,14 @@ export function addOpenTradeStats(
 
 export class addCloseTradeStatsInput {
   address: string;
-  pairIndex: number;
-  groupIndex: number;
+  pairIndex: i32;
+  groupIndex: i32;
   volume: BigDecimal;
   closeFee: BigDecimal;
   borrowingFee: BigDecimal;
   pnl: BigDecimal;
   pnlPercentage: BigDecimal;
-  timestamp: number;
+  timestamp: i32;
 }
 
 /**

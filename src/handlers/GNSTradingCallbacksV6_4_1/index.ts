@@ -75,7 +75,7 @@ function _handleOpenTrade(
   pairIndex: BigInt,
   positionSizeDai: BigDecimal,
   volume: BigDecimal,
-  timestamp: number
+  timestamp: i32
 ): void {
   const openFeesP = getTotalOpenFeeP(pairIndex);
 
@@ -103,7 +103,7 @@ function _handleCloseTrade(
   pairIndex: BigInt,
   positionSizeDai: BigDecimal,
   volume: BigDecimal,
-  timestamp: number,
+  timestamp: i32,
   daiSentToTrader: BigDecimal,
   isLiq: boolean
 ): void {
