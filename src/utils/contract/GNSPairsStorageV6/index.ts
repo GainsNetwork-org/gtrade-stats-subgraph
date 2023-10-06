@@ -4,13 +4,22 @@ import {
   BigInt,
   BigDecimal,
 } from "@graphprotocol/graph-ts";
-import { NETWORKS, ARBITRUM_ADDRESSES } from "../../constants";
+import {
+  NETWORKS,
+  ARBITRUM_ADDRESSES,
+  POLYGON_ADDRESSES,
+} from "../../constants";
 import { GNSPairsStorageV6 } from "../../../types/GNSTradingCallbacksV6_4_1/GNSPairsStorageV6";
 import { convertPercentage } from "../.";
 
 export function getPairsStorageContract(): GNSPairsStorageV6 {
   const config =
-    dataSource.network() == NETWORKS.ARBITRUM ? ARBITRUM_ADDRESSES : null;
+    dataSource.network() == NETWORKS.ARBITRUM
+      ? ARBITRUM_ADDRESSES
+      : dataSource.network() == NETWORKS.POLYGON
+      ? POLYGON_ADDRESSES
+      : null;
+
   if (config == null) {
     throw new Error("Network not supported");
   }

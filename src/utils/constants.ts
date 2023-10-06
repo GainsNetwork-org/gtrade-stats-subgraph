@@ -28,54 +28,49 @@ export const ARBITRUM_ADDRESSES: NetworkAddresses = {
   gnsPairsStorageV6: "0xf67Df2a4339eC1591615d94599081Dd037960d4b",
 };
 
+export const POLYGON_ADDRESSES: NetworkAddresses = {
+  gnsPairsStorageV6: "0x6e5326e944F528c243B9Ca5d14fe5C9269a8c922",
+};
+
 class EpochTypes {
   DAY!: string;
   WEEK!: string;
-  MONTH!: string;
 }
 export const EPOCH_TYPE: EpochTypes = {
   DAY: "day",
   WEEK: "week",
-  MONTH: "month",
 };
 
-// Establish epoch 0 for day, week, and month
+// Establish epoch 0 for day, week
 // @todo - update epoch zero for mainnet - move to network specific constants
 class EpochNumbers {
   DAY!: i32;
   WEEK!: i32;
-  MONTH!: i32;
 }
 export const EPOCH_ZERO: EpochNumbers = {
-  DAY: 1694390400, // Sep 11 (time of contract deploy)
-  WEEK: 1694304000, // Sep 10 (start of week)
-  MONTH: 1693526400, // Sep 1 (start of month)
+  DAY: 1696118400, // Oct 1 (time of contract deploy)
+  WEEK: 1696118400, // Oct 1 (start of week)
 };
 
 const getEpochZero = (epochType: string): i32 => {
   if (epochType == EPOCH_TYPE.DAY) {
     return EPOCH_ZERO.DAY;
-  } else if (epochType == EPOCH_TYPE.WEEK) {
-    return EPOCH_ZERO.WEEK;
   } else {
-    return EPOCH_ZERO.MONTH;
+    return EPOCH_ZERO.WEEK;
   }
 };
 
-// Establish epoch duration for day, week, and month
+// Establish epoch duration for day, week
 export const EPOCH_DURATION: EpochNumbers = {
   DAY: 86400,
   WEEK: 604800,
-  MONTH: 2629746,
 };
 
 const getEpochDuration = (epochType: string): i32 => {
   if (epochType == EPOCH_TYPE.DAY) {
     return EPOCH_DURATION.DAY;
-  } else if (epochType == EPOCH_TYPE.WEEK) {
-    return EPOCH_DURATION.WEEK;
   } else {
-    return EPOCH_DURATION.MONTH;
+    return EPOCH_DURATION.WEEK;
   }
 };
 

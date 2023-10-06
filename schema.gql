@@ -1,7 +1,6 @@
 enum EpochType {
   day
   week
-  month
 }
 
 type AggregateTradingStats @entity {
