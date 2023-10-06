@@ -33,8 +33,6 @@ export function createOrLoadAggregateTradingStats(
     aggregateTradingStats.epochType = epochType;
     aggregateTradingStats.epochNumber = epochNumber;
     aggregateTradingStats.totalVolumePerGroup = [];
-    aggregateTradingStats.totalOpenFees = ZERO_BD;
-    aggregateTradingStats.totalCloseFees = ZERO_BD;
     aggregateTradingStats.totalBorrowingFees = ZERO_BD;
     aggregateTradingStats.pairsTraded = [];
     aggregateTradingStats.totalPnl = ZERO_BD;
@@ -61,19 +59,18 @@ export class addOpenTradeStatsInput {
   pairIndex: i32;
   groupIndex: i32;
   positionSize: BigDecimal;
-  openFee: BigDecimal;
   timestamp: i32;
 }
 export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
   const address = data.address;
   const pairIndex = data.pairIndex;
   const positionSize = data.positionSize;
-  const openFee = data.openFee;
   const timestamp = data.timestamp;
-  log.info(
-    "[addOpenTradeStats] address {} pairIndex {}, positionSize {}, openFee {}",
-    [address, pairIndex.toString(), positionSize.toString(), openFee.toString()]
-  );
+  log.info("[addOpenTradeStats] address {} pairIndex {}, positionSize {}", [
+    address,
+    pairIndex.toString(),
+    positionSize.toString(),
+  ]);
 
   // Daily stats
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
@@ -120,7 +117,6 @@ export class addCloseTradeStatsInput {
   pairIndex: i32;
   groupIndex: i32;
   positionSize: BigDecimal;
-  closeFee: BigDecimal;
   pnl: BigDecimal;
   pnlPercentage: BigDecimal;
   timestamp: i32;
@@ -133,17 +129,15 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
   const address = data.address;
   const pairIndex = data.pairIndex;
   const positionSize = data.positionSize;
-  const closeFee = data.closeFee;
   const pnl = data.pnl;
   const pnlPercentage = data.pnlPercentage;
   const timestamp = data.timestamp;
   log.info(
-    "[addCloseTradeStats] address {} pairIndex {}, positionSize {}, closeFee {}, pnl {}, pnlPercentage {}",
+    "[addCloseTradeStats] address {} pairIndex {}, positionSize {}, pnl {}, pnlPercentage {}",
     [
       address,
       pairIndex.toString(),
       positionSize.toString(),
-      closeFee.toString(),
       pnl.toString(),
       pnlPercentage.toString(),
     ]
@@ -198,7 +192,6 @@ function _addOpenTradeStats(
   const pairIndex = data.pairIndex;
   const groupIndex = data.groupIndex;
   const positionSize = data.positionSize;
-  const openFee = data.openFee;
 
   // Make sure volume array is initialized and large enough for groupIndex
   const volumePerGroupArray = currentStats.totalVolumePerGroup;
@@ -212,9 +205,6 @@ function _addOpenTradeStats(
   volumePerGroupArray[groupIndex] =
     volumePerGroupArray[groupIndex].plus(positionSize);
   currentStats.totalVolumePerGroup = volumePerGroupArray;
-
-  // Add open fee
-  currentStats.totalOpenFees = currentStats.totalOpenFees.plus(openFee);
 
   // Mark pair as traded if it's not already
   const pairsTradedArray = currentStats.pairsTraded;
@@ -237,7 +227,6 @@ function _addCloseTradeStats(
   const pairIndex = data.pairIndex;
   const groupIndex = data.groupIndex;
   const positionSize = data.positionSize;
-  const closeFee = data.closeFee;
   const pnl = data.pnl;
   const pnlPercentage = data.pnlPercentage;
   const timestamp = data.timestamp;
@@ -254,9 +243,6 @@ function _addCloseTradeStats(
   volumePerGroupArray[groupIndex] =
     volumePerGroupArray[groupIndex].plus(positionSize);
   currentStats.totalVolumePerGroup = volumePerGroupArray;
-
-  // Add close fee
-  currentStats.totalCloseFees = currentStats.totalCloseFees.plus(closeFee);
 
   // Add pnl
   currentStats.totalPnl = currentStats.totalPnl.plus(pnl);

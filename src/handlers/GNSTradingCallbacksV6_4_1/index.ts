@@ -23,8 +23,6 @@ import {
   convertDai,
   getGroupIndex,
   getLiquidationFeeP,
-  getTotalCloseFeeP,
-  getTotalOpenFeeP,
 } from "../../utils/contract";
 
 export function handleMarketExecuted(event: MarketExecuted): void {
@@ -40,7 +38,6 @@ export function handleMarketExecuted(event: MarketExecuted): void {
     _handleOpenTrade(
       trade.trader.toHexString(),
       trade.pairIndex,
-      positionSizeDai,
       volume,
       event.block.timestamp.toI32()
     );
@@ -48,12 +45,10 @@ export function handleMarketExecuted(event: MarketExecuted): void {
     _handleCloseTrade(
       trade.trader.toHexString(),
       trade.pairIndex,
-      positionSizeDai,
       leverage,
       volume,
       event.block.timestamp.toI32(),
-      daiSentToTrader,
-      false
+      daiSentToTrader
     );
   }
 }
@@ -70,7 +65,6 @@ export function handleLimitExecuted(event: LimitExecuted): void {
     _handleOpenTrade(
       trade.trader.toHexString(),
       trade.pairIndex,
-      positionSizeDai,
       volume,
       event.block.timestamp.toI32()
     );
@@ -78,12 +72,10 @@ export function handleLimitExecuted(event: LimitExecuted): void {
     _handleCloseTrade(
       trade.trader.toHexString(),
       trade.pairIndex,
-      positionSizeDai,
       leverage,
       volume,
       event.block.timestamp.toI32(),
-      daiSentToTrader,
-      orderType == 2
+      daiSentToTrader
     );
   }
 }
@@ -147,26 +139,14 @@ export function handleLpFeeCharged(event: DaiVaultFeeCharged): void {
 function _handleOpenTrade(
   trader: string,
   pairIndex: BigInt,
-  collateral: BigDecimal,
   positionSize: BigDecimal,
   timestamp: i32
 ): void {
-  const openFeesDecimal = getTotalOpenFeeP(pairIndex).div(
-    BigDecimal.fromString("100")
-  );
-
-  const leverage = positionSize.div(collateral);
-  const openFee = collateral
-    .times(leverage)
-    .times(openFeesDecimal)
-    .div(BigDecimal.fromString("1").minus(leverage.times(openFeesDecimal)));
-
   addOpenTradeStats({
     address: trader,
     pairIndex: pairIndex.toI32(),
     groupIndex: getGroupIndex(pairIndex).toI32(),
     positionSize,
-    openFee,
     timestamp,
   });
 }
@@ -174,25 +154,11 @@ function _handleOpenTrade(
 function _handleCloseTrade(
   trader: string,
   pairIndex: BigInt,
-  collateral: BigDecimal,
   leverage: BigDecimal,
   positionSize: BigDecimal,
   timestamp: i32,
-  daiSentToTrader: BigDecimal,
-  isLiq: boolean
+  daiSentToTrader: BigDecimal
 ): void {
-  const closeFeesDecimal = getTotalCloseFeeP(pairIndex, isLiq).div(
-    BigDecimal.fromString("100")
-  );
-  let closeFee = positionSize.times(closeFeesDecimal);
-
-  if (isLiq) {
-    const liqFee = getLiquidationFeeP(pairIndex);
-    closeFee = closeFee.plus(
-      collateral.times(liqFee.div(BigDecimal.fromString("100")))
-    );
-  }
-
   const initialCollateral = positionSize.div(leverage);
   const pnl = daiSentToTrader.minus(initialCollateral);
   const pnlPercentage = pnl
@@ -204,7 +170,6 @@ function _handleCloseTrade(
     pairIndex: pairIndex.toI32(),
     groupIndex: getGroupIndex(pairIndex).toI32(),
     positionSize,
-    closeFee,
     pnl,
     pnlPercentage,
     timestamp,
