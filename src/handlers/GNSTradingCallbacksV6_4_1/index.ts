@@ -22,6 +22,7 @@ import {
 import {
   convertDai,
   getGroupIndex,
+  getLiquidationFeeP,
   getTotalCloseFeeP,
   getTotalOpenFeeP,
 } from "../../utils/contract";
@@ -48,6 +49,7 @@ export function handleMarketExecuted(event: MarketExecuted): void {
       trade.trader.toHexString(),
       trade.pairIndex,
       positionSizeDai,
+      leverage,
       volume,
       event.block.timestamp.toI32(),
       daiSentToTrader,
@@ -77,6 +79,7 @@ export function handleLimitExecuted(event: LimitExecuted): void {
       trade.trader.toHexString(),
       trade.pairIndex,
       positionSizeDai,
+      leverage,
       volume,
       event.block.timestamp.toI32(),
       daiSentToTrader,
@@ -175,6 +178,7 @@ function _handleCloseTrade(
   trader: string,
   pairIndex: BigInt,
   collateral: BigDecimal,
+  leverage: BigDecimal,
   positionSize: BigDecimal,
   timestamp: i32,
   daiSentToTrader: BigDecimal,
@@ -183,13 +187,20 @@ function _handleCloseTrade(
   const closeFeesDecimal = getTotalCloseFeeP(pairIndex, isLiq).div(
     BigDecimal.fromString("100")
   );
-  const closeFee = positionSize.times(closeFeesDecimal);
+  let closeFee = positionSize.times(closeFeesDecimal);
 
-  // @todo Get borrowing fee
-  const borrowingFee = BigDecimal.fromString("0");
+  if (isLiq) {
+    const liqFee = getLiquidationFeeP(pairIndex);
+    closeFee = closeFee.plus(
+      collateral.times(liqFee.div(BigDecimal.fromString("100")))
+    );
+  }
 
-  const pnl = daiSentToTrader.minus(collateral);
-  const pnlPercentage = pnl.div(collateral).times(BigDecimal.fromString("100"));
+  const initialCollateral = positionSize.div(leverage);
+  const pnl = daiSentToTrader.minus(initialCollateral);
+  const pnlPercentage = pnl
+    .div(initialCollateral)
+    .times(BigDecimal.fromString("100"));
 
   addCloseTradeStats(
     {
@@ -198,7 +209,6 @@ function _handleCloseTrade(
       groupIndex: getGroupIndex(pairIndex).toI32(),
       positionSize,
       closeFee,
-      borrowingFee,
       pnl,
       pnlPercentage,
       timestamp,

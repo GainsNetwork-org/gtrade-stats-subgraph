@@ -45,17 +45,24 @@ export function getTotalCloseFeeP(
   isLiq: boolean
 ): BigDecimal {
   const pairsStorageContract = getPairsStorageContract();
-  let pairCloseFeeP = convertPercentage(
+  const pairCloseFeeP = convertPercentage(
     pairsStorageContract.pairCloseFeeP(pairIndex)
   );
-  if (isLiq) {
-    pairCloseFeeP = BigDecimal.fromString("5");
-  }
-  const pairNftLimitOrderFeeP = convertPercentage(
+
+  let pairNftLimitOrderFeeP = convertPercentage(
     pairsStorageContract.pairNftLimitOrderFeeP(pairIndex)
   );
 
+  if (isLiq) {
+    // Liquidiation fee handled externally
+    pairNftLimitOrderFeeP = BigDecimal.fromString("0");
+  }
+
   return pairCloseFeeP.plus(pairNftLimitOrderFeeP);
+}
+
+export function getLiquidationFeeP(pairIndex: BigInt): BigDecimal {
+  return BigDecimal.fromString("5");
 }
 
 export function getGroupIndex(pairIndex: BigInt): BigInt {

@@ -124,7 +124,6 @@ export class addCloseTradeStatsInput {
   groupIndex: i32;
   positionSize: BigDecimal;
   closeFee: BigDecimal;
-  borrowingFee: BigDecimal;
   pnl: BigDecimal;
   pnlPercentage: BigDecimal;
   timestamp: i32;
@@ -141,18 +140,16 @@ export function addCloseTradeStats(
   const pairIndex = data.pairIndex;
   const positionSize = data.positionSize;
   const closeFee = data.closeFee;
-  const borrowingFee = data.borrowingFee;
   const pnl = data.pnl;
   const pnlPercentage = data.pnlPercentage;
   const timestamp = data.timestamp;
   log.info(
-    "[addCloseTradeStats] address {} pairIndex {}, positionSize {}, closeFee {}, borrowingFee {}, pnl {}, pnlPercentage {}",
+    "[addCloseTradeStats] address {} pairIndex {}, positionSize {}, closeFee {}, pnl {}, pnlPercentage {}",
     [
       address,
       pairIndex.toString(),
       positionSize.toString(),
       closeFee.toString(),
-      borrowingFee.toString(),
       pnl.toString(),
       pnlPercentage.toString(),
     ]
@@ -248,7 +245,6 @@ function _addCloseTradeStats(
   const groupIndex = data.groupIndex;
   const positionSize = data.positionSize;
   const closeFee = data.closeFee;
-  const borrowingFee = data.borrowingFee;
   const pnl = data.pnl;
   const pnlPercentage = data.pnlPercentage;
   const timestamp = data.timestamp;
@@ -268,10 +264,6 @@ function _addCloseTradeStats(
 
   // Add close fee
   currentStats.totalCloseFees = currentStats.totalCloseFees.plus(closeFee);
-
-  // Add borrowing fee
-  currentStats.totalBorrowingFees =
-    currentStats.totalBorrowingFees.plus(borrowingFee);
 
   // Add pnl
   currentStats.totalPnl = currentStats.totalPnl.plus(pnl);
