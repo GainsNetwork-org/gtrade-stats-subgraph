@@ -15,8 +15,11 @@
     "deploy": "npx graph deploy --debug --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/",
     "deploy:hosted": "npx graph deploy --product hosted-service --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ --access-token ${GRAPH_ACCESS_TOKEN}",
     "configure:arbitrum": "pnpm clean && pnpm prepare:arbitrum && pnpm codegen",
+    "configure:polygon": "pnpm clean && pnpm prepare:polygon && pnpm codegen",
     "prepare:arbitrum": "mustache config/arbitrum.json subgraph.yaml.mustache > subgraph.yaml",
-    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-arbitrum"
+    "prepare:polygon": "mustache config/polygon.json subgraph.yaml.mustache > subgraph.yaml",
+    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-arbitrum",
+    "deploy:polygon": "pnpm clean && pnpm configure:polygon && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-polygon"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.58.0",
