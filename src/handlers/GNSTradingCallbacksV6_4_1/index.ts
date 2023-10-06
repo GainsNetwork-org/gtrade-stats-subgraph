@@ -161,17 +161,14 @@ function _handleOpenTrade(
     .times(openFeesDecimal)
     .div(BigDecimal.fromString("1").minus(leverage.times(openFeesDecimal)));
 
-  addOpenTradeStats(
-    {
-      address: trader,
-      pairIndex: pairIndex.toI32(),
-      groupIndex: getGroupIndex(pairIndex).toI32(),
-      positionSize,
-      openFee,
-      timestamp,
-    },
-    true
-  );
+  addOpenTradeStats({
+    address: trader,
+    pairIndex: pairIndex.toI32(),
+    groupIndex: getGroupIndex(pairIndex).toI32(),
+    positionSize,
+    openFee,
+    timestamp,
+  });
 }
 
 function _handleCloseTrade(
@@ -202,17 +199,14 @@ function _handleCloseTrade(
     .div(initialCollateral)
     .times(BigDecimal.fromString("100"));
 
-  addCloseTradeStats(
-    {
-      address: trader,
-      pairIndex: pairIndex.toI32(),
-      groupIndex: getGroupIndex(pairIndex).toI32(),
-      positionSize,
-      closeFee,
-      pnl,
-      pnlPercentage,
-      timestamp,
-    },
-    true
-  );
+  addCloseTradeStats({
+    address: trader,
+    pairIndex: pairIndex.toI32(),
+    groupIndex: getGroupIndex(pairIndex).toI32(),
+    positionSize,
+    closeFee,
+    pnl,
+    pnlPercentage,
+    timestamp,
+  });
 }

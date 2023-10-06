@@ -64,10 +64,7 @@ export class addOpenTradeStatsInput {
   openFee: BigDecimal;
   timestamp: i32;
 }
-export function addOpenTradeStats(
-  data: addOpenTradeStatsInput,
-  save: boolean
-): void {
+export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
   const address = data.address;
   const pairIndex = data.pairIndex;
   const positionSize = data.positionSize;
@@ -132,10 +129,7 @@ export class addCloseTradeStatsInput {
 /**
  * @dev This function is called when a user closes a trade
  */
-export function addCloseTradeStats(
-  data: addCloseTradeStatsInput,
-  save: boolean
-): void {
+export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
   const address = data.address;
   const pairIndex = data.pairIndex;
   const positionSize = data.positionSize;
@@ -205,7 +199,6 @@ function _addOpenTradeStats(
   const groupIndex = data.groupIndex;
   const positionSize = data.positionSize;
   const openFee = data.openFee;
-  const timestamp = data.timestamp;
 
   // Make sure volume array is initialized and large enough for groupIndex
   const volumePerGroupArray = currentStats.totalVolumePerGroup;
