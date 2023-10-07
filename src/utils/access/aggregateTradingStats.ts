@@ -1,5 +1,6 @@
 import { BigDecimal, log } from "@graphprotocol/graph-ts";
-import { AggregateTradingStats } from "../../types/schema";
+import { AggregateTradingStat } from "../../types/schema";
+import { _updateRewardsEntities } from "./calculateRewards";
 import {
   ZERO_BD,
   EPOCH_TYPE,
@@ -20,15 +21,15 @@ export function createOrLoadAggregateTradingStats(
   epochType: string,
   epochNumber: i32,
   save: boolean
-): AggregateTradingStats {
+): AggregateTradingStat {
   log.info(
     "[createOrLoadAggregateTradingStats] address {}, epochType {}, epochNumber {}",
     [address, epochType.toString(), epochNumber.toString()]
   );
   const id = generateAggregateTradingStatsId(address, epochType, epochNumber);
-  let aggregateTradingStats = AggregateTradingStats.load(id);
+  let aggregateTradingStats = AggregateTradingStat.load(id);
   if (aggregateTradingStats == null) {
-    aggregateTradingStats = new AggregateTradingStats(id);
+    aggregateTradingStats = new AggregateTradingStat(id);
     aggregateTradingStats.address = address;
     aggregateTradingStats.epochType = epochType;
     aggregateTradingStats.epochNumber = epochNumber;
@@ -48,7 +49,7 @@ export function createOrLoadAggregateTradingStats(
       aggregateTradingStats.save();
     }
   }
-  return aggregateTradingStats as AggregateTradingStats;
+  return aggregateTradingStats as AggregateTradingStat;
 }
 
 /**
@@ -110,6 +111,18 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
     false
   );
   _addOpenTradeStats(data, weeklyProtocolStats);
+
+  _updateRewardsEntities(
+    address,
+    currentWeekNumber,
+    currentDayNumber,
+    weeklyStats.totalPnl,
+    weeklyProtocolStats.totalPnl,
+    dailyStats.totalLpFees,
+    weeklyStats.totalLpFees,
+    weeklyProtocolStats.totalLpFees
+  );    
+
 }
 
 export class addCloseTradeStatsInput {
@@ -180,6 +193,18 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
     false
   );
   _addCloseTradeStats(data, weeklyProtocolStats);
+
+  _updateRewardsEntities(
+    address,
+    currentWeekNumber,
+    currentDayNumber,
+    weeklyStats.totalPnl,
+    weeklyProtocolStats.totalPnl,
+    dailyStats.totalLpFees,
+    weeklyStats.totalLpFees,
+    weeklyProtocolStats.totalLpFees
+  );  
+  
 }
 
 /**
@@ -187,8 +212,8 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
  */
 function _addOpenTradeStats(
   data: addOpenTradeStatsInput,
-  currentStats: AggregateTradingStats
-): AggregateTradingStats {
+  currentStats: AggregateTradingStat
+): AggregateTradingStat {
   const pairIndex = data.pairIndex;
   const groupIndex = data.groupIndex;
   const positionSize = data.positionSize;
@@ -222,8 +247,8 @@ function _addOpenTradeStats(
  */
 function _addCloseTradeStats(
   data: addCloseTradeStatsInput,
-  currentStats: AggregateTradingStats
-): AggregateTradingStats {
+  currentStats: AggregateTradingStat
+): AggregateTradingStat {
   const pairIndex = data.pairIndex;
   const groupIndex = data.groupIndex;
   const positionSize = data.positionSize;
@@ -266,7 +291,7 @@ export function addBorrowingFeeStats(
   address: string,
   borrowingFee: BigDecimal,
   timestamp: i32
-): AggregateTradingStats[] {
+): AggregateTradingStat[] {
   return _addStats(address, borrowingFee, timestamp, "totalBorrowingFees");
 }
 
@@ -274,7 +299,7 @@ export function addGovFeeStats(
   address: string,
   govFee: BigDecimal,
   timestamp: i32
-): AggregateTradingStats[] {
+): AggregateTradingStat[] {
   return _addStats(address, govFee, timestamp, "totalGovFees");
 }
 
@@ -282,7 +307,7 @@ export function addReferralFeeStats(
   address: string,
   referralFee: BigDecimal,
   timestamp: i32
-): AggregateTradingStats[] {
+): AggregateTradingStat[] {
   return _addStats(address, referralFee, timestamp, "totalReferralFees");
 }
 
@@ -290,7 +315,7 @@ export function addTriggerFeeStats(
   address: string,
   triggerFee: BigDecimal,
   timestamp: i32
-): AggregateTradingStats[] {
+): AggregateTradingStat[] {
   return _addStats(address, triggerFee, timestamp, "totalTriggerFees");
 }
 
@@ -298,7 +323,7 @@ export function addLpFeeStats(
   address: string,
   lpFee: BigDecimal,
   timestamp: i32
-): AggregateTradingStats[] {
+): AggregateTradingStat[] {
   return _addStats(address, lpFee, timestamp, "totalLpFees");
 }
 
@@ -306,7 +331,7 @@ export function addStakerFeeStats(
   address: string,
   stakerFee: BigDecimal,
   timestamp: i32
-): AggregateTradingStats[] {
+): AggregateTradingStat[] {
   return _addStats(address, stakerFee, timestamp, "totalStakerFees");
 }
 
@@ -315,7 +340,7 @@ function _addStats(
   stat: BigDecimal,
   timestamp: i32,
   statName: string
-): AggregateTradingStats[] {
+): AggregateTradingStat[] {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
   let dailyStats = createOrLoadAggregateTradingStats(
     address,
@@ -361,8 +386,8 @@ function _addStats(
 function _addStat(
   stat: BigDecimal,
   statName: string,
-  currentStats: AggregateTradingStats
-): AggregateTradingStats {
+  currentStats: AggregateTradingStat
+): AggregateTradingStat {
   if (statName == "totalBorrowingFees") {
     currentStats.totalBorrowingFees =
       currentStats.totalBorrowingFees.plus(stat);
