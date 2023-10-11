@@ -59,7 +59,8 @@ type UserPointStat @entity {
   groupsTraded: [BigDecimal!]!
   loyaltyPoints: BigDecimal!
   volumePoints: BigDecimal!
-  skillPoints: BigDecimal!
+  absSkillPoints: BigDecimal!
+  relSkillPoints: BigDecimal!
   diversityPoints:BigDecimal!
   totalPoints: BigDecimal!
 }

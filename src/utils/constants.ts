@@ -6,7 +6,7 @@ export const DAI_DECIMALS = 18;
 export const DAI_DECIMALS_BD = exponentToBigDecimal(DAI_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
-export const MIN_VOLUME = BigDecimal.fromString("100000000000000");
+export const MIN_VOLUME = BigDecimal.fromString("100");
 
 
 export const PROTOCOL = "protocol";

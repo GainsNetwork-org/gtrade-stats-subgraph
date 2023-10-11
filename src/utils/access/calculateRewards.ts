@@ -10,30 +10,31 @@ export function updateRewardEntities(
   PnlPercentage:BigDecimal,
   groupNumber:i32,
   volume:BigDecimal
-){
+):void{
   // load all 4 entries: UserDaily, ProtocolDaily, UserWeekly, ProtocolWeekly
   const userDailyPoints = createOrLoadUserPointStat(address,EPOCH_TYPE.DAY,dayNumber,false);
   const protocolDailyPoints = createOrLoadUserPointStat("PROTOCOL",EPOCH_TYPE.DAY,weekNumber,false);  
   const userWeeklyPoints = createOrLoadUserPointStat(address,EPOCH_TYPE.WEEK,weekNumber,false);
   const protocolWeeklyPoints = createOrLoadUserPointStat("PROTOCOL",EPOCH_TYPE.WEEK,weekNumber,false);
 
-  updateAbsSkillPoints(userDailyPoints,protocolDailyPoints,userWeeklyPoints,protocolWeeklyPoints,Pnl)
-  updateRelSkillPoints(userDailyPoints,protocolDailyPoints,userWeeklyPoints,protocolWeeklyPoints,PnlPercentage)
+  updateAbsoluteSkillPoints(userDailyPoints,protocolDailyPoints,userWeeklyPoints,protocolWeeklyPoints,Pnl)
+  updateRelativeSkillPoints(userDailyPoints,protocolDailyPoints,userWeeklyPoints,protocolWeeklyPoints,PnlPercentage)
   updateDiversityPoints(userDailyPoints,protocolDailyPoints,userWeeklyPoints,protocolWeeklyPoints,groupNumber,volume)
 
 }
 
-export function updateAbsSkillPoints(
+export function updateAbsoluteSkillPoints(
   userDailyPoints: UserPointStat,
   protocolDailyPoints: UserPointStat,
   userWeeklyPoints:UserPointStat,
   protocolWeeklyPoints:UserPointStat,
   Pnl:BigDecimal
 ):void{
+
   let UserDailySkillPoints = userDailyPoints.pnl.plus(Pnl) > ZERO_BD ?userDailyPoints.pnl.plus(Pnl) :ZERO_BD
   let UserWeeklySkillPoints = userWeeklyPoints.pnl.plus(Pnl) > ZERO_BD ?userWeeklyPoints.pnl.plus(Pnl) :ZERO_BD  
   let protocolDailySkillPoints = calculateSkillPoints(userDailyPoints,protocolDailyPoints,Pnl)
-  let protocolDailyWeeklyPoints = calculateSkillPoints(userWeeklyPoints,protocolWeeklyPoints,Pnl)
+  let protocolWeeklySkillPoints = calculateSkillPoints(userWeeklyPoints,protocolWeeklyPoints,Pnl)
 
   // update pnls
   userDailyPoints.pnl = userDailyPoints.pnl.plus(Pnl)
@@ -41,17 +42,17 @@ export function updateAbsSkillPoints(
   userWeeklyPoints.pnl = userWeeklyPoints.pnl.plus(Pnl)
   protocolWeeklyPoints.pnl = protocolWeeklyPoints.pnl.plus(Pnl)
 
-  // update skill points
-  userDailyPoints.skillPoints = UserDailySkillPoints
-  protocolDailyPoints.skillPoints = protocolDailySkillPoints
-  userWeeklyPoints.skillPoints = UserWeeklySkillPoints
-  protocolWeeklyPoints.skillPoints = protocolDailyWeeklyPoints
-
   // update total points 
-  userWeeklyPoints.totalPoints = userWeeklyPoints.loyaltyPoints.plus(userWeeklyPoints.volumePoints).plus(UserDailySkillPoints)
-  protocolWeeklyPoints.totalPoints = protocolWeeklyPoints.loyaltyPoints.plus(protocolWeeklyPoints.volumePoints).plus(protocolDailySkillPoints)  
-  userWeeklyPoints.totalPoints = userWeeklyPoints.loyaltyPoints.plus(userWeeklyPoints.volumePoints).plus(UserWeeklySkillPoints)
-  protocolWeeklyPoints.totalPoints = protocolWeeklyPoints.loyaltyPoints.plus(protocolWeeklyPoints.volumePoints).plus(protocolDailyWeeklyPoints)  
+  userDailyPoints.totalPoints = userDailyPoints.totalPoints.minus(userDailyPoints.absSkillPoints).plus(UserDailySkillPoints)
+  protocolDailyPoints.totalPoints = protocolDailyPoints.totalPoints.minus(protocolDailyPoints.absSkillPoints).plus(protocolDailySkillPoints)
+  userWeeklyPoints.totalPoints = userWeeklyPoints.totalPoints.minus(userWeeklyPoints.absSkillPoints).plus(UserWeeklySkillPoints)
+  protocolWeeklyPoints.totalPoints = protocolWeeklyPoints.totalPoints.minus(protocolWeeklyPoints.absSkillPoints).plus(protocolWeeklySkillPoints)
+
+  // update skill points
+  userDailyPoints.absSkillPoints = UserDailySkillPoints
+  protocolDailyPoints.absSkillPoints = protocolDailySkillPoints
+  userWeeklyPoints.absSkillPoints = UserWeeklySkillPoints
+  protocolWeeklyPoints.absSkillPoints = protocolWeeklySkillPoints
 
   // Saving all the entities
   userDailyPoints.save()
@@ -60,7 +61,7 @@ export function updateAbsSkillPoints(
   protocolWeeklyPoints.save()  
 }
 
-export function updateRelSkillPoints(
+export function updateRelativeSkillPoints(
   userDailyPoints: UserPointStat,
   protocolDailyPoints: UserPointStat,
   userWeeklyPoints:UserPointStat,
@@ -71,25 +72,25 @@ export function updateRelSkillPoints(
   let UserDailySkillPoints = userDailyPoints.pnlPercentage.plus(PnlPercentage) > ZERO_BD ?userDailyPoints.pnlPercentage.plus(PnlPercentage) :ZERO_BD
   let UserWeeklySkillPoints = userWeeklyPoints.pnlPercentage.plus(PnlPercentage) > ZERO_BD ?userWeeklyPoints.pnlPercentage.plus(PnlPercentage) :ZERO_BD  
   let protocolDailySkillPoints = calculateSkillPoints(userDailyPoints,protocolDailyPoints,PnlPercentage)
-  let protocolDailyWeeklyPoints = calculateSkillPoints(userWeeklyPoints,protocolWeeklyPoints,PnlPercentage)
-
+  let protocolWeeklySkillPoints = calculateSkillPoints(userWeeklyPoints,protocolWeeklyPoints,PnlPercentage)
+  
   // update pnls
   userDailyPoints.pnlPercentage = userDailyPoints.pnlPercentage.plus(PnlPercentage)
   protocolDailyPoints.pnlPercentage = protocolDailyPoints.pnlPercentage.plus(PnlPercentage)
   userWeeklyPoints.pnlPercentage = userWeeklyPoints.pnlPercentage.plus(PnlPercentage)
   protocolWeeklyPoints.pnlPercentage = protocolWeeklyPoints.pnlPercentage.plus(PnlPercentage)
 
-  // update skill points
-  userDailyPoints.skillPoints = UserDailySkillPoints
-  protocolDailyPoints.skillPoints = protocolDailySkillPoints
-  userWeeklyPoints.skillPoints = UserWeeklySkillPoints
-  protocolWeeklyPoints.skillPoints = protocolDailyWeeklyPoints
-
   // update total points 
-  userWeeklyPoints.totalPoints = userWeeklyPoints.loyaltyPoints.plus(userWeeklyPoints.volumePoints).plus(UserDailySkillPoints)
-  protocolWeeklyPoints.totalPoints = protocolWeeklyPoints.loyaltyPoints.plus(protocolWeeklyPoints.volumePoints).plus(protocolDailySkillPoints)  
-  userWeeklyPoints.totalPoints = userWeeklyPoints.loyaltyPoints.plus(userWeeklyPoints.volumePoints).plus(UserWeeklySkillPoints)
-  protocolWeeklyPoints.totalPoints = protocolWeeklyPoints.loyaltyPoints.plus(protocolWeeklyPoints.volumePoints).plus(protocolDailyWeeklyPoints)  
+  userDailyPoints.totalPoints = userDailyPoints.totalPoints.minus(userDailyPoints.relSkillPoints).plus(UserDailySkillPoints)
+  protocolDailyPoints.totalPoints = protocolDailyPoints.totalPoints.minus(protocolDailyPoints.relSkillPoints).plus(protocolDailySkillPoints)
+  userWeeklyPoints.totalPoints = userWeeklyPoints.totalPoints.minus(userWeeklyPoints.relSkillPoints).plus(UserWeeklySkillPoints)
+  protocolWeeklyPoints.totalPoints = protocolWeeklyPoints.totalPoints.minus(protocolWeeklyPoints.relSkillPoints).plus(protocolWeeklySkillPoints)
+
+  // update skill points
+  userDailyPoints.relSkillPoints = UserDailySkillPoints
+  protocolDailyPoints.relSkillPoints = protocolDailySkillPoints
+  userWeeklyPoints.relSkillPoints = UserWeeklySkillPoints
+  protocolWeeklyPoints.relSkillPoints = protocolWeeklySkillPoints
 
   // Saving all the entities
   userDailyPoints.save()
@@ -133,7 +134,6 @@ export function updateDiversityPoints(
   }
 
 }
-
 
 export function calculateSkillPoints(
   userStat: UserPointStat,
@@ -261,10 +261,10 @@ export function updateLoyaltyPoints(
   protocolWeeklyStats.loyaltyPoints = protocolWeeklyLoyaltyPoints
 
   // Updating total reward points
-  userDailyStats.totalPoints = userDailyStats.skillPoints.plus(userDailyStats.volumePoints).plus(userDailyLoyaltyPoints)
-  userWeeklyStats.totalPoints = userWeeklyStats.skillPoints.plus(userWeeklyStats.volumePoints).plus(userWeeklyLoyaltyPoints)
-  protocolDailyStats.totalPoints = protocolDailyStats.skillPoints.plus(protocolDailyStats.volumePoints).plus(protocolDailyLoyaltyPoints)  
-  protocolWeeklyStats.totalPoints = protocolWeeklyStats.skillPoints.plus(protocolWeeklyStats.volumePoints).plus(protocolWeeklyLoyaltyPoints)  
+  userDailyStats.totalPoints = userDailyStats.relSkillPoints.plus(userDailyStats.volumePoints).plus(userDailyLoyaltyPoints)
+  userWeeklyStats.totalPoints = userWeeklyStats.relSkillPoints.plus(userWeeklyStats.volumePoints).plus(userWeeklyLoyaltyPoints)
+  protocolDailyStats.totalPoints = protocolDailyStats.relSkillPoints.plus(protocolDailyStats.volumePoints).plus(protocolDailyLoyaltyPoints)  
+  protocolWeeklyStats.totalPoints = protocolWeeklyStats.relSkillPoints.plus(protocolWeeklyStats.volumePoints).plus(protocolWeeklyLoyaltyPoints)  
 
   // Saving all the entities
   userDailyStats.save()
@@ -272,7 +272,6 @@ export function updateLoyaltyPoints(
   userWeeklyStats.save()
   protocolWeeklyStats.save()
 }
-
 
 export function calculateLoyaltyPoints(
   fees: BigDecimal
@@ -325,7 +324,8 @@ export function createOrLoadUserPointStat(
     userPointStat.groupsTraded = [ZERO_BD,ZERO_BD,ZERO_BD,ZERO_BD]
     userPointStat.loyaltyPoints = BigDecimal.fromString("0")
     userPointStat.diversityPoints = BigDecimal.fromString("0")
-    userPointStat.skillPoints = BigDecimal.fromString("0")
+    userPointStat.absSkillPoints = BigDecimal.fromString("0")
+    userPointStat.relSkillPoints = BigDecimal.fromString("0")
     userPointStat.volumePoints = BigDecimal.fromString("0")
     userPointStat.totalPoints = BigDecimal.fromString("0")
     if (save) {
