@@ -1,6 +1,6 @@
 import { BigDecimal, log } from "@graphprotocol/graph-ts";
 import { AggregateTradingStat } from "../../types/schema";
-import { updateStakingPoints,createOrLoadUserPointStat } from "./calculateRewards";
+import { updateRewardEntities } from "./calculateRewards";
 import {
   ZERO_BD,
   EPOCH_TYPE,
@@ -183,13 +183,16 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
   );
   _addCloseTradeStats(data, weeklyProtocolStats);
 
-  updateStakingPoints(
+  updateRewardEntities(
     address,
     currentWeekNumber,
     currentDayNumber,
     data.pnl,
-    data.pnlPercentage
+    data.pnlPercentage,
+    data.groupIndex,
+    data.positionSize
   );  
+
   
 }
 

@@ -56,8 +56,10 @@ type UserPointStat @entity {
   totalFeesPaid: BigDecimal!
   pnl: BigDecimal!
   pnlPercentage: BigDecimal!
+  groupsTraded: [BigDecimal!]!
   loyaltyPoints: BigDecimal!
   volumePoints: BigDecimal!
   skillPoints: BigDecimal!
+  diversityPoints:BigDecimal!
   totalPoints: BigDecimal!
 }

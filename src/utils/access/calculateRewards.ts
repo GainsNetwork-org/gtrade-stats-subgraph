@@ -1,20 +1,35 @@
 import { BigDecimal, log } from "@graphprotocol/graph-ts";
 import { UserPointStat } from "../../types/schema";
-import {ZERO_BD,EPOCH_TYPE,determineEpochNumber,PROTOCOL} from "../constants";
+import {ZERO_BD,EPOCH_TYPE,determineEpochNumber,PROTOCOL,MIN_VOLUME,ONE_BD} from "../constants";
 
-export function updateStakingPoints(
+export function updateRewardEntities(
   address: string,
   weekNumber: i32,
   dayNumber:i32,
   Pnl:BigDecimal,
   PnlPercentage:BigDecimal,
-):void{
+  groupNumber:i32,
+  volume:BigDecimal
+){
   // load all 4 entries: UserDaily, ProtocolDaily, UserWeekly, ProtocolWeekly
   const userDailyPoints = createOrLoadUserPointStat(address,EPOCH_TYPE.DAY,dayNumber,false);
   const protocolDailyPoints = createOrLoadUserPointStat("PROTOCOL",EPOCH_TYPE.DAY,weekNumber,false);  
   const userWeeklyPoints = createOrLoadUserPointStat(address,EPOCH_TYPE.WEEK,weekNumber,false);
   const protocolWeeklyPoints = createOrLoadUserPointStat("PROTOCOL",EPOCH_TYPE.WEEK,weekNumber,false);
 
+  updateAbsSkillPoints(userDailyPoints,protocolDailyPoints,userWeeklyPoints,protocolWeeklyPoints,Pnl)
+  updateRelSkillPoints(userDailyPoints,protocolDailyPoints,userWeeklyPoints,protocolWeeklyPoints,PnlPercentage)
+  updateDiversityPoints(userDailyPoints,protocolDailyPoints,userWeeklyPoints,protocolWeeklyPoints,groupNumber,volume)
+
+}
+
+export function updateAbsSkillPoints(
+  userDailyPoints: UserPointStat,
+  protocolDailyPoints: UserPointStat,
+  userWeeklyPoints:UserPointStat,
+  protocolWeeklyPoints:UserPointStat,
+  Pnl:BigDecimal
+):void{
   let UserDailySkillPoints = userDailyPoints.pnl.plus(Pnl) > ZERO_BD ?userDailyPoints.pnl.plus(Pnl) :ZERO_BD
   let UserWeeklySkillPoints = userWeeklyPoints.pnl.plus(Pnl) > ZERO_BD ?userWeeklyPoints.pnl.plus(Pnl) :ZERO_BD  
   let protocolDailySkillPoints = calculateSkillPoints(userDailyPoints,protocolDailyPoints,Pnl)
@@ -43,8 +58,82 @@ export function updateStakingPoints(
   protocolDailyPoints.save()
   userWeeklyPoints.save()
   protocolWeeklyPoints.save()  
+}
+
+export function updateRelSkillPoints(
+  userDailyPoints: UserPointStat,
+  protocolDailyPoints: UserPointStat,
+  userWeeklyPoints:UserPointStat,
+  protocolWeeklyPoints:UserPointStat,
+  PnlPercentage:BigDecimal,
+):void{
+
+  let UserDailySkillPoints = userDailyPoints.pnlPercentage.plus(PnlPercentage) > ZERO_BD ?userDailyPoints.pnlPercentage.plus(PnlPercentage) :ZERO_BD
+  let UserWeeklySkillPoints = userWeeklyPoints.pnlPercentage.plus(PnlPercentage) > ZERO_BD ?userWeeklyPoints.pnlPercentage.plus(PnlPercentage) :ZERO_BD  
+  let protocolDailySkillPoints = calculateSkillPoints(userDailyPoints,protocolDailyPoints,PnlPercentage)
+  let protocolDailyWeeklyPoints = calculateSkillPoints(userWeeklyPoints,protocolWeeklyPoints,PnlPercentage)
+
+  // update pnls
+  userDailyPoints.pnlPercentage = userDailyPoints.pnlPercentage.plus(PnlPercentage)
+  protocolDailyPoints.pnlPercentage = protocolDailyPoints.pnlPercentage.plus(PnlPercentage)
+  userWeeklyPoints.pnlPercentage = userWeeklyPoints.pnlPercentage.plus(PnlPercentage)
+  protocolWeeklyPoints.pnlPercentage = protocolWeeklyPoints.pnlPercentage.plus(PnlPercentage)
+
+  // update skill points
+  userDailyPoints.skillPoints = UserDailySkillPoints
+  protocolDailyPoints.skillPoints = protocolDailySkillPoints
+  userWeeklyPoints.skillPoints = UserWeeklySkillPoints
+  protocolWeeklyPoints.skillPoints = protocolDailyWeeklyPoints
+
+  // update total points 
+  userWeeklyPoints.totalPoints = userWeeklyPoints.loyaltyPoints.plus(userWeeklyPoints.volumePoints).plus(UserDailySkillPoints)
+  protocolWeeklyPoints.totalPoints = protocolWeeklyPoints.loyaltyPoints.plus(protocolWeeklyPoints.volumePoints).plus(protocolDailySkillPoints)  
+  userWeeklyPoints.totalPoints = userWeeklyPoints.loyaltyPoints.plus(userWeeklyPoints.volumePoints).plus(UserWeeklySkillPoints)
+  protocolWeeklyPoints.totalPoints = protocolWeeklyPoints.loyaltyPoints.plus(protocolWeeklyPoints.volumePoints).plus(protocolDailyWeeklyPoints)  
+
+  // Saving all the entities
+  userDailyPoints.save()
+  protocolDailyPoints.save()
+  userWeeklyPoints.save()
+  protocolWeeklyPoints.save()  
+}
+
+export function updateDiversityPoints(
+  userDailyPoints: UserPointStat,
+  protocolDailyPoints: UserPointStat,
+  userWeeklyPoints:UserPointStat,
+  protocolWeeklyPoints:UserPointStat,
+  groupNumber:i32,
+  volume:BigDecimal
+):void{
+
+  if(volume > MIN_VOLUME && userWeeklyPoints.groupsTraded[groupNumber]==ZERO_BD) {
+
+    let totalPoints = ONE_BD
+    for (let i = 0; i > userWeeklyPoints.groupsTraded.length; i++) {
+      totalPoints=totalPoints.plus(userWeeklyPoints.groupsTraded[i])
+    }
+
+    userDailyPoints.groupsTraded[groupNumber] = ONE_BD
+    protocolDailyPoints.groupsTraded[groupNumber] = ONE_BD
+    userWeeklyPoints.groupsTraded[groupNumber] = ONE_BD
+    protocolWeeklyPoints.groupsTraded[groupNumber] = ONE_BD
+
+
+    userDailyPoints.diversityPoints = totalPoints
+    protocolDailyPoints.diversityPoints = totalPoints
+    userWeeklyPoints.diversityPoints = totalPoints
+    protocolWeeklyPoints.diversityPoints = totalPoints
+
+    userDailyPoints.totalPoints = userDailyPoints.totalPoints.plus(ONE_BD)
+    protocolDailyPoints.totalPoints = protocolDailyPoints.totalPoints.plus(ONE_BD)
+    userWeeklyPoints.totalPoints = userWeeklyPoints.totalPoints.plus(ONE_BD)
+    protocolWeeklyPoints.totalPoints = protocolWeeklyPoints.totalPoints.plus(ONE_BD)    
+
+  }
 
 }
+
 
 export function calculateSkillPoints(
   userStat: UserPointStat,
@@ -233,7 +322,9 @@ export function createOrLoadUserPointStat(
     userPointStat.totalFeesPaid = BigDecimal.fromString("0")
     userPointStat.pnl = BigDecimal.fromString("0")
     userPointStat.pnlPercentage = BigDecimal.fromString("0")
+    userPointStat.groupsTraded = [ZERO_BD,ZERO_BD,ZERO_BD,ZERO_BD]
     userPointStat.loyaltyPoints = BigDecimal.fromString("0")
+    userPointStat.diversityPoints = BigDecimal.fromString("0")
     userPointStat.skillPoints = BigDecimal.fromString("0")
     userPointStat.volumePoints = BigDecimal.fromString("0")
     userPointStat.totalPoints = BigDecimal.fromString("0")

@@ -1,10 +1,13 @@
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const ZERO_BD = BigDecimal.fromString("0");
+export const ONE_BD = BigDecimal.fromString("1");
 export const DAI_DECIMALS = 18;
 export const DAI_DECIMALS_BD = exponentToBigDecimal(DAI_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
+export const MIN_VOLUME = BigDecimal.fromString("100000000000000");
+
 
 export const PROTOCOL = "protocol";
 
