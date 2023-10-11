@@ -4,91 +4,230 @@ import {ZERO_BD,EPOCH_TYPE,determineEpochNumber,PROTOCOL} from "../constants";
 import {TOTAL_WEEKLY_REWARDS, TOTAL_WEEKLY_POINTS, LOYALTY_WEIGHT,
          VOLUME_WEIGHT, SKILL_WEIGHT, HUNDRED} from "../points_weights"
 
-export function _updateRewardsEntities(
+export function updateStakingPoints(
   address: string,
-  epochNumber: i32,
+  weekNumber: i32,
   dayNumber:i32,
-  weeklyUserPnl:BigDecimal,
-  weeklyProtocolPnl:BigDecimal,
-  dailyUserFees:BigDecimal,
-  weeklyUserFees:BigDecimal,
-  weeklyProtocolFees:BigDecimal
+  Pnl:BigDecimal,
+  PnlPercentage:BigDecimal,
 ):void{
-  const id = generateId(address, epochNumber);
-  const protocolId = generateId("protocol", epochNumber);
-  // load both user points and user reward entities
-  let userPoints = UserPointStat.load(id);
-  let protocolPoints = UserPointStat.load(protocolId);
-  // if not initialized, create new userPointStat entity
-  if (userPoints == null) {
-      userPoints = new UserPointStat(id);
-      userPoints.address = address
-      userPoints.weekNumber = epochNumber
-      userPoints.loyaltyPoints = BigDecimal.fromString("0")
-      userPoints.skillPoints = BigDecimal.fromString("0")
-      userPoints.volumePoints = BigDecimal.fromString("0")
-      userPoints.totalPoints = BigDecimal.fromString("0")
-      userPoints.loyaltyPointsPerDay = []
+
+
+  const userWeeklyPoints = createOrLoadUserPointStat(
+    address,
+    EPOCH_TYPE.WEEK,
+    weekNumber,
+    false
+  );
+
+  const protocolWeeklyPoints = createOrLoadUserPointStat(
+    "PROTOCOL",
+    EPOCH_TYPE.WEEK,
+    weekNumber,
+    false
+  );
+
+  let userOldWeeklyPnl = userWeeklyPoints.pnl
+  let userNewWeeklyPnl = (userWeeklyPoints.pnl).plus(Pnl)
+  let protocolOldWeeklyPnl = protocolWeeklyPoints.pnl
+  let protocolNewWeeklyPnl = ZERO_BD
+  let userSkillPoints = ZERO_BD
+  let protocolSkillPoints = calculateSkillPoints(protocolNewWeeklyPnl,protocolNewWeeklyPnl)
+
+  if(userNewWeeklyPnl>ZERO_BD && userOldWeeklyPnl>ZERO_BD){
+    protocolNewWeeklyPnl = protocolOldWeeklyPnl.minus(userOldWeeklyPnl).plus(userNewWeeklyPnl)
+    userSkillPoints = calculateSkillPoints(userNewWeeklyPnl,protocolNewWeeklyPnl)
+  }
+  else if(userNewWeeklyPnl>ZERO_BD && userOldWeeklyPnl<ZERO_BD){
+    protocolNewWeeklyPnl = protocolOldWeeklyPnl.plus(userNewWeeklyPnl)
+    userSkillPoints = calculateSkillPoints(userNewWeeklyPnl,protocolNewWeeklyPnl)
+  }
+  else if(userNewWeeklyPnl<ZERO_BD && userOldWeeklyPnl>ZERO_BD){
+    protocolNewWeeklyPnl = protocolOldWeeklyPnl.minus(userOldWeeklyPnl)
+    userSkillPoints = ZERO_BD
+  }
+  else{
+    protocolNewWeeklyPnl = protocolOldWeeklyPnl
   }
 
-  // if not initialized, create new protocolPointStat entity, this will be only done once in start of week
-  if (protocolPoints == null) {
-    protocolPoints = new UserPointStat(protocolId);
-    protocolPoints.address = "protocol"
-    protocolPoints.weekNumber = epochNumber
-    protocolPoints.loyaltyPoints = BigDecimal.fromString("0")
-    protocolPoints.skillPoints = BigDecimal.fromString("0")
-    protocolPoints.volumePoints = BigDecimal.fromString("0")
-    protocolPoints.totalPoints = BigDecimal.fromString("0")
-    protocolPoints.loyaltyPointsPerDay = []
-}  
+  userWeeklyPoints.pnl = userNewWeeklyPnl
+  protocolWeeklyPoints.pnl = protocolNewWeeklyPnl
 
-  // calculate loyalty points and rewards for the given week
-  let loyaltypoints = BigDecimal.fromString("0")
-  let protocolpoints = BigDecimal.fromString("0")  
-  let totalPoints = BigDecimal.fromString("0")
-  let points = BigDecimal.fromString("0")
-  if(dailyUserFees > ZERO_BD){
-    points = calculateLoyaltyPoints(dailyUserFees)
-    let pointsArr = userPoints.loyaltyPointsPerDay
-    if(pointsArr.length >0) {
-      for (let i =0; i< pointsArr.length; i++) {
-        totalPoints.plus(pointsArr[i])
-      }    
-    }
-    loyaltypoints = totalPoints.plus(points)
-    protocolpoints = (protocolPoints.loyaltyPoints).plus(loyaltypoints)    
-  }  
-  // calculate volume points and rewards for the given week
-  let volumepoints = BigDecimal.fromString("0")
-  if(weeklyUserFees >ZERO_BD && weeklyProtocolFees >ZERO_BD){
-    volumepoints = calculateVolumePoints(weeklyUserFees,weeklyProtocolFees)
-  }
-  // calculate skill points and rewards for the given week
-  // might have to add a positive pnl field to AggregateTradingStat
-  let skillpoints = BigDecimal.fromString("0")
-  if(weeklyUserPnl >ZERO_BD && weeklyProtocolPnl >ZERO_BD){
-    skillpoints = calculateSkillPoints(weeklyUserPnl,weeklyProtocolPnl)
-  }
-  // calculating total points and rewards for the given week
-  let totalpoints = loyaltypoints.plus(volumepoints).plus(skillpoints)
+  userWeeklyPoints.skillPoints = userSkillPoints
+  protocolWeeklyPoints.skillPoints =protocolSkillPoints
 
-  // updating loyalty points
-  userPoints.loyaltyPoints = loyaltypoints
-  userPoints.volumePoints = volumepoints
-  userPoints.skillPoints = skillpoints
-  userPoints.totalPoints = totalpoints
-  userPoints.loyaltyPointsPerDay[dayNumber] = points
-  userPoints.save();
+  userWeeklyPoints.totalPoints = userWeeklyPoints.loyaltyPoints.plus(userWeeklyPoints.volumePoints).plus(userSkillPoints)
+  protocolWeeklyPoints.totalPoints = protocolWeeklyPoints.loyaltyPoints.plus(protocolWeeklyPoints.volumePoints).plus(protocolSkillPoints)  
 
-  // updating protocol points
-  protocolPoints.loyaltyPoints = (protocolPoints.loyaltyPoints).plus(loyaltypoints)
-  protocolPoints.volumePoints = (protocolPoints.volumePoints).plus(volumepoints)
-  protocolPoints.skillPoints = (protocolPoints.skillPoints).plus(skillpoints)
-  protocolPoints.totalPoints = (protocolPoints.totalPoints).plus(totalpoints)
-  protocolPoints.save();  
+  // Saving all the entities
+  userWeeklyPoints.save()
+  protocolWeeklyPoints.save()  
 
 }
+
+export function updateRewards(
+  address: string,
+  stat: BigDecimal,
+  timestamp: i32
+): void {
+  const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
+  const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
+
+  let userDailyStats = createOrLoadUserPointStat(
+    address,
+    EPOCH_TYPE.DAY,
+    currentDayNumber,
+    false
+  );
+
+  let userWeeklyStats = createOrLoadUserPointStat(
+    address,
+    EPOCH_TYPE.WEEK,
+    currentWeekNumber,
+    false
+  );  
+
+  let dailyProtocolStats = createOrLoadUserPointStat(
+    PROTOCOL,
+    EPOCH_TYPE.DAY,
+    currentDayNumber,
+    false
+  );
+
+  let weeklyProtocolStats = createOrLoadUserPointStat(
+    PROTOCOL,
+    EPOCH_TYPE.WEEK,
+    currentWeekNumber,
+    false
+  );
+
+  updateVolumePoints(stat, userDailyStats,userWeeklyStats,dailyProtocolStats,weeklyProtocolStats);
+  updateLoyaltyPoints(stat, userDailyStats,userWeeklyStats,dailyProtocolStats,weeklyProtocolStats);
+
+}
+
+function updateVolumePoints(
+  stat: BigDecimal,
+  userDailyStats: UserPointStat,
+  userWeeklyStats:UserPointStat,
+  protocolDailyStats: UserPointStat,
+  protocolWeeklyStats:UserPointStat
+): void {
+
+  let totalUserWeeklyFees = userWeeklyStats.totalFeesPaid.plus(stat)
+  let totalProtocolWeeklyFees = protocolWeeklyStats.totalFeesPaid.plus(stat)
+
+  // calculate volume points and rewards for the given week
+  let userWeeklyVolumePoints = BigDecimal.fromString("0")
+  let protocolWeeklyVolumePoints = BigDecimal.fromString("0")
+
+  if(totalProtocolWeeklyFees >ZERO_BD && totalUserWeeklyFees >ZERO_BD ){
+    userWeeklyVolumePoints = calculateVolumePoints(totalUserWeeklyFees,totalProtocolWeeklyFees)
+    protocolWeeklyVolumePoints = calculateVolumePoints(totalProtocolWeeklyFees,totalProtocolWeeklyFees)
+  }  
+
+  // Updating total fees paid and volume points
+  userWeeklyStats.totalFeesPaid = totalUserWeeklyFees
+  protocolWeeklyStats.totalFeesPaid = totalProtocolWeeklyFees
+
+  userWeeklyStats.volumePoints = userWeeklyVolumePoints
+  protocolWeeklyStats.volumePoints = protocolWeeklyVolumePoints  
+
+  // Updating total reward points
+  userWeeklyStats.totalPoints = userWeeklyStats.loyaltyPoints.plus(userWeeklyStats.skillPoints).plus(userWeeklyVolumePoints) 
+  protocolWeeklyStats.totalPoints = protocolWeeklyStats.loyaltyPoints.plus(protocolWeeklyStats.skillPoints).plus(protocolWeeklyVolumePoints)  
+
+  // Saving all the entities
+  userWeeklyStats.save()
+  protocolWeeklyStats.save()
+}
+
+function updateLoyaltyPoints(
+  stat: BigDecimal,
+  userDailyStats: UserPointStat,
+  userWeeklyStats:UserPointStat,
+  protocolDailyStats: UserPointStat,
+  protocolWeeklyStats:UserPointStat
+): void {
+
+  let totalUserDailyFees = userDailyStats.totalFeesPaid.plus(stat)
+  let userXPoints = calculateLoyaltyPoints(totalUserDailyFees)
+
+  let loyaltyPointsBefore = userDailyStats.xPoints
+
+
+  let userWeeklyXPoints = userWeeklyStats.xPoints.plus(userXPoints).minus(loyaltyPointsBefore)
+  let protocolWeeklyXPoints = protocolWeeklyStats.xPoints.plus(userXPoints).minus(loyaltyPointsBefore)  
+
+  let userWeeklyLoyaltyPoints = BigDecimal.fromString("0")
+  let protocolWeeklyLoyaltyPoints = BigDecimal.fromString("0")
+
+  if(protocolWeeklyXPoints >ZERO_BD ){
+    userWeeklyLoyaltyPoints = calculateLoyaltyRewards(userWeeklyXPoints,protocolWeeklyXPoints)
+    protocolWeeklyLoyaltyPoints = calculateLoyaltyRewards(protocolWeeklyXPoints,protocolWeeklyXPoints)
+  }
+
+  // Updating loyalty points and loyalty reward points  
+  userDailyStats.xPoints = userXPoints  
+  userWeeklyStats.xPoints = userWeeklyXPoints
+  protocolWeeklyStats.xPoints = protocolWeeklyXPoints
+
+  userWeeklyStats.loyaltyPoints = userWeeklyLoyaltyPoints
+  protocolWeeklyStats.loyaltyPoints = protocolWeeklyLoyaltyPoints  
+
+  // Updating total reward points
+  userWeeklyStats.totalPoints = userWeeklyStats.skillPoints.plus(userDailyStats.volumePoints).plus(userWeeklyLoyaltyPoints)
+  protocolWeeklyStats.totalPoints = protocolWeeklyStats.skillPoints.plus(protocolWeeklyStats.volumePoints).plus(protocolWeeklyLoyaltyPoints)  
+
+  // Saving all the entities
+  userDailyStats.save()
+  userWeeklyStats.save()
+  protocolWeeklyStats.save()
+}
+
+
+
+
+export function generateId(
+  address: string,
+  epochType: string,
+  epochNumber: i32
+): string {
+  return address + "-" + epochType + "-" + epochNumber.toString();
+}
+
+export function createOrLoadUserPointStat(
+  address: string,
+  epochType: string,
+  epochNumber: i32,
+  save: boolean
+): UserPointStat {
+  log.info(
+    "[createOrLoadUserPointStat] address {}, epochType {}, epochNumber {}",
+    [address, epochType.toString(), epochNumber.toString()]
+  );
+  const id = generateId(address, epochType, epochNumber);
+  let userPointStat = UserPointStat.load(id);
+  if (userPointStat == null) {
+    userPointStat = new UserPointStat(id);
+    userPointStat.address = address
+    userPointStat.epochNumber = epochNumber
+    userPointStat.epochType = epochType
+    userPointStat.totalFeesPaid = BigDecimal.fromString("0")
+    userPointStat.xPoints = BigDecimal.fromString("0")
+    userPointStat.pnl = BigDecimal.fromString("0")
+    userPointStat.pnlPercentage = BigDecimal.fromString("0")
+    userPointStat.loyaltyPoints = BigDecimal.fromString("0")
+    userPointStat.skillPoints = BigDecimal.fromString("0")
+    userPointStat.volumePoints = BigDecimal.fromString("0")
+    userPointStat.totalPoints = BigDecimal.fromString("0")
+    if (save) {
+      userPointStat.save();
+    }
+  }
+  return userPointStat as UserPointStat;
+}
+
 
 export function calculateLoyaltyPoints(
   fees: BigDecimal
@@ -121,14 +260,15 @@ export function calculateLoyaltyRewards(
 }  
 
 export function calculateVolumePoints(
-  userVolume: BigDecimal,
-  protocolVolume:BigDecimal
+  userWeeklyFees: BigDecimal,
+  protocolWeeklyFees:BigDecimal
 ):BigDecimal{
-  let numPoints = userVolume.times(VOLUME_WEIGHT).times(TOTAL_WEEKLY_POINTS)
-  let divisorPoints = protocolVolume.times(HUNDRED)
+  let numPoints = userWeeklyFees.times(VOLUME_WEIGHT).times(TOTAL_WEEKLY_POINTS)
+  let divisorPoints = protocolWeeklyFees.times(HUNDRED)
   let pts = numPoints.div(divisorPoints)
   return pts
 }
+
 
 export function calculateSkillPoints(
   userPnl: BigDecimal,
@@ -138,11 +278,4 @@ export function calculateSkillPoints(
   let divisorPoints = protocolPnl.times(HUNDRED)
   let pts = numPoints.div(divisorPoints) 
   return pts
-}
-
-export function generateId(
-  address: string,
-  epochNumber: i32
-): string {
-  return address +  "-" + epochNumber.toString();
 }

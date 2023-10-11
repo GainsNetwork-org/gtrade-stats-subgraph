@@ -51,10 +51,15 @@ type UserPointStat @entity {
   "Address-epochType-epochNumber"
   id: ID!
   address: String!
-  weekNumber: Int!
+  epochNumber: Int!
+  epochType: EpochType!
+  totalFeesPaid: BigDecimal!
+  "cumulated loyalty points"
+  xPoints: BigDecimal!
+  pnl: BigDecimal!
+  pnlPercentage: BigDecimal!
   loyaltyPoints: BigDecimal!
   volumePoints: BigDecimal!
   skillPoints: BigDecimal!
   totalPoints: BigDecimal!
-  loyaltyPointsPerDay:[BigDecimal!]!  
 }

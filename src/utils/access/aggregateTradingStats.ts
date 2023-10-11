@@ -1,6 +1,6 @@
 import { BigDecimal, log } from "@graphprotocol/graph-ts";
 import { AggregateTradingStat } from "../../types/schema";
-import { _updateRewardsEntities } from "./calculateRewards";
+import { updateStakingPoints,createOrLoadUserPointStat } from "./calculateRewards";
 import {
   ZERO_BD,
   EPOCH_TYPE,
@@ -112,17 +112,6 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
   );
   _addOpenTradeStats(data, weeklyProtocolStats);
 
-  _updateRewardsEntities(
-    address,
-    currentWeekNumber,
-    currentDayNumber,
-    weeklyStats.totalPnl,
-    weeklyProtocolStats.totalPnl,
-    dailyStats.totalLpFees,
-    weeklyStats.totalLpFees,
-    weeklyProtocolStats.totalLpFees
-  );    
-
 }
 
 export class addCloseTradeStatsInput {
@@ -194,15 +183,12 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
   );
   _addCloseTradeStats(data, weeklyProtocolStats);
 
-  _updateRewardsEntities(
+  updateStakingPoints(
     address,
     currentWeekNumber,
     currentDayNumber,
-    weeklyStats.totalPnl,
-    weeklyProtocolStats.totalPnl,
-    dailyStats.totalLpFees,
-    weeklyStats.totalLpFees,
-    weeklyProtocolStats.totalLpFees
+    data.pnl,
+    data.pnlPercentage
   );  
   
 }
@@ -342,6 +328,8 @@ function _addStats(
   statName: string
 ): AggregateTradingStat[] {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
+  const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
+
   let dailyStats = createOrLoadAggregateTradingStats(
     address,
     EPOCH_TYPE.DAY,
@@ -350,7 +338,6 @@ function _addStats(
   );
   dailyStats = _addStat(stat, statName, dailyStats);
 
-  const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
   let weeklyStats = createOrLoadAggregateTradingStats(
     address,
     EPOCH_TYPE.WEEK,
@@ -389,8 +376,7 @@ function _addStat(
   currentStats: AggregateTradingStat
 ): AggregateTradingStat {
   if (statName == "totalBorrowingFees") {
-    currentStats.totalBorrowingFees =
-      currentStats.totalBorrowingFees.plus(stat);
+    currentStats.totalBorrowingFees = currentStats.totalBorrowingFees.plus(stat);
   } else if (statName == "totalGovFees") {
     currentStats.totalGovFees = currentStats.totalGovFees.plus(stat);
   } else if (statName == "totalReferralFees") {
