@@ -54,8 +54,6 @@ type UserPointStat @entity {
   epochNumber: Int!
   epochType: EpochType!
   totalFeesPaid: BigDecimal!
-  "cumulated loyalty points"
-  xPoints: BigDecimal!
   pnl: BigDecimal!
   pnlPercentage: BigDecimal!
   loyaltyPoints: BigDecimal!
