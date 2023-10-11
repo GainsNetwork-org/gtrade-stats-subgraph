@@ -62,5 +62,4 @@ type UserPointStat @entity {
   absSkillPoints: BigDecimal!
   relSkillPoints: BigDecimal!
   diversityPoints:BigDecimal!
-  totalPoints: BigDecimal!
 }
