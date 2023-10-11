@@ -1,5 +1,4 @@
 src/types
-subgraph.yaml
 node_modules
 dist
 build

@@ -1,0 +1,43 @@
+specVersion: 0.0.4
+description: >-
+  gTrade point data
+schema:
+  file: ./schema.gql
+dataSources:
+  - kind: ethereum
+    name: GNSTradingCallbacksV6_4_1
+    network: arbitrum-one
+    source:
+      address: "0x298a695906e16aeA0a184A2815A76eAd1a0b7522"
+      abi: GNSTradingCallbacksV6_4_1
+      startBlock: 136035360
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - AggregateTradingStat
+        - UserPointStat
+      abis:
+        - name: GNSTradingCallbacksV6_4_1
+          file: ./abis/GNSTradingCallbacksV6_4_1.json
+        - name: GNSPairsStorageV6
+          file: ./abis/GNSPairsStorageV6.json
+      eventHandlers:
+        - event: MarketExecuted(indexed uint256,(address,uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256,uint256),bool,uint256,uint256,uint256,int256,uint256)
+          handler: handleMarketExecuted
+        - event: LimitExecuted(indexed uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256,uint256),indexed address,uint8,uint256,uint256,uint256,int256,uint256,bool)
+          handler: handleLimitExecuted
+        - event: BorrowingFeeCharged(indexed address,uint256,uint256)
+          handler: handleBorrowingFeeCharged
+        - event: GovFeeCharged(indexed address,uint256,bool)
+          handler: handleGovFeeCharged
+        - event: ReferralFeeCharged(indexed address,uint256)
+          handler: handleReferralFeeCharged
+        - event: TriggerFeeCharged(indexed address,uint256)
+          handler: handleTriggerFeeCharged
+        - event: SssFeeCharged(indexed address,uint256)
+          handler: handleStakerFeeCharged
+        - event: DaiVaultFeeCharged(indexed address,uint256)
+          handler: handleLpFeeCharged
+      file: ./src/handlers/GNSTradingCallbacksV6_4_1/index.ts
