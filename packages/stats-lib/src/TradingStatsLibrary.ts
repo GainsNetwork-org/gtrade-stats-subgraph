@@ -3,8 +3,10 @@ import {
   execute,
   GetEpochTradingPointsRecordDocument,
   GetEpochTradingPointsRecordQuery,
+  GetEpochTradingPointsRecordsForEpochDocument,
   GetEpochTradingStatsRecordDocument,
   GetEpochTradingStatsRecordQuery,
+  GetEpochTradingStatsRecordsForEpochDocument,
 } from "../.graphclient";
 import { CHAIN_ID_TO_SUBGRAPH, generateId } from "./helpers";
 
@@ -44,7 +46,7 @@ export class TradingStatsLibrary {
       const result = await execute(
         GetEpochTradingStatsRecordDocument,
         {
-          epochTradingStatsRecordId: id,
+          id,
         },
         {
           config: {
@@ -52,7 +54,8 @@ export class TradingStatsLibrary {
           },
         }
       );
-      return result?.data as GetEpochTradingStatsRecordQuery;
+      return result?.data
+        ?.epochTradingStatsRecord as GetEpochTradingStatsRecordQuery;
     } catch (e) {
       console.error(e);
     }
@@ -68,7 +71,7 @@ export class TradingStatsLibrary {
       const result = await execute(
         GetEpochTradingPointsRecordDocument,
         {
-          epochTradingPointsRecordId: id,
+          id,
         },
         {
           config: {
@@ -76,7 +79,56 @@ export class TradingStatsLibrary {
           },
         }
       );
-      return result?.data as GetEpochTradingPointsRecordQuery;
+      return result?.data
+        ?.epochTradingPointsRecord as GetEpochTradingPointsRecordQuery;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getEpochTradingStatsRecordsForEpoch(
+    epochType: EpochType,
+    epochNumber: number
+  ): Promise<GetEpochTradingStatsRecordQuery[] | undefined> {
+    try {
+      const result = await execute(
+        GetEpochTradingStatsRecordsForEpochDocument,
+        {
+          epochType,
+          epochNumber,
+        },
+        {
+          config: {
+            graphName: this.subgraph,
+          },
+        }
+      );
+      return result?.data
+        ?.epochTradingStatsRecords as GetEpochTradingStatsRecordQuery[];
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getEpochTradingPointsRecordsForEpoch(
+    epochType: EpochType,
+    epochNumber: number
+  ): Promise<GetEpochTradingPointsRecordQuery[] | undefined> {
+    try {
+      const result = await execute(
+        GetEpochTradingPointsRecordsForEpochDocument,
+        {
+          epochType,
+          epochNumber,
+        },
+        {
+          config: {
+            graphName: this.subgraph,
+          },
+        }
+      );
+      return result?.data
+        ?.epochTradingPointsRecords as GetEpochTradingPointsRecordQuery[];
     } catch (e) {
       console.error(e);
     }

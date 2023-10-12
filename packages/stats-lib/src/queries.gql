@@ -1,5 +1,5 @@
-query GetEpochTradingStatsRecord($epochTradingStatsRecordId: ID!) {
-  epochTradingStatsRecord(id: $epochTradingStatsRecordId) {
+query GetEpochTradingStatsRecord($id: ID!) {
+  epochTradingStatsRecord(id: $id) {
     id
     address
     epochType
@@ -17,8 +17,51 @@ query GetEpochTradingStatsRecord($epochTradingStatsRecordId: ID!) {
   }
 }
 
-query GetEpochTradingPointsRecord($epochTradingPointsRecordId: ID!) {
-  epochTradingPointsRecord(id: $epochTradingPointsRecordId) {
+query GetEpochTradingPointsRecord($id: ID!) {
+  epochTradingPointsRecord(id: $id) {
+    id
+    address
+    epochType
+    epochNumber
+    loyaltyPoints
+    volumePoints
+    absSkillPoints
+    relSkillPoints
+    diversityPoints
+  }
+}
+
+query GetEpochTradingStatsRecordsForEpoch(
+  $epochType: EpochType!
+  $epochNumber: Int!
+) {
+  epochTradingStatsRecords(
+    where: { epochType: $epochType, epochNumber: $epochNumber }
+  ) {
+    id
+    address
+    epochType
+    epochNumber
+    totalVolumePerGroup
+    totalBorrowingFees
+    pairsTraded
+    totalPnl
+    totalPnlPercentage
+    totalGovFees
+    totalReferralFees
+    totalTriggerFees
+    totalStakerFees
+    totalLpFees
+  }
+}
+
+query GetEpochTradingPointsRecordsForEpoch(
+  $epochType: EpochType!
+  $epochNumber: Int!
+) {
+  epochTradingPointsRecords(
+    where: { epochType: $epochType, epochNumber: $epochNumber }
+  ) {
     id
     address
     epochType

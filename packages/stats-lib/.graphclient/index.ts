@@ -854,6 +854,18 @@ const merger = new(BareMerger as any)({
           return printWithCache(GetEpochTradingPointsRecordDocument);
         },
         location: 'GetEpochTradingPointsRecordDocument.graphql'
+      },{
+        document: GetEpochTradingStatsRecordsForEpochDocument,
+        get rawSDL() {
+          return printWithCache(GetEpochTradingStatsRecordsForEpochDocument);
+        },
+        location: 'GetEpochTradingStatsRecordsForEpochDocument.graphql'
+      },{
+        document: GetEpochTradingPointsRecordsForEpochDocument,
+        get rawSDL() {
+          return printWithCache(GetEpochTradingPointsRecordsForEpochDocument);
+        },
+        location: 'GetEpochTradingPointsRecordsForEpochDocument.graphql'
       }
     ];
     },
@@ -893,23 +905,39 @@ export function getBuiltGraphSDK<TGlobalContext = any, TOperationContext = any>(
   return getSdk<TOperationContext, TGlobalContext>((...args) => sdkRequester$.then(sdkRequester => sdkRequester(...args)));
 }
 export type GetEpochTradingStatsRecordQueryVariables = Exact<{
-  epochTradingStatsRecordId: Scalars['ID'];
+  id: Scalars['ID'];
 }>;
 
 
 export type GetEpochTradingStatsRecordQuery = { epochTradingStatsRecord?: Maybe<Pick<EpochTradingStatsRecord, 'id' | 'address' | 'epochType' | 'epochNumber' | 'totalVolumePerGroup' | 'totalBorrowingFees' | 'pairsTraded' | 'totalPnl' | 'totalPnlPercentage' | 'totalGovFees' | 'totalReferralFees' | 'totalTriggerFees' | 'totalStakerFees' | 'totalLpFees'>> };
 
 export type GetEpochTradingPointsRecordQueryVariables = Exact<{
-  epochTradingPointsRecordId: Scalars['ID'];
+  id: Scalars['ID'];
 }>;
 
 
 export type GetEpochTradingPointsRecordQuery = { epochTradingPointsRecord?: Maybe<Pick<EpochTradingPointsRecord, 'id' | 'address' | 'epochType' | 'epochNumber' | 'loyaltyPoints' | 'volumePoints' | 'absSkillPoints' | 'relSkillPoints' | 'diversityPoints'>> };
 
+export type GetEpochTradingStatsRecordsForEpochQueryVariables = Exact<{
+  epochType: EpochType;
+  epochNumber: Scalars['Int'];
+}>;
+
+
+export type GetEpochTradingStatsRecordsForEpochQuery = { epochTradingStatsRecords: Array<Pick<EpochTradingStatsRecord, 'id' | 'address' | 'epochType' | 'epochNumber' | 'totalVolumePerGroup' | 'totalBorrowingFees' | 'pairsTraded' | 'totalPnl' | 'totalPnlPercentage' | 'totalGovFees' | 'totalReferralFees' | 'totalTriggerFees' | 'totalStakerFees' | 'totalLpFees'>> };
+
+export type GetEpochTradingPointsRecordsForEpochQueryVariables = Exact<{
+  epochType: EpochType;
+  epochNumber: Scalars['Int'];
+}>;
+
+
+export type GetEpochTradingPointsRecordsForEpochQuery = { epochTradingPointsRecords: Array<Pick<EpochTradingPointsRecord, 'id' | 'address' | 'epochType' | 'epochNumber' | 'loyaltyPoints' | 'volumePoints' | 'absSkillPoints' | 'relSkillPoints' | 'diversityPoints'>> };
+
 
 export const GetEpochTradingStatsRecordDocument = gql`
-    query GetEpochTradingStatsRecord($epochTradingStatsRecordId: ID!) {
-  epochTradingStatsRecord(id: $epochTradingStatsRecordId) {
+    query GetEpochTradingStatsRecord($id: ID!) {
+  epochTradingStatsRecord(id: $id) {
     id
     address
     epochType
@@ -928,8 +956,8 @@ export const GetEpochTradingStatsRecordDocument = gql`
 }
     ` as unknown as DocumentNode<GetEpochTradingStatsRecordQuery, GetEpochTradingStatsRecordQueryVariables>;
 export const GetEpochTradingPointsRecordDocument = gql`
-    query GetEpochTradingPointsRecord($epochTradingPointsRecordId: ID!) {
-  epochTradingPointsRecord(id: $epochTradingPointsRecordId) {
+    query GetEpochTradingPointsRecord($id: ID!) {
+  epochTradingPointsRecord(id: $id) {
     id
     address
     epochType
@@ -942,6 +970,47 @@ export const GetEpochTradingPointsRecordDocument = gql`
   }
 }
     ` as unknown as DocumentNode<GetEpochTradingPointsRecordQuery, GetEpochTradingPointsRecordQueryVariables>;
+export const GetEpochTradingStatsRecordsForEpochDocument = gql`
+    query GetEpochTradingStatsRecordsForEpoch($epochType: EpochType!, $epochNumber: Int!) {
+  epochTradingStatsRecords(
+    where: {epochType: $epochType, epochNumber: $epochNumber}
+  ) {
+    id
+    address
+    epochType
+    epochNumber
+    totalVolumePerGroup
+    totalBorrowingFees
+    pairsTraded
+    totalPnl
+    totalPnlPercentage
+    totalGovFees
+    totalReferralFees
+    totalTriggerFees
+    totalStakerFees
+    totalLpFees
+  }
+}
+    ` as unknown as DocumentNode<GetEpochTradingStatsRecordsForEpochQuery, GetEpochTradingStatsRecordsForEpochQueryVariables>;
+export const GetEpochTradingPointsRecordsForEpochDocument = gql`
+    query GetEpochTradingPointsRecordsForEpoch($epochType: EpochType!, $epochNumber: Int!) {
+  epochTradingPointsRecords(
+    where: {epochType: $epochType, epochNumber: $epochNumber}
+  ) {
+    id
+    address
+    epochType
+    epochNumber
+    loyaltyPoints
+    volumePoints
+    absSkillPoints
+    relSkillPoints
+    diversityPoints
+  }
+}
+    ` as unknown as DocumentNode<GetEpochTradingPointsRecordsForEpochQuery, GetEpochTradingPointsRecordsForEpochQueryVariables>;
+
+
 
 
 
@@ -953,6 +1022,12 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     },
     GetEpochTradingPointsRecord(variables: GetEpochTradingPointsRecordQueryVariables, options?: C): Promise<GetEpochTradingPointsRecordQuery> {
       return requester<GetEpochTradingPointsRecordQuery, GetEpochTradingPointsRecordQueryVariables>(GetEpochTradingPointsRecordDocument, variables, options) as Promise<GetEpochTradingPointsRecordQuery>;
+    },
+    GetEpochTradingStatsRecordsForEpoch(variables: GetEpochTradingStatsRecordsForEpochQueryVariables, options?: C): Promise<GetEpochTradingStatsRecordsForEpochQuery> {
+      return requester<GetEpochTradingStatsRecordsForEpochQuery, GetEpochTradingStatsRecordsForEpochQueryVariables>(GetEpochTradingStatsRecordsForEpochDocument, variables, options) as Promise<GetEpochTradingStatsRecordsForEpochQuery>;
+    },
+    GetEpochTradingPointsRecordsForEpoch(variables: GetEpochTradingPointsRecordsForEpochQueryVariables, options?: C): Promise<GetEpochTradingPointsRecordsForEpochQuery> {
+      return requester<GetEpochTradingPointsRecordsForEpochQuery, GetEpochTradingPointsRecordsForEpochQueryVariables>(GetEpochTradingPointsRecordsForEpochDocument, variables, options) as Promise<GetEpochTradingPointsRecordsForEpochQuery>;
     }
   };
 }
