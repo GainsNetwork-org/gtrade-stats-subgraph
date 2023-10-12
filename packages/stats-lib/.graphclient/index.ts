@@ -985,7 +985,7 @@ export const GetEpochTradingPointsRecordDocument = gql`
 }
     ` as unknown as DocumentNode<GetEpochTradingPointsRecordQuery, GetEpochTradingPointsRecordQueryVariables>;
 export const GetEpochTradingStatsRecordsForEpochDocument = gql`
-    query GetEpochTradingStatsRecordsForEpoch($epochType: EpochType!, $epochNumber: Int!, $skip: Int = 0, $first: Int = 5000) {
+    query GetEpochTradingStatsRecordsForEpoch($epochType: EpochType!, $epochNumber: Int!, $skip: Int = 0, $first: Int = 1000) {
   epochTradingStatsRecords(
     where: {epochType: $epochType, epochNumber: $epochNumber}
     skip: $skip
@@ -1009,7 +1009,7 @@ export const GetEpochTradingStatsRecordsForEpochDocument = gql`
 }
     ` as unknown as DocumentNode<GetEpochTradingStatsRecordsForEpochQuery, GetEpochTradingStatsRecordsForEpochQueryVariables>;
 export const GetEpochTradingPointsRecordsForEpochDocument = gql`
-    query GetEpochTradingPointsRecordsForEpoch($epochType: EpochType!, $epochNumber: Int!, $skip: Int = 0, $first: Int = 5000) {
+    query GetEpochTradingPointsRecordsForEpoch($epochType: EpochType!, $epochNumber: Int!, $skip: Int = 0, $first: Int = 1000) {
   epochTradingPointsRecords(
     where: {epochType: $epochType, epochNumber: $epochNumber}
     skip: $skip

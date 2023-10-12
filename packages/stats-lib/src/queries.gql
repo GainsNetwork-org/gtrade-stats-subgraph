@@ -35,7 +35,7 @@ query GetEpochTradingStatsRecordsForEpoch(
   $epochType: EpochType!
   $epochNumber: Int!
   $skip: Int = 0
-  $first: Int = 5000
+  $first: Int = 1000
 ) {
   epochTradingStatsRecords(
     where: { epochType: $epochType, epochNumber: $epochNumber }
@@ -63,7 +63,7 @@ query GetEpochTradingPointsRecordsForEpoch(
   $epochType: EpochType!
   $epochNumber: Int!
   $skip: Int = 0
-  $first: Int = 5000
+  $first: Int = 1000
 ) {
   epochTradingPointsRecords(
     where: { epochType: $epochType, epochNumber: $epochNumber }
