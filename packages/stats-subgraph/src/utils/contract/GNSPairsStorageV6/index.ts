@@ -10,7 +10,7 @@ import {
   POLYGON_ADDRESSES,
 } from "../../constants";
 import { GNSPairsStorageV6 } from "../../../types/GNSTradingCallbacksV6_4_1/GNSPairsStorageV6";
-import { convertPercentage } from "../.";
+import { convertPercentage } from "..";
 
 export function getPairsStorageContract(): GNSPairsStorageV6 {
   const config =

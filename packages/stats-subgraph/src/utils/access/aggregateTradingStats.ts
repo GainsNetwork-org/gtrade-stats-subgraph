@@ -1,5 +1,5 @@
 import { BigDecimal, log } from "@graphprotocol/graph-ts";
-import { EpochTradingStat } from "../../types/schema";
+import { EpochTradingStatsRecord } from "../../types/schema";
 import { updateRewardEntities } from "./calculateRewards";
 import {
   ZERO_BD,
@@ -21,15 +21,15 @@ export function createOrLoadAggregateTradingStats(
   epochType: string,
   epochNumber: i32,
   save: boolean
-): EpochTradingStat {
+): EpochTradingStatsRecord {
   log.info(
     "[createOrLoadAggregateTradingStats] address {}, epochType {}, epochNumber {}",
     [address, epochType.toString(), epochNumber.toString()]
   );
   const id = generateAggregateTradingStatsId(address, epochType, epochNumber);
-  let aggregateTradingStats = EpochTradingStat.load(id);
+  let aggregateTradingStats = EpochTradingStatsRecord.load(id);
   if (aggregateTradingStats == null) {
-    aggregateTradingStats = new EpochTradingStat(id);
+    aggregateTradingStats = new EpochTradingStatsRecord(id);
     aggregateTradingStats.address = address;
     aggregateTradingStats.epochType = epochType;
     aggregateTradingStats.epochNumber = epochNumber;
@@ -49,7 +49,7 @@ export function createOrLoadAggregateTradingStats(
       aggregateTradingStats.save();
     }
   }
-  return aggregateTradingStats as EpochTradingStat;
+  return aggregateTradingStats as EpochTradingStatsRecord;
 }
 
 /**
@@ -198,8 +198,8 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
  */
 function _addOpenTradeStats(
   data: addOpenTradeStatsInput,
-  currentStats: EpochTradingStat
-): EpochTradingStat {
+  currentStats: EpochTradingStatsRecord
+): EpochTradingStatsRecord {
   const pairIndex = data.pairIndex;
   const groupIndex = data.groupIndex;
   const positionSize = data.positionSize;
@@ -233,8 +233,8 @@ function _addOpenTradeStats(
  */
 function _addCloseTradeStats(
   data: addCloseTradeStatsInput,
-  currentStats: EpochTradingStat
-): EpochTradingStat {
+  currentStats: EpochTradingStatsRecord
+): EpochTradingStatsRecord {
   const pairIndex = data.pairIndex;
   const groupIndex = data.groupIndex;
   const positionSize = data.positionSize;
@@ -277,7 +277,7 @@ export function addBorrowingFeeStats(
   address: string,
   borrowingFee: BigDecimal,
   timestamp: i32
-): EpochTradingStat[] {
+): EpochTradingStatsRecord[] {
   return _addStats(address, borrowingFee, timestamp, "totalBorrowingFees");
 }
 
@@ -285,7 +285,7 @@ export function addGovFeeStats(
   address: string,
   govFee: BigDecimal,
   timestamp: i32
-): EpochTradingStat[] {
+): EpochTradingStatsRecord[] {
   return _addStats(address, govFee, timestamp, "totalGovFees");
 }
 
@@ -293,7 +293,7 @@ export function addReferralFeeStats(
   address: string,
   referralFee: BigDecimal,
   timestamp: i32
-): EpochTradingStat[] {
+): EpochTradingStatsRecord[] {
   return _addStats(address, referralFee, timestamp, "totalReferralFees");
 }
 
@@ -301,7 +301,7 @@ export function addTriggerFeeStats(
   address: string,
   triggerFee: BigDecimal,
   timestamp: i32
-): EpochTradingStat[] {
+): EpochTradingStatsRecord[] {
   return _addStats(address, triggerFee, timestamp, "totalTriggerFees");
 }
 
@@ -309,7 +309,7 @@ export function addLpFeeStats(
   address: string,
   lpFee: BigDecimal,
   timestamp: i32
-): EpochTradingStat[] {
+): EpochTradingStatsRecord[] {
   return _addStats(address, lpFee, timestamp, "totalLpFees");
 }
 
@@ -317,7 +317,7 @@ export function addStakerFeeStats(
   address: string,
   stakerFee: BigDecimal,
   timestamp: i32
-): EpochTradingStat[] {
+): EpochTradingStatsRecord[] {
   return _addStats(address, stakerFee, timestamp, "totalStakerFees");
 }
 
@@ -326,7 +326,7 @@ function _addStats(
   stat: BigDecimal,
   timestamp: i32,
   statName: string
-): EpochTradingStat[] {
+): EpochTradingStatsRecord[] {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
 
@@ -373,8 +373,8 @@ function _addStats(
 function _addStat(
   stat: BigDecimal,
   statName: string,
-  currentStats: EpochTradingStat
-): EpochTradingStat {
+  currentStats: EpochTradingStatsRecord
+): EpochTradingStatsRecord {
   if (statName == "totalBorrowingFees") {
     currentStats.totalBorrowingFees =
       currentStats.totalBorrowingFees.plus(stat);

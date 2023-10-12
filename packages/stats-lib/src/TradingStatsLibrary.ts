@@ -1,8 +1,10 @@
 import {
   EpochType,
   execute,
-  GetAggregateTradingStatDocument,
-  GetAggregateTradingStatQuery,
+  GetEpochPointStatDocument,
+  GetEpochPointStatQuery,
+  GetEpochTradingStatDocument,
+  GetEpochTradingStatQuery,
 } from "../.graphclient";
 import { CHAIN_ID_TO_SUBGRAPH, generateId } from "./helpers";
 
@@ -32,15 +34,15 @@ export class TradingStatsLibrary {
     }
   }
 
-  async getAggregateTradingStats(
+  async getEpochTradingStat(
     address: string,
     epochType: EpochType,
     epochNumber: number
-  ): Promise<GetAggregateTradingStatQuery | undefined> {
+  ): Promise<GetEpochTradingStatQuery | undefined> {
     try {
       const id = generateId(address, epochType, epochNumber);
       const result = await execute(
-        GetAggregateTradingStatDocument,
+        GetEpochTradingStatDocument,
         {
           epochTradingStatId: id,
         },
@@ -50,7 +52,31 @@ export class TradingStatsLibrary {
           },
         }
       );
-      return result?.data as GetAggregateTradingStatQuery;
+      return result?.data as GetEpochTradingStatQuery;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getEpochPointStat(
+    address: string,
+    epochType: EpochType,
+    epochNumber: number
+  ): Promise<GetEpochPointStatQuery | undefined> {
+    try {
+      const id = generateId(address, epochType, epochNumber);
+      const result = await execute(
+        GetEpochPointStatDocument,
+        {
+          epochPointStatId: id,
+        },
+        {
+          config: {
+            graphName: this.subgraph,
+          },
+        }
+      );
+      return result?.data as GetEpochPointStatQuery;
     } catch (e) {
       console.error(e);
     }

@@ -1,5 +1,5 @@
 import { BigDecimal, log } from "@graphprotocol/graph-ts";
-import { EpochPointStat } from "../../types/schema";
+import { EpochTradingPointsRecord } from "../../types/schema";
 import {
   ZERO_BD,
   EPOCH_TYPE,
@@ -69,10 +69,10 @@ export function updateRewardEntities(
 }
 
 export function updateAbsoluteSkillPoints(
-  userDailyPoints: EpochPointStat,
-  protocolDailyPoints: EpochPointStat,
-  userWeeklyPoints: EpochPointStat,
-  protocolWeeklyPoints: EpochPointStat,
+  userDailyPoints: EpochTradingPointsRecord,
+  protocolDailyPoints: EpochTradingPointsRecord,
+  userWeeklyPoints: EpochTradingPointsRecord,
+  protocolWeeklyPoints: EpochTradingPointsRecord,
   Pnl: BigDecimal
 ): void {
   let UserDailySkillPoints =
@@ -116,10 +116,10 @@ export function updateAbsoluteSkillPoints(
 }
 
 export function updateRelativeSkillPoints(
-  userDailyPoints: EpochPointStat,
-  protocolDailyPoints: EpochPointStat,
-  userWeeklyPoints: EpochPointStat,
-  protocolWeeklyPoints: EpochPointStat,
+  userDailyPoints: EpochTradingPointsRecord,
+  protocolDailyPoints: EpochTradingPointsRecord,
+  userWeeklyPoints: EpochTradingPointsRecord,
+  protocolWeeklyPoints: EpochTradingPointsRecord,
   PnlPercentage: BigDecimal
 ): void {
   let UserDailySkillPoints =
@@ -167,10 +167,10 @@ export function updateRelativeSkillPoints(
 }
 
 export function updateDiversityPoints(
-  userDailyPoints: EpochPointStat,
-  protocolDailyPoints: EpochPointStat,
-  userWeeklyPoints: EpochPointStat,
-  protocolWeeklyPoints: EpochPointStat,
+  userDailyPoints: EpochTradingPointsRecord,
+  protocolDailyPoints: EpochTradingPointsRecord,
+  userWeeklyPoints: EpochTradingPointsRecord,
+  protocolWeeklyPoints: EpochTradingPointsRecord,
   groupNumber: i32,
   volume: BigDecimal
 ): void {
@@ -203,8 +203,8 @@ export function updateDiversityPoints(
 }
 
 export function calculateSkillPoints(
-  userStat: EpochPointStat,
-  protocolStat: EpochPointStat,
+  userStat: EpochTradingPointsRecord,
+  protocolStat: EpochTradingPointsRecord,
   PnL: BigDecimal,
   absolute: boolean
 ): BigDecimal {
@@ -282,10 +282,10 @@ export function updateRewards(
 
 export function updateVolumePoints(
   stat: BigDecimal,
-  userDailyStats: EpochPointStat,
-  userWeeklyStats: EpochPointStat,
-  protocolDailyStats: EpochPointStat,
-  protocolWeeklyStats: EpochPointStat
+  userDailyStats: EpochTradingPointsRecord,
+  userWeeklyStats: EpochTradingPointsRecord,
+  protocolDailyStats: EpochTradingPointsRecord,
+  protocolWeeklyStats: EpochTradingPointsRecord
 ): void {
   // Updating total fees
   userDailyStats.totalFeesPaid = userDailyStats.totalFeesPaid.plus(stat);
@@ -311,10 +311,10 @@ export function updateVolumePoints(
 
 export function updateLoyaltyPoints(
   stat: BigDecimal,
-  userDailyStats: EpochPointStat,
-  userWeeklyStats: EpochPointStat,
-  protocolDailyStats: EpochPointStat,
-  protocolWeeklyStats: EpochPointStat
+  userDailyStats: EpochTradingPointsRecord,
+  userWeeklyStats: EpochTradingPointsRecord,
+  protocolDailyStats: EpochTradingPointsRecord,
+  protocolWeeklyStats: EpochTradingPointsRecord
 ): void {
   let totalUserDailyFees = userDailyStats.totalFeesPaid.plus(stat);
   let oldLoyaltyPoints = userDailyStats.loyaltyPoints;
@@ -375,30 +375,35 @@ export function createOrLoadUserPointStat(
   epochType: string,
   epochNumber: i32,
   save: boolean
-): EpochPointStat {
+): EpochTradingPointsRecord {
   log.info(
     "[createOrLoadUserPointStat] address {}, epochType {}, epochNumber {}",
     [address, epochType.toString(), epochNumber.toString()]
   );
   const id = generateId(address, epochType, epochNumber);
-  let epochPointStat = EpochPointStat.load(id);
-  if (epochPointStat == null) {
-    epochPointStat = new EpochPointStat(id);
-    epochPointStat.address = address;
-    epochPointStat.epochNumber = epochNumber;
-    epochPointStat.epochType = epochType;
-    epochPointStat.totalFeesPaid = BigDecimal.fromString("0");
-    epochPointStat.pnl = BigDecimal.fromString("0");
-    epochPointStat.pnlPercentage = BigDecimal.fromString("0");
-    epochPointStat.groupsTraded = [ZERO_BD, ZERO_BD, ZERO_BD, ZERO_BD];
-    epochPointStat.loyaltyPoints = BigDecimal.fromString("0");
-    epochPointStat.diversityPoints = BigDecimal.fromString("0");
-    epochPointStat.absSkillPoints = BigDecimal.fromString("0");
-    epochPointStat.relSkillPoints = BigDecimal.fromString("0");
-    epochPointStat.volumePoints = BigDecimal.fromString("0");
+  let epochTradingPointsRecord = EpochTradingPointsRecord.load(id);
+  if (epochTradingPointsRecord == null) {
+    epochTradingPointsRecord = new EpochTradingPointsRecord(id);
+    epochTradingPointsRecord.address = address;
+    epochTradingPointsRecord.epochNumber = epochNumber;
+    epochTradingPointsRecord.epochType = epochType;
+    epochTradingPointsRecord.totalFeesPaid = BigDecimal.fromString("0");
+    epochTradingPointsRecord.pnl = BigDecimal.fromString("0");
+    epochTradingPointsRecord.pnlPercentage = BigDecimal.fromString("0");
+    epochTradingPointsRecord.groupsTraded = [
+      ZERO_BD,
+      ZERO_BD,
+      ZERO_BD,
+      ZERO_BD,
+    ];
+    epochTradingPointsRecord.loyaltyPoints = BigDecimal.fromString("0");
+    epochTradingPointsRecord.diversityPoints = BigDecimal.fromString("0");
+    epochTradingPointsRecord.absSkillPoints = BigDecimal.fromString("0");
+    epochTradingPointsRecord.relSkillPoints = BigDecimal.fromString("0");
+    epochTradingPointsRecord.volumePoints = BigDecimal.fromString("0");
     if (save) {
-      epochPointStat.save();
+      epochTradingPointsRecord.save();
     }
   }
-  return epochPointStat as EpochPointStat;
+  return epochTradingPointsRecord as EpochTradingPointsRecord;
 }
