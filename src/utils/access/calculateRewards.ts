@@ -13,7 +13,7 @@ export function updateRewardEntities(
 ):void{
   // load all 4 entries: UserDaily, ProtocolDaily, UserWeekly, ProtocolWeekly
   const userDailyPoints = createOrLoadUserPointStat(address,EPOCH_TYPE.DAY,dayNumber,false);
-  const protocolDailyPoints = createOrLoadUserPointStat("PROTOCOL",EPOCH_TYPE.DAY,weekNumber,false);  
+  const protocolDailyPoints = createOrLoadUserPointStat("PROTOCOL",EPOCH_TYPE.DAY,dayNumber,false);  
   const userWeeklyPoints = createOrLoadUserPointStat(address,EPOCH_TYPE.WEEK,weekNumber,false);
   const protocolWeeklyPoints = createOrLoadUserPointStat("PROTOCOL",EPOCH_TYPE.WEEK,weekNumber,false);
 
@@ -96,22 +96,25 @@ export function updateDiversityPoints(
   volume:BigDecimal
 ):void{
 
+  if(groupNumber <4) {
   if(volume > MIN_VOLUME && userWeeklyPoints.groupsTraded[groupNumber]==ZERO_BD) {
-
-    let totalPoints = ONE_BD
-    for (let i = 0; i > userWeeklyPoints.groupsTraded.length; i++) {
-      totalPoints=totalPoints.plus(userWeeklyPoints.groupsTraded[i])
-    }
 
     userDailyPoints.groupsTraded[groupNumber] = ONE_BD
     protocolDailyPoints.groupsTraded[groupNumber] = ONE_BD
     userWeeklyPoints.groupsTraded[groupNumber] = ONE_BD
     protocolWeeklyPoints.groupsTraded[groupNumber] = ONE_BD
 
-    userDailyPoints.diversityPoints = totalPoints
-    protocolDailyPoints.diversityPoints = totalPoints
-    userWeeklyPoints.diversityPoints = totalPoints
-    protocolWeeklyPoints.diversityPoints = totalPoints
+    userDailyPoints.diversityPoints = userDailyPoints.diversityPoints.plus(ONE_BD)
+    protocolDailyPoints.diversityPoints = protocolDailyPoints.diversityPoints.plus(ONE_BD)
+    userWeeklyPoints.diversityPoints = userWeeklyPoints.diversityPoints.plus(ONE_BD)
+    protocolWeeklyPoints.diversityPoints = protocolWeeklyPoints.diversityPoints.plus(ONE_BD)
+
+    // Saving all the entities
+    userDailyPoints.save()
+    protocolDailyPoints.save()
+    userWeeklyPoints.save()
+    protocolWeeklyPoints.save()       
+    }
   }
 
 }
