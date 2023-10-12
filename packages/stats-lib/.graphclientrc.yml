@@ -6,7 +6,7 @@ sources:
     transforms:
       - autoPagination:
           validateSchema: true
-          limitOfRecords: 1000
+          limitOfRecords: 5000
 
 documents:
   - ./src/queries.gql
