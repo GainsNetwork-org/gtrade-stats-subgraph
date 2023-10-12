@@ -44,7 +44,7 @@ export class TradingStatsLibrary {
       const result = await execute(
         GetEpochTradingStatsRecordDocument,
         {
-          epochTradingStatId: id,
+          epochTradingStatsRecordId: id,
         },
         {
           config: {
@@ -58,7 +58,7 @@ export class TradingStatsLibrary {
     }
   }
 
-  async getEpochPointStat(
+  async getEpochTradingPointsRecord(
     address: string,
     epochType: EpochType,
     epochNumber: number
@@ -68,7 +68,7 @@ export class TradingStatsLibrary {
       const result = await execute(
         GetEpochTradingPointsRecordDocument,
         {
-          epochPointStatId: id,
+          epochTradingPointsRecordId: id,
         },
         {
           config: {
