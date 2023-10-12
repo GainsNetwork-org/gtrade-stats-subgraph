@@ -3,6 +3,10 @@ sources:
     handler:
       graphql:
         endpoint: https://api.thegraph.com/subgraphs/name/gainsnetwork-org/{context.config.graphName:gtrade-stats-arbitrum}
+    transforms:
+      - autoPagination:
+          validateSchema: true
+          limitOfRecords: 1000
 
 documents:
   - ./src/queries.gql
