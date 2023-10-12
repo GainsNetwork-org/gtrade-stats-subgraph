@@ -33,8 +33,8 @@ export function updateAbsoluteSkillPoints(
 
   let UserDailySkillPoints = userDailyPoints.pnl.plus(Pnl) > ZERO_BD ?userDailyPoints.pnl.plus(Pnl) :ZERO_BD
   let UserWeeklySkillPoints = userWeeklyPoints.pnl.plus(Pnl) > ZERO_BD ?userWeeklyPoints.pnl.plus(Pnl) :ZERO_BD  
-  let protocolDailySkillPoints = calculateSkillPoints(userDailyPoints,protocolDailyPoints,Pnl)
-  let protocolWeeklySkillPoints = calculateSkillPoints(userWeeklyPoints,protocolWeeklyPoints,Pnl)
+  let protocolDailySkillPoints = calculateSkillPoints(userDailyPoints,protocolDailyPoints,Pnl,true)
+  let protocolWeeklySkillPoints = calculateSkillPoints(userWeeklyPoints,protocolWeeklyPoints,Pnl,true)
 
   // update pnls
   userDailyPoints.pnl = userDailyPoints.pnl.plus(Pnl)
@@ -65,8 +65,8 @@ export function updateRelativeSkillPoints(
 
   let UserDailySkillPoints = userDailyPoints.pnlPercentage.plus(PnlPercentage) > ZERO_BD ?userDailyPoints.pnlPercentage.plus(PnlPercentage) :ZERO_BD
   let UserWeeklySkillPoints = userWeeklyPoints.pnlPercentage.plus(PnlPercentage) > ZERO_BD ?userWeeklyPoints.pnlPercentage.plus(PnlPercentage) :ZERO_BD  
-  let protocolDailySkillPoints = calculateSkillPoints(userDailyPoints,protocolDailyPoints,PnlPercentage)
-  let protocolWeeklySkillPoints = calculateSkillPoints(userWeeklyPoints,protocolWeeklyPoints,PnlPercentage)
+  let protocolDailySkillPoints = calculateSkillPoints(userDailyPoints,protocolDailyPoints,PnlPercentage,false)
+  let protocolWeeklySkillPoints = calculateSkillPoints(userWeeklyPoints,protocolWeeklyPoints,PnlPercentage,false)
 
   // update pnls
   userDailyPoints.pnlPercentage = userDailyPoints.pnlPercentage.plus(PnlPercentage)
@@ -122,28 +122,29 @@ export function updateDiversityPoints(
 export function calculateSkillPoints(
   userStat: UserPointStat,
   protocolStat: UserPointStat,
-  PnL: BigDecimal
+  PnL: BigDecimal,
+  absolute: boolean
 ): BigDecimal {
 
   let userOldPnl = userStat.pnl
-  let protocolOldPnl = protocolStat.pnl
   let userNewPnl = userOldPnl.plus(PnL)
-  let protocolNewPnl = ZERO_BD
+  let protocolOldPts = absolute?protocolStat.absSkillPoints:protocolStat.relSkillPoints
+  let protocolNewPts = ZERO_BD
 
   if(userNewPnl>ZERO_BD && userOldPnl>ZERO_BD){
-    protocolNewPnl = protocolOldPnl.minus(userOldPnl).plus(userNewPnl)
+    protocolNewPts = protocolOldPts.minus(userOldPnl).plus(userNewPnl)
   }
-  else if(userNewPnl>ZERO_BD && userOldPnl<ZERO_BD){
-    protocolNewPnl = protocolOldPnl.plus(userNewPnl)
+  else if(userNewPnl>ZERO_BD && userOldPnl<=ZERO_BD){
+    protocolNewPts = protocolOldPts.plus(userNewPnl)
   }
   else if(userNewPnl<ZERO_BD && userOldPnl>ZERO_BD){
-    protocolNewPnl = protocolOldPnl.minus(userOldPnl)
+    protocolNewPts = protocolOldPts.minus(userOldPnl)
   }
   else{
-    protocolNewPnl = ZERO_BD
+    protocolNewPts = protocolOldPts
   }
-
-  return protocolNewPnl
+  
+  return protocolNewPts
 }
 
 export function updateRewards(
