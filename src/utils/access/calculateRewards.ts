@@ -13,9 +13,9 @@ export function updateRewardEntities(
 ):void{
   // load all 4 entries: UserDaily, ProtocolDaily, UserWeekly, ProtocolWeekly
   const userDailyPoints = createOrLoadUserPointStat(address,EPOCH_TYPE.DAY,dayNumber,false);
-  const protocolDailyPoints = createOrLoadUserPointStat("PROTOCOL",EPOCH_TYPE.DAY,dayNumber,false);  
+  const protocolDailyPoints = createOrLoadUserPointStat(PROTOCOL,EPOCH_TYPE.DAY,dayNumber,false);  
   const userWeeklyPoints = createOrLoadUserPointStat(address,EPOCH_TYPE.WEEK,weekNumber,false);
-  const protocolWeeklyPoints = createOrLoadUserPointStat("PROTOCOL",EPOCH_TYPE.WEEK,weekNumber,false);
+  const protocolWeeklyPoints = createOrLoadUserPointStat(PROTOCOL,EPOCH_TYPE.WEEK,weekNumber,false);
 
   updateAbsoluteSkillPoints(userDailyPoints,protocolDailyPoints,userWeeklyPoints,protocolWeeklyPoints,Pnl)
   updateRelativeSkillPoints(userDailyPoints,protocolDailyPoints,userWeeklyPoints,protocolWeeklyPoints,PnlPercentage)
