@@ -42,7 +42,7 @@ export class TradingStatsLibrary {
       const result = await execute(
         GetAggregateTradingStatDocument,
         {
-          aggregateTradingStatId: id,
+          epochTradingStatId: id,
         },
         {
           config: {

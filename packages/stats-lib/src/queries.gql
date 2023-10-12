@@ -1,5 +1,5 @@
-query GetAggregateTradingStat($aggregateTradingStatId: ID!) {
-  aggregateTradingStat(id: $aggregateTradingStatId) {
+query GetAggregateTradingStat($epochTradingStatId: ID!) {
+  epochTradingStat(id: $epochTradingStatId) {
     id
     address
     epochType
@@ -14,13 +14,5 @@ query GetAggregateTradingStat($aggregateTradingStatId: ID!) {
     totalTriggerFees
     totalStakerFees
     totalLpFees
-  }
-}
-
-query GetUserPointStat($userPointStatId: ID!) {
-  userPointStat(id: $userPointStatId) {
-    id
-    address
-    weekNumber
   }
 }

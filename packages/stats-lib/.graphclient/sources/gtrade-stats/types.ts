@@ -22,7 +22,166 @@ export type Scalars = {
   Int8: any;
 };
 
-export type AggregateTradingStat = {
+export type BlockChangedFilter = {
+  number_gte: Scalars['Int'];
+};
+
+export type Block_height = {
+  hash?: InputMaybe<Scalars['Bytes']>;
+  number?: InputMaybe<Scalars['Int']>;
+  number_gte?: InputMaybe<Scalars['Int']>;
+};
+
+export type EpochPointStat = {
+  /** Address-epochType-epochNumber */
+  id: Scalars['ID'];
+  address: Scalars['String'];
+  epochNumber: Scalars['Int'];
+  epochType: EpochType;
+  totalFeesPaid: Scalars['BigDecimal'];
+  pnl: Scalars['BigDecimal'];
+  pnlPercentage: Scalars['BigDecimal'];
+  groupsTraded: Array<Scalars['BigDecimal']>;
+  loyaltyPoints: Scalars['BigDecimal'];
+  volumePoints: Scalars['BigDecimal'];
+  absSkillPoints: Scalars['BigDecimal'];
+  relSkillPoints: Scalars['BigDecimal'];
+  diversityPoints: Scalars['BigDecimal'];
+};
+
+export type EpochPointStat_filter = {
+  id?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  address?: InputMaybe<Scalars['String']>;
+  address_not?: InputMaybe<Scalars['String']>;
+  address_gt?: InputMaybe<Scalars['String']>;
+  address_lt?: InputMaybe<Scalars['String']>;
+  address_gte?: InputMaybe<Scalars['String']>;
+  address_lte?: InputMaybe<Scalars['String']>;
+  address_in?: InputMaybe<Array<Scalars['String']>>;
+  address_not_in?: InputMaybe<Array<Scalars['String']>>;
+  address_contains?: InputMaybe<Scalars['String']>;
+  address_contains_nocase?: InputMaybe<Scalars['String']>;
+  address_not_contains?: InputMaybe<Scalars['String']>;
+  address_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  address_starts_with?: InputMaybe<Scalars['String']>;
+  address_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  address_not_starts_with?: InputMaybe<Scalars['String']>;
+  address_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  address_ends_with?: InputMaybe<Scalars['String']>;
+  address_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  address_not_ends_with?: InputMaybe<Scalars['String']>;
+  address_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  epochNumber?: InputMaybe<Scalars['Int']>;
+  epochNumber_not?: InputMaybe<Scalars['Int']>;
+  epochNumber_gt?: InputMaybe<Scalars['Int']>;
+  epochNumber_lt?: InputMaybe<Scalars['Int']>;
+  epochNumber_gte?: InputMaybe<Scalars['Int']>;
+  epochNumber_lte?: InputMaybe<Scalars['Int']>;
+  epochNumber_in?: InputMaybe<Array<Scalars['Int']>>;
+  epochNumber_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  epochType?: InputMaybe<EpochType>;
+  epochType_not?: InputMaybe<EpochType>;
+  epochType_in?: InputMaybe<Array<EpochType>>;
+  epochType_not_in?: InputMaybe<Array<EpochType>>;
+  totalFeesPaid?: InputMaybe<Scalars['BigDecimal']>;
+  totalFeesPaid_not?: InputMaybe<Scalars['BigDecimal']>;
+  totalFeesPaid_gt?: InputMaybe<Scalars['BigDecimal']>;
+  totalFeesPaid_lt?: InputMaybe<Scalars['BigDecimal']>;
+  totalFeesPaid_gte?: InputMaybe<Scalars['BigDecimal']>;
+  totalFeesPaid_lte?: InputMaybe<Scalars['BigDecimal']>;
+  totalFeesPaid_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  totalFeesPaid_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  pnl?: InputMaybe<Scalars['BigDecimal']>;
+  pnl_not?: InputMaybe<Scalars['BigDecimal']>;
+  pnl_gt?: InputMaybe<Scalars['BigDecimal']>;
+  pnl_lt?: InputMaybe<Scalars['BigDecimal']>;
+  pnl_gte?: InputMaybe<Scalars['BigDecimal']>;
+  pnl_lte?: InputMaybe<Scalars['BigDecimal']>;
+  pnl_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  pnl_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  pnlPercentage?: InputMaybe<Scalars['BigDecimal']>;
+  pnlPercentage_not?: InputMaybe<Scalars['BigDecimal']>;
+  pnlPercentage_gt?: InputMaybe<Scalars['BigDecimal']>;
+  pnlPercentage_lt?: InputMaybe<Scalars['BigDecimal']>;
+  pnlPercentage_gte?: InputMaybe<Scalars['BigDecimal']>;
+  pnlPercentage_lte?: InputMaybe<Scalars['BigDecimal']>;
+  pnlPercentage_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  pnlPercentage_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  groupsTraded?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  groupsTraded_not?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  groupsTraded_contains?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  groupsTraded_contains_nocase?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  groupsTraded_not_contains?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  groupsTraded_not_contains_nocase?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  loyaltyPoints?: InputMaybe<Scalars['BigDecimal']>;
+  loyaltyPoints_not?: InputMaybe<Scalars['BigDecimal']>;
+  loyaltyPoints_gt?: InputMaybe<Scalars['BigDecimal']>;
+  loyaltyPoints_lt?: InputMaybe<Scalars['BigDecimal']>;
+  loyaltyPoints_gte?: InputMaybe<Scalars['BigDecimal']>;
+  loyaltyPoints_lte?: InputMaybe<Scalars['BigDecimal']>;
+  loyaltyPoints_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  loyaltyPoints_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  volumePoints?: InputMaybe<Scalars['BigDecimal']>;
+  volumePoints_not?: InputMaybe<Scalars['BigDecimal']>;
+  volumePoints_gt?: InputMaybe<Scalars['BigDecimal']>;
+  volumePoints_lt?: InputMaybe<Scalars['BigDecimal']>;
+  volumePoints_gte?: InputMaybe<Scalars['BigDecimal']>;
+  volumePoints_lte?: InputMaybe<Scalars['BigDecimal']>;
+  volumePoints_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  volumePoints_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  absSkillPoints?: InputMaybe<Scalars['BigDecimal']>;
+  absSkillPoints_not?: InputMaybe<Scalars['BigDecimal']>;
+  absSkillPoints_gt?: InputMaybe<Scalars['BigDecimal']>;
+  absSkillPoints_lt?: InputMaybe<Scalars['BigDecimal']>;
+  absSkillPoints_gte?: InputMaybe<Scalars['BigDecimal']>;
+  absSkillPoints_lte?: InputMaybe<Scalars['BigDecimal']>;
+  absSkillPoints_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  absSkillPoints_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  relSkillPoints?: InputMaybe<Scalars['BigDecimal']>;
+  relSkillPoints_not?: InputMaybe<Scalars['BigDecimal']>;
+  relSkillPoints_gt?: InputMaybe<Scalars['BigDecimal']>;
+  relSkillPoints_lt?: InputMaybe<Scalars['BigDecimal']>;
+  relSkillPoints_gte?: InputMaybe<Scalars['BigDecimal']>;
+  relSkillPoints_lte?: InputMaybe<Scalars['BigDecimal']>;
+  relSkillPoints_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  relSkillPoints_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  diversityPoints?: InputMaybe<Scalars['BigDecimal']>;
+  diversityPoints_not?: InputMaybe<Scalars['BigDecimal']>;
+  diversityPoints_gt?: InputMaybe<Scalars['BigDecimal']>;
+  diversityPoints_lt?: InputMaybe<Scalars['BigDecimal']>;
+  diversityPoints_gte?: InputMaybe<Scalars['BigDecimal']>;
+  diversityPoints_lte?: InputMaybe<Scalars['BigDecimal']>;
+  diversityPoints_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  diversityPoints_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<EpochPointStat_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<EpochPointStat_filter>>>;
+};
+
+export type EpochPointStat_orderBy =
+  | 'id'
+  | 'address'
+  | 'epochNumber'
+  | 'epochType'
+  | 'totalFeesPaid'
+  | 'pnl'
+  | 'pnlPercentage'
+  | 'groupsTraded'
+  | 'loyaltyPoints'
+  | 'volumePoints'
+  | 'absSkillPoints'
+  | 'relSkillPoints'
+  | 'diversityPoints';
+
+export type EpochTradingStat = {
   /** Address-type-number */
   id: Scalars['ID'];
   /** Address */
@@ -53,7 +212,7 @@ export type AggregateTradingStat = {
   totalLpFees: Scalars['BigDecimal'];
 };
 
-export type AggregateTradingStat_filter = {
+export type EpochTradingStat_filter = {
   id?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
@@ -172,11 +331,11 @@ export type AggregateTradingStat_filter = {
   totalLpFees_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
-  and?: InputMaybe<Array<InputMaybe<AggregateTradingStat_filter>>>;
-  or?: InputMaybe<Array<InputMaybe<AggregateTradingStat_filter>>>;
+  and?: InputMaybe<Array<InputMaybe<EpochTradingStat_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<EpochTradingStat_filter>>>;
 };
 
-export type AggregateTradingStat_orderBy =
+export type EpochTradingStat_orderBy =
   | 'id'
   | 'address'
   | 'epochType'
@@ -192,16 +351,6 @@ export type AggregateTradingStat_orderBy =
   | 'totalStakerFees'
   | 'totalLpFees';
 
-export type BlockChangedFilter = {
-  number_gte: Scalars['Int'];
-};
-
-export type Block_height = {
-  hash?: InputMaybe<Scalars['Bytes']>;
-  number?: InputMaybe<Scalars['Int']>;
-  number_gte?: InputMaybe<Scalars['Int']>;
-};
-
 export type EpochType =
   | 'day'
   | 'week';
@@ -212,46 +361,46 @@ export type OrderDirection =
   | 'desc';
 
 export type Query = {
-  aggregateTradingStat?: Maybe<AggregateTradingStat>;
-  aggregateTradingStats: Array<AggregateTradingStat>;
-  userPointStat?: Maybe<UserPointStat>;
-  userPointStats: Array<UserPointStat>;
+  epochTradingStat?: Maybe<EpochTradingStat>;
+  epochTradingStats: Array<EpochTradingStat>;
+  epochPointStat?: Maybe<EpochPointStat>;
+  epochPointStats: Array<EpochPointStat>;
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
 };
 
 
-export type QueryaggregateTradingStatArgs = {
+export type QueryepochTradingStatArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryaggregateTradingStatsArgs = {
+export type QueryepochTradingStatsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<AggregateTradingStat_orderBy>;
+  orderBy?: InputMaybe<EpochTradingStat_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<AggregateTradingStat_filter>;
+  where?: InputMaybe<EpochTradingStat_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryuserPointStatArgs = {
+export type QueryepochPointStatArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryuserPointStatsArgs = {
+export type QueryepochPointStatsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<UserPointStat_orderBy>;
+  orderBy?: InputMaybe<EpochPointStat_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<UserPointStat_filter>;
+  where?: InputMaybe<EpochPointStat_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -262,46 +411,46 @@ export type Query_metaArgs = {
 };
 
 export type Subscription = {
-  aggregateTradingStat?: Maybe<AggregateTradingStat>;
-  aggregateTradingStats: Array<AggregateTradingStat>;
-  userPointStat?: Maybe<UserPointStat>;
-  userPointStats: Array<UserPointStat>;
+  epochTradingStat?: Maybe<EpochTradingStat>;
+  epochTradingStats: Array<EpochTradingStat>;
+  epochPointStat?: Maybe<EpochPointStat>;
+  epochPointStats: Array<EpochPointStat>;
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
 };
 
 
-export type SubscriptionaggregateTradingStatArgs = {
+export type SubscriptionepochTradingStatArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionaggregateTradingStatsArgs = {
+export type SubscriptionepochTradingStatsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<AggregateTradingStat_orderBy>;
+  orderBy?: InputMaybe<EpochTradingStat_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<AggregateTradingStat_filter>;
+  where?: InputMaybe<EpochTradingStat_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionuserPointStatArgs = {
+export type SubscriptionepochPointStatArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionuserPointStatsArgs = {
+export type SubscriptionepochPointStatsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<UserPointStat_orderBy>;
+  orderBy?: InputMaybe<EpochPointStat_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<UserPointStat_filter>;
+  where?: InputMaybe<EpochPointStat_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -310,109 +459,6 @@ export type SubscriptionuserPointStatsArgs = {
 export type Subscription_metaArgs = {
   block?: InputMaybe<Block_height>;
 };
-
-export type UserPointStat = {
-  /** Address-epochType-epochNumber */
-  id: Scalars['ID'];
-  address: Scalars['String'];
-  weekNumber: Scalars['Int'];
-  loyaltyPoints: Scalars['BigDecimal'];
-  volumePoints: Scalars['BigDecimal'];
-  skillPoints: Scalars['BigDecimal'];
-  totalPoints: Scalars['BigDecimal'];
-  loyaltyPointsPerDay: Array<Scalars['BigDecimal']>;
-};
-
-export type UserPointStat_filter = {
-  id?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  address?: InputMaybe<Scalars['String']>;
-  address_not?: InputMaybe<Scalars['String']>;
-  address_gt?: InputMaybe<Scalars['String']>;
-  address_lt?: InputMaybe<Scalars['String']>;
-  address_gte?: InputMaybe<Scalars['String']>;
-  address_lte?: InputMaybe<Scalars['String']>;
-  address_in?: InputMaybe<Array<Scalars['String']>>;
-  address_not_in?: InputMaybe<Array<Scalars['String']>>;
-  address_contains?: InputMaybe<Scalars['String']>;
-  address_contains_nocase?: InputMaybe<Scalars['String']>;
-  address_not_contains?: InputMaybe<Scalars['String']>;
-  address_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  address_starts_with?: InputMaybe<Scalars['String']>;
-  address_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  address_not_starts_with?: InputMaybe<Scalars['String']>;
-  address_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  address_ends_with?: InputMaybe<Scalars['String']>;
-  address_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  address_not_ends_with?: InputMaybe<Scalars['String']>;
-  address_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  weekNumber?: InputMaybe<Scalars['Int']>;
-  weekNumber_not?: InputMaybe<Scalars['Int']>;
-  weekNumber_gt?: InputMaybe<Scalars['Int']>;
-  weekNumber_lt?: InputMaybe<Scalars['Int']>;
-  weekNumber_gte?: InputMaybe<Scalars['Int']>;
-  weekNumber_lte?: InputMaybe<Scalars['Int']>;
-  weekNumber_in?: InputMaybe<Array<Scalars['Int']>>;
-  weekNumber_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  loyaltyPoints?: InputMaybe<Scalars['BigDecimal']>;
-  loyaltyPoints_not?: InputMaybe<Scalars['BigDecimal']>;
-  loyaltyPoints_gt?: InputMaybe<Scalars['BigDecimal']>;
-  loyaltyPoints_lt?: InputMaybe<Scalars['BigDecimal']>;
-  loyaltyPoints_gte?: InputMaybe<Scalars['BigDecimal']>;
-  loyaltyPoints_lte?: InputMaybe<Scalars['BigDecimal']>;
-  loyaltyPoints_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  loyaltyPoints_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  volumePoints?: InputMaybe<Scalars['BigDecimal']>;
-  volumePoints_not?: InputMaybe<Scalars['BigDecimal']>;
-  volumePoints_gt?: InputMaybe<Scalars['BigDecimal']>;
-  volumePoints_lt?: InputMaybe<Scalars['BigDecimal']>;
-  volumePoints_gte?: InputMaybe<Scalars['BigDecimal']>;
-  volumePoints_lte?: InputMaybe<Scalars['BigDecimal']>;
-  volumePoints_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  volumePoints_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  skillPoints?: InputMaybe<Scalars['BigDecimal']>;
-  skillPoints_not?: InputMaybe<Scalars['BigDecimal']>;
-  skillPoints_gt?: InputMaybe<Scalars['BigDecimal']>;
-  skillPoints_lt?: InputMaybe<Scalars['BigDecimal']>;
-  skillPoints_gte?: InputMaybe<Scalars['BigDecimal']>;
-  skillPoints_lte?: InputMaybe<Scalars['BigDecimal']>;
-  skillPoints_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  skillPoints_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  totalPoints?: InputMaybe<Scalars['BigDecimal']>;
-  totalPoints_not?: InputMaybe<Scalars['BigDecimal']>;
-  totalPoints_gt?: InputMaybe<Scalars['BigDecimal']>;
-  totalPoints_lt?: InputMaybe<Scalars['BigDecimal']>;
-  totalPoints_gte?: InputMaybe<Scalars['BigDecimal']>;
-  totalPoints_lte?: InputMaybe<Scalars['BigDecimal']>;
-  totalPoints_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  totalPoints_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  loyaltyPointsPerDay?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  loyaltyPointsPerDay_not?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  loyaltyPointsPerDay_contains?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  loyaltyPointsPerDay_contains_nocase?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  loyaltyPointsPerDay_not_contains?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  loyaltyPointsPerDay_not_contains_nocase?: InputMaybe<Array<Scalars['BigDecimal']>>;
-  /** Filter for the block changed event. */
-  _change_block?: InputMaybe<BlockChangedFilter>;
-  and?: InputMaybe<Array<InputMaybe<UserPointStat_filter>>>;
-  or?: InputMaybe<Array<InputMaybe<UserPointStat_filter>>>;
-};
-
-export type UserPointStat_orderBy =
-  | 'id'
-  | 'address'
-  | 'weekNumber'
-  | 'loyaltyPoints'
-  | 'volumePoints'
-  | 'skillPoints'
-  | 'totalPoints'
-  | 'loyaltyPointsPerDay';
 
 export type _Block_ = {
   /** The hash of the block */
@@ -447,13 +493,13 @@ export type _SubgraphErrorPolicy_ =
 
   export type QuerySdk = {
       /** null **/
-  aggregateTradingStat: InContextSdkMethod<Query['aggregateTradingStat'], QueryaggregateTradingStatArgs, MeshContext>,
+  epochTradingStat: InContextSdkMethod<Query['epochTradingStat'], QueryepochTradingStatArgs, MeshContext>,
   /** null **/
-  aggregateTradingStats: InContextSdkMethod<Query['aggregateTradingStats'], QueryaggregateTradingStatsArgs, MeshContext>,
+  epochTradingStats: InContextSdkMethod<Query['epochTradingStats'], QueryepochTradingStatsArgs, MeshContext>,
   /** null **/
-  userPointStat: InContextSdkMethod<Query['userPointStat'], QueryuserPointStatArgs, MeshContext>,
+  epochPointStat: InContextSdkMethod<Query['epochPointStat'], QueryepochPointStatArgs, MeshContext>,
   /** null **/
-  userPointStats: InContextSdkMethod<Query['userPointStats'], QueryuserPointStatsArgs, MeshContext>,
+  epochPointStats: InContextSdkMethod<Query['epochPointStats'], QueryepochPointStatsArgs, MeshContext>,
   /** Access to subgraph metadata **/
   _meta: InContextSdkMethod<Query['_meta'], Query_metaArgs, MeshContext>
   };
@@ -464,13 +510,13 @@ export type _SubgraphErrorPolicy_ =
 
   export type SubscriptionSdk = {
       /** null **/
-  aggregateTradingStat: InContextSdkMethod<Subscription['aggregateTradingStat'], SubscriptionaggregateTradingStatArgs, MeshContext>,
+  epochTradingStat: InContextSdkMethod<Subscription['epochTradingStat'], SubscriptionepochTradingStatArgs, MeshContext>,
   /** null **/
-  aggregateTradingStats: InContextSdkMethod<Subscription['aggregateTradingStats'], SubscriptionaggregateTradingStatsArgs, MeshContext>,
+  epochTradingStats: InContextSdkMethod<Subscription['epochTradingStats'], SubscriptionepochTradingStatsArgs, MeshContext>,
   /** null **/
-  userPointStat: InContextSdkMethod<Subscription['userPointStat'], SubscriptionuserPointStatArgs, MeshContext>,
+  epochPointStat: InContextSdkMethod<Subscription['epochPointStat'], SubscriptionepochPointStatArgs, MeshContext>,
   /** null **/
-  userPointStats: InContextSdkMethod<Subscription['userPointStats'], SubscriptionuserPointStatsArgs, MeshContext>,
+  epochPointStats: InContextSdkMethod<Subscription['epochPointStats'], SubscriptionepochPointStatsArgs, MeshContext>,
   /** Access to subgraph metadata **/
   _meta: InContextSdkMethod<Subscription['_meta'], Subscription_metaArgs, MeshContext>
   };
