@@ -16,8 +16,8 @@ dataSources:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - AggregateTradingStat
-        - UserPointStat
+        - EpochTradingStat
+        - EpochPointStat
       abis:
         - name: GNSTradingCallbacksV6_4_1
           file: ./abis/GNSTradingCallbacksV6_4_1.json

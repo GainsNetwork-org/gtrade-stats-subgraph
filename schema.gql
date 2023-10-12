@@ -3,7 +3,7 @@ enum EpochType {
   week
 }
 
-type AggregateTradingStat @entity {
+type EpochTradingStat @entity {
   "Address-type-number"
   id: ID!
 
@@ -47,7 +47,7 @@ type AggregateTradingStat @entity {
   totalLpFees: BigDecimal!
 }
 
-type UserPointStat @entity {
+type EpochPointStat @entity {
   "Address-epochType-epochNumber"
   id: ID!
   address: String!
@@ -61,5 +61,5 @@ type UserPointStat @entity {
   volumePoints: BigDecimal!
   absSkillPoints: BigDecimal!
   relSkillPoints: BigDecimal!
-  diversityPoints:BigDecimal!
+  diversityPoints: BigDecimal!
 }
