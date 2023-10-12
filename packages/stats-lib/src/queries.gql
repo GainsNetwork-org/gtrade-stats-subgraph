@@ -1,4 +1,4 @@
-query GetAggregateTradingStat($epochTradingStatId: ID!) {
+query GetEpochTradingStat($epochTradingStatId: ID!) {
   epochTradingStat(id: $epochTradingStatId) {
     id
     address
@@ -14,5 +14,19 @@ query GetAggregateTradingStat($epochTradingStatId: ID!) {
     totalTriggerFees
     totalStakerFees
     totalLpFees
+  }
+}
+
+query GetEpochPointStat($epochPointStatId: ID!) {
+  epochPointStat(id: $epochPointStatId) {
+    id
+    address
+    epochType
+    epochNumber
+    loyaltyPoints
+    volumePoints
+    absSkillPoints
+    relSkillPoints
+    diversityPoints
   }
 }

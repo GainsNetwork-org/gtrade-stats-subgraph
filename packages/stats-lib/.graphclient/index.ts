@@ -843,11 +843,17 @@ const merger = new(BareMerger as any)({
     get documents() {
       return [
       {
-        document: GetAggregateTradingStatDocument,
+        document: GetEpochTradingStatDocument,
         get rawSDL() {
-          return printWithCache(GetAggregateTradingStatDocument);
+          return printWithCache(GetEpochTradingStatDocument);
         },
-        location: 'GetAggregateTradingStatDocument.graphql'
+        location: 'GetEpochTradingStatDocument.graphql'
+      },{
+        document: GetEpochPointStatDocument,
+        get rawSDL() {
+          return printWithCache(GetEpochPointStatDocument);
+        },
+        location: 'GetEpochPointStatDocument.graphql'
       }
     ];
     },
@@ -886,16 +892,23 @@ export function getBuiltGraphSDK<TGlobalContext = any, TOperationContext = any>(
   const sdkRequester$ = getBuiltGraphClient().then(({ sdkRequesterFactory }) => sdkRequesterFactory(globalContext));
   return getSdk<TOperationContext, TGlobalContext>((...args) => sdkRequester$.then(sdkRequester => sdkRequester(...args)));
 }
-export type GetAggregateTradingStatQueryVariables = Exact<{
+export type GetEpochTradingStatQueryVariables = Exact<{
   epochTradingStatId: Scalars['ID'];
 }>;
 
 
-export type GetAggregateTradingStatQuery = { epochTradingStat?: Maybe<Pick<EpochTradingStat, 'id' | 'address' | 'epochType' | 'epochNumber' | 'totalVolumePerGroup' | 'totalBorrowingFees' | 'pairsTraded' | 'totalPnl' | 'totalPnlPercentage' | 'totalGovFees' | 'totalReferralFees' | 'totalTriggerFees' | 'totalStakerFees' | 'totalLpFees'>> };
+export type GetEpochTradingStatQuery = { epochTradingStat?: Maybe<Pick<EpochTradingStat, 'id' | 'address' | 'epochType' | 'epochNumber' | 'totalVolumePerGroup' | 'totalBorrowingFees' | 'pairsTraded' | 'totalPnl' | 'totalPnlPercentage' | 'totalGovFees' | 'totalReferralFees' | 'totalTriggerFees' | 'totalStakerFees' | 'totalLpFees'>> };
+
+export type GetEpochPointStatQueryVariables = Exact<{
+  epochPointStatId: Scalars['ID'];
+}>;
 
 
-export const GetAggregateTradingStatDocument = gql`
-    query GetAggregateTradingStat($epochTradingStatId: ID!) {
+export type GetEpochPointStatQuery = { epochPointStat?: Maybe<Pick<EpochPointStat, 'id' | 'address' | 'epochType' | 'epochNumber' | 'loyaltyPoints' | 'volumePoints' | 'absSkillPoints' | 'relSkillPoints' | 'diversityPoints'>> };
+
+
+export const GetEpochTradingStatDocument = gql`
+    query GetEpochTradingStat($epochTradingStatId: ID!) {
   epochTradingStat(id: $epochTradingStatId) {
     id
     address
@@ -913,14 +926,33 @@ export const GetAggregateTradingStatDocument = gql`
     totalLpFees
   }
 }
-    ` as unknown as DocumentNode<GetAggregateTradingStatQuery, GetAggregateTradingStatQueryVariables>;
+    ` as unknown as DocumentNode<GetEpochTradingStatQuery, GetEpochTradingStatQueryVariables>;
+export const GetEpochPointStatDocument = gql`
+    query GetEpochPointStat($epochPointStatId: ID!) {
+  epochPointStat(id: $epochPointStatId) {
+    id
+    address
+    epochType
+    epochNumber
+    loyaltyPoints
+    volumePoints
+    absSkillPoints
+    relSkillPoints
+    diversityPoints
+  }
+}
+    ` as unknown as DocumentNode<GetEpochPointStatQuery, GetEpochPointStatQueryVariables>;
+
 
 
 export type Requester<C = {}, E = unknown> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>
 export function getSdk<C, E>(requester: Requester<C, E>) {
   return {
-    GetAggregateTradingStat(variables: GetAggregateTradingStatQueryVariables, options?: C): Promise<GetAggregateTradingStatQuery> {
-      return requester<GetAggregateTradingStatQuery, GetAggregateTradingStatQueryVariables>(GetAggregateTradingStatDocument, variables, options) as Promise<GetAggregateTradingStatQuery>;
+    GetEpochTradingStat(variables: GetEpochTradingStatQueryVariables, options?: C): Promise<GetEpochTradingStatQuery> {
+      return requester<GetEpochTradingStatQuery, GetEpochTradingStatQueryVariables>(GetEpochTradingStatDocument, variables, options) as Promise<GetEpochTradingStatQuery>;
+    },
+    GetEpochPointStat(variables: GetEpochPointStatQueryVariables, options?: C): Promise<GetEpochPointStatQuery> {
+      return requester<GetEpochPointStatQuery, GetEpochPointStatQueryVariables>(GetEpochPointStatDocument, variables, options) as Promise<GetEpochPointStatQuery>;
     }
   };
 }
