@@ -1,10 +1,10 @@
 import {
   EpochType,
   execute,
-  GetEpochPointStatDocument,
-  GetEpochPointStatQuery,
-  GetEpochTradingStatDocument,
-  GetEpochTradingStatQuery,
+  GetEpochTradingPointsRecordDocument,
+  GetEpochTradingPointsRecordQuery,
+  GetEpochTradingStatsRecordDocument,
+  GetEpochTradingStatsRecordQuery,
 } from "../.graphclient";
 import { CHAIN_ID_TO_SUBGRAPH, generateId } from "./helpers";
 
@@ -34,15 +34,15 @@ export class TradingStatsLibrary {
     }
   }
 
-  async getEpochTradingStat(
+  async getEpochTradingStatsRecord(
     address: string,
     epochType: EpochType,
     epochNumber: number
-  ): Promise<GetEpochTradingStatQuery | undefined> {
+  ): Promise<GetEpochTradingStatsRecordQuery | undefined> {
     try {
       const id = generateId(address, epochType, epochNumber);
       const result = await execute(
-        GetEpochTradingStatDocument,
+        GetEpochTradingStatsRecordDocument,
         {
           epochTradingStatId: id,
         },
@@ -52,7 +52,7 @@ export class TradingStatsLibrary {
           },
         }
       );
-      return result?.data as GetEpochTradingStatQuery;
+      return result?.data as GetEpochTradingStatsRecordQuery;
     } catch (e) {
       console.error(e);
     }
@@ -62,11 +62,11 @@ export class TradingStatsLibrary {
     address: string,
     epochType: EpochType,
     epochNumber: number
-  ): Promise<GetEpochPointStatQuery | undefined> {
+  ): Promise<GetEpochTradingPointsRecordQuery | undefined> {
     try {
       const id = generateId(address, epochType, epochNumber);
       const result = await execute(
-        GetEpochPointStatDocument,
+        GetEpochTradingPointsRecordDocument,
         {
           epochPointStatId: id,
         },
@@ -76,7 +76,7 @@ export class TradingStatsLibrary {
           },
         }
       );
-      return result?.data as GetEpochPointStatQuery;
+      return result?.data as GetEpochTradingPointsRecordQuery;
     } catch (e) {
       console.error(e);
     }
