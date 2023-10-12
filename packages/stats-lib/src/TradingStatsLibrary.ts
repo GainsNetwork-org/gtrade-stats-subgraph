@@ -6,8 +6,14 @@ import {
   GetEpochTradingStatsRecordsForEpochQuery,
   getBuiltGraphSDK,
   GetEpochTradingPointsRecordsForEpochQuery,
+  GetEpochTradingPointsRecordsForEpochDocument,
 } from "../.graphclient";
 import { CHAIN_ID_TO_SUBGRAPH, generateId } from "./helpers";
+
+type Context = {
+  skip?: number;
+  first?: number;
+};
 
 export class TradingStatsLibrary {
   private graphClient;
@@ -75,7 +81,8 @@ export class TradingStatsLibrary {
 
   async getEpochTradingStatsRecordsForEpoch(
     epochType: EpochType,
-    epochNumber: number
+    epochNumber: number,
+    context?: Context
   ): Promise<
     | GetEpochTradingStatsRecordsForEpochQuery["epochTradingStatsRecords"]
     | undefined
@@ -85,6 +92,8 @@ export class TradingStatsLibrary {
         {
           epochType,
           epochNumber,
+          skip: context?.skip || 0,
+          first: context?.first || 1000,
         }
       );
       return result?.epochTradingStatsRecords as GetEpochTradingStatsRecordsForEpochQuery["epochTradingStatsRecords"];
@@ -95,7 +104,8 @@ export class TradingStatsLibrary {
 
   async getEpochTradingPointsRecordsForEpoch(
     epochType: EpochType,
-    epochNumber: number
+    epochNumber: number,
+    context?: Context
   ): Promise<
     | GetEpochTradingPointsRecordsForEpochQuery["epochTradingPointsRecords"]
     | undefined
@@ -105,6 +115,8 @@ export class TradingStatsLibrary {
         await this.graphClient.GetEpochTradingPointsRecordsForEpoch({
           epochType,
           epochNumber,
+          skip: context?.skip || 0,
+          first: context?.first || 1000,
         });
       return result?.epochTradingPointsRecords as GetEpochTradingPointsRecordsForEpochQuery["epochTradingPointsRecords"];
     } catch (e) {

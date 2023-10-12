@@ -13,6 +13,7 @@ import { fetch as fetchFn } from '@whatwg-node/fetch';
 import { MeshResolvedSource } from '@graphql-mesh/runtime';
 import { MeshTransform, MeshPlugin } from '@graphql-mesh/types';
 import GraphqlHandler from "@graphql-mesh/graphql"
+import AutoPaginationTransform from "@graphprotocol/client-auto-pagination";
 import BareMerger from "@graphql-mesh/merger-bare";
 import { printWithCache } from '@graphql-mesh/utils';
 import { createMeshHTTPHandler, MeshHTTPHandler } from '@graphql-mesh/http';
@@ -817,6 +818,15 @@ const gtradeStatsHandler = new GraphqlHandler({
               logger: logger.child("gtrade-stats"),
               importFn,
             });
+gtradeStatsTransforms[0] = new AutoPaginationTransform({
+                  apiName: "gtrade-stats",
+                  config: {"validateSchema":true,"limitOfRecords":1000},
+                  baseDir,
+                  cache,
+                  pubsub,
+                  importFn,
+                  logger,
+                });
 sources[0] = {
           name: 'gtrade-stats',
           handler: gtradeStatsHandler,
@@ -921,6 +931,8 @@ export type GetEpochTradingPointsRecordQuery = { epochTradingPointsRecord?: Mayb
 export type GetEpochTradingStatsRecordsForEpochQueryVariables = Exact<{
   epochType: EpochType;
   epochNumber: Scalars['Int'];
+  skip?: InputMaybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']>;
 }>;
 
 
@@ -929,6 +941,8 @@ export type GetEpochTradingStatsRecordsForEpochQuery = { epochTradingStatsRecord
 export type GetEpochTradingPointsRecordsForEpochQueryVariables = Exact<{
   epochType: EpochType;
   epochNumber: Scalars['Int'];
+  skip?: InputMaybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']>;
 }>;
 
 
@@ -971,9 +985,11 @@ export const GetEpochTradingPointsRecordDocument = gql`
 }
     ` as unknown as DocumentNode<GetEpochTradingPointsRecordQuery, GetEpochTradingPointsRecordQueryVariables>;
 export const GetEpochTradingStatsRecordsForEpochDocument = gql`
-    query GetEpochTradingStatsRecordsForEpoch($epochType: EpochType!, $epochNumber: Int!) {
+    query GetEpochTradingStatsRecordsForEpoch($epochType: EpochType!, $epochNumber: Int!, $skip: Int = 0, $first: Int = 1000) {
   epochTradingStatsRecords(
     where: {epochType: $epochType, epochNumber: $epochNumber}
+    skip: $skip
+    first: $first
   ) {
     id
     address
@@ -993,9 +1009,11 @@ export const GetEpochTradingStatsRecordsForEpochDocument = gql`
 }
     ` as unknown as DocumentNode<GetEpochTradingStatsRecordsForEpochQuery, GetEpochTradingStatsRecordsForEpochQueryVariables>;
 export const GetEpochTradingPointsRecordsForEpochDocument = gql`
-    query GetEpochTradingPointsRecordsForEpoch($epochType: EpochType!, $epochNumber: Int!) {
+    query GetEpochTradingPointsRecordsForEpoch($epochType: EpochType!, $epochNumber: Int!, $skip: Int = 0, $first: Int = 1000) {
   epochTradingPointsRecords(
     where: {epochType: $epochType, epochNumber: $epochNumber}
+    skip: $skip
+    first: $first
   ) {
     id
     address
