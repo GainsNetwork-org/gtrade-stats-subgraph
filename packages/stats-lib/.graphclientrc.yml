@@ -1,0 +1,8 @@
+sources:
+  - name: gtrade-stats
+    handler:
+      graphql:
+        endpoint: https://api.thegraph.com/subgraphs/name/gainsnetwork-org/{context.config.graphName:gtrade-stats-arbitrum}
+
+documents:
+  - ./src/query/*.gql

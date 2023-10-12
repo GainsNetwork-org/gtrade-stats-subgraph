@@ -1,0 +1,26 @@
+query GetAggregateTradingStat($aggregateTradingStatId: ID!) {
+  aggregateTradingStat(id: $aggregateTradingStatId) {
+    id
+    address
+    epochType
+    epochNumber
+    totalVolumePerGroup
+    totalBorrowingFees
+    pairsTraded
+    totalPnl
+    totalPnlPercentage
+    totalGovFees
+    totalReferralFees
+    totalTriggerFees
+    totalStakerFees
+    totalLpFees
+  }
+}
+
+query GetUserPointStat($userPointStatId: ID!) {
+  userPointStat(id: $userPointStatId) {
+    id
+    address
+    weekNumber
+  }
+}

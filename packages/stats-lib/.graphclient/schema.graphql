@@ -1,0 +1,469 @@
+schema {
+  query: Query
+  subscription: Subscription
+}
+
+"Marks the GraphQL type as indexable entity.  Each type that should be an entity is required to be annotated with this directive."
+directive @entity on OBJECT
+
+"Defined a Subgraph ID for an object type"
+directive @subgraphId(id: String!) on OBJECT
+
+"creates a virtual field on the entity that may be queried but cannot be set manually through the mappings API."
+directive @derivedFrom(field: String!) on FIELD_DEFINITION
+
+type AggregateTradingStat {
+  """Address-type-number"""
+  id: ID!
+  """Address"""
+  address: String!
+  """Epoch Type"""
+  epochType: EpochType!
+  """Epoch Number"""
+  epochNumber: Int!
+  """Total Volume"""
+  totalVolumePerGroup: [BigDecimal!]!
+  """Total borrowing fees"""
+  totalBorrowingFees: BigDecimal!
+  """Pairs Traded"""
+  pairsTraded: [Int!]!
+  """Total PnL"""
+  totalPnl: BigDecimal!
+  """Total PnL Percentage"""
+  totalPnlPercentage: BigDecimal!
+  """Total gov fees"""
+  totalGovFees: BigDecimal!
+  """Total referral fees"""
+  totalReferralFees: BigDecimal!
+  """Total trigger fees"""
+  totalTriggerFees: BigDecimal!
+  """Total staker fees"""
+  totalStakerFees: BigDecimal!
+  """Total lp fees"""
+  totalLpFees: BigDecimal!
+}
+
+input AggregateTradingStat_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  address: String
+  address_not: String
+  address_gt: String
+  address_lt: String
+  address_gte: String
+  address_lte: String
+  address_in: [String!]
+  address_not_in: [String!]
+  address_contains: String
+  address_contains_nocase: String
+  address_not_contains: String
+  address_not_contains_nocase: String
+  address_starts_with: String
+  address_starts_with_nocase: String
+  address_not_starts_with: String
+  address_not_starts_with_nocase: String
+  address_ends_with: String
+  address_ends_with_nocase: String
+  address_not_ends_with: String
+  address_not_ends_with_nocase: String
+  epochType: EpochType
+  epochType_not: EpochType
+  epochType_in: [EpochType!]
+  epochType_not_in: [EpochType!]
+  epochNumber: Int
+  epochNumber_not: Int
+  epochNumber_gt: Int
+  epochNumber_lt: Int
+  epochNumber_gte: Int
+  epochNumber_lte: Int
+  epochNumber_in: [Int!]
+  epochNumber_not_in: [Int!]
+  totalVolumePerGroup: [BigDecimal!]
+  totalVolumePerGroup_not: [BigDecimal!]
+  totalVolumePerGroup_contains: [BigDecimal!]
+  totalVolumePerGroup_contains_nocase: [BigDecimal!]
+  totalVolumePerGroup_not_contains: [BigDecimal!]
+  totalVolumePerGroup_not_contains_nocase: [BigDecimal!]
+  totalBorrowingFees: BigDecimal
+  totalBorrowingFees_not: BigDecimal
+  totalBorrowingFees_gt: BigDecimal
+  totalBorrowingFees_lt: BigDecimal
+  totalBorrowingFees_gte: BigDecimal
+  totalBorrowingFees_lte: BigDecimal
+  totalBorrowingFees_in: [BigDecimal!]
+  totalBorrowingFees_not_in: [BigDecimal!]
+  pairsTraded: [Int!]
+  pairsTraded_not: [Int!]
+  pairsTraded_contains: [Int!]
+  pairsTraded_contains_nocase: [Int!]
+  pairsTraded_not_contains: [Int!]
+  pairsTraded_not_contains_nocase: [Int!]
+  totalPnl: BigDecimal
+  totalPnl_not: BigDecimal
+  totalPnl_gt: BigDecimal
+  totalPnl_lt: BigDecimal
+  totalPnl_gte: BigDecimal
+  totalPnl_lte: BigDecimal
+  totalPnl_in: [BigDecimal!]
+  totalPnl_not_in: [BigDecimal!]
+  totalPnlPercentage: BigDecimal
+  totalPnlPercentage_not: BigDecimal
+  totalPnlPercentage_gt: BigDecimal
+  totalPnlPercentage_lt: BigDecimal
+  totalPnlPercentage_gte: BigDecimal
+  totalPnlPercentage_lte: BigDecimal
+  totalPnlPercentage_in: [BigDecimal!]
+  totalPnlPercentage_not_in: [BigDecimal!]
+  totalGovFees: BigDecimal
+  totalGovFees_not: BigDecimal
+  totalGovFees_gt: BigDecimal
+  totalGovFees_lt: BigDecimal
+  totalGovFees_gte: BigDecimal
+  totalGovFees_lte: BigDecimal
+  totalGovFees_in: [BigDecimal!]
+  totalGovFees_not_in: [BigDecimal!]
+  totalReferralFees: BigDecimal
+  totalReferralFees_not: BigDecimal
+  totalReferralFees_gt: BigDecimal
+  totalReferralFees_lt: BigDecimal
+  totalReferralFees_gte: BigDecimal
+  totalReferralFees_lte: BigDecimal
+  totalReferralFees_in: [BigDecimal!]
+  totalReferralFees_not_in: [BigDecimal!]
+  totalTriggerFees: BigDecimal
+  totalTriggerFees_not: BigDecimal
+  totalTriggerFees_gt: BigDecimal
+  totalTriggerFees_lt: BigDecimal
+  totalTriggerFees_gte: BigDecimal
+  totalTriggerFees_lte: BigDecimal
+  totalTriggerFees_in: [BigDecimal!]
+  totalTriggerFees_not_in: [BigDecimal!]
+  totalStakerFees: BigDecimal
+  totalStakerFees_not: BigDecimal
+  totalStakerFees_gt: BigDecimal
+  totalStakerFees_lt: BigDecimal
+  totalStakerFees_gte: BigDecimal
+  totalStakerFees_lte: BigDecimal
+  totalStakerFees_in: [BigDecimal!]
+  totalStakerFees_not_in: [BigDecimal!]
+  totalLpFees: BigDecimal
+  totalLpFees_not: BigDecimal
+  totalLpFees_gt: BigDecimal
+  totalLpFees_lt: BigDecimal
+  totalLpFees_gte: BigDecimal
+  totalLpFees_lte: BigDecimal
+  totalLpFees_in: [BigDecimal!]
+  totalLpFees_not_in: [BigDecimal!]
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [AggregateTradingStat_filter]
+  or: [AggregateTradingStat_filter]
+}
+
+enum AggregateTradingStat_orderBy {
+  id
+  address
+  epochType
+  epochNumber
+  totalVolumePerGroup
+  totalBorrowingFees
+  pairsTraded
+  totalPnl
+  totalPnlPercentage
+  totalGovFees
+  totalReferralFees
+  totalTriggerFees
+  totalStakerFees
+  totalLpFees
+}
+
+scalar BigDecimal
+
+scalar BigInt
+
+input BlockChangedFilter {
+  number_gte: Int!
+}
+
+input Block_height {
+  hash: Bytes
+  number: Int
+  number_gte: Int
+}
+
+scalar Bytes
+
+enum EpochType {
+  day
+  week
+}
+
+"""
+8 bytes signed integer
+
+"""
+scalar Int8
+
+"""Defines the order direction, either ascending or descending"""
+enum OrderDirection {
+  asc
+  desc
+}
+
+type Query {
+  aggregateTradingStat(
+    id: ID!
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): AggregateTradingStat
+  aggregateTradingStats(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: AggregateTradingStat_orderBy
+    orderDirection: OrderDirection
+    where: AggregateTradingStat_filter
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [AggregateTradingStat!]!
+  userPointStat(
+    id: ID!
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): UserPointStat
+  userPointStats(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: UserPointStat_orderBy
+    orderDirection: OrderDirection
+    where: UserPointStat_filter
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [UserPointStat!]!
+  """Access to subgraph metadata"""
+  _meta(block: Block_height): _Meta_
+}
+
+type Subscription {
+  aggregateTradingStat(
+    id: ID!
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): AggregateTradingStat
+  aggregateTradingStats(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: AggregateTradingStat_orderBy
+    orderDirection: OrderDirection
+    where: AggregateTradingStat_filter
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [AggregateTradingStat!]!
+  userPointStat(
+    id: ID!
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): UserPointStat
+  userPointStats(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: UserPointStat_orderBy
+    orderDirection: OrderDirection
+    where: UserPointStat_filter
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [UserPointStat!]!
+  """Access to subgraph metadata"""
+  _meta(block: Block_height): _Meta_
+}
+
+type UserPointStat {
+  """Address-epochType-epochNumber"""
+  id: ID!
+  address: String!
+  weekNumber: Int!
+  loyaltyPoints: BigDecimal!
+  volumePoints: BigDecimal!
+  skillPoints: BigDecimal!
+  totalPoints: BigDecimal!
+  loyaltyPointsPerDay: [BigDecimal!]!
+}
+
+input UserPointStat_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  address: String
+  address_not: String
+  address_gt: String
+  address_lt: String
+  address_gte: String
+  address_lte: String
+  address_in: [String!]
+  address_not_in: [String!]
+  address_contains: String
+  address_contains_nocase: String
+  address_not_contains: String
+  address_not_contains_nocase: String
+  address_starts_with: String
+  address_starts_with_nocase: String
+  address_not_starts_with: String
+  address_not_starts_with_nocase: String
+  address_ends_with: String
+  address_ends_with_nocase: String
+  address_not_ends_with: String
+  address_not_ends_with_nocase: String
+  weekNumber: Int
+  weekNumber_not: Int
+  weekNumber_gt: Int
+  weekNumber_lt: Int
+  weekNumber_gte: Int
+  weekNumber_lte: Int
+  weekNumber_in: [Int!]
+  weekNumber_not_in: [Int!]
+  loyaltyPoints: BigDecimal
+  loyaltyPoints_not: BigDecimal
+  loyaltyPoints_gt: BigDecimal
+  loyaltyPoints_lt: BigDecimal
+  loyaltyPoints_gte: BigDecimal
+  loyaltyPoints_lte: BigDecimal
+  loyaltyPoints_in: [BigDecimal!]
+  loyaltyPoints_not_in: [BigDecimal!]
+  volumePoints: BigDecimal
+  volumePoints_not: BigDecimal
+  volumePoints_gt: BigDecimal
+  volumePoints_lt: BigDecimal
+  volumePoints_gte: BigDecimal
+  volumePoints_lte: BigDecimal
+  volumePoints_in: [BigDecimal!]
+  volumePoints_not_in: [BigDecimal!]
+  skillPoints: BigDecimal
+  skillPoints_not: BigDecimal
+  skillPoints_gt: BigDecimal
+  skillPoints_lt: BigDecimal
+  skillPoints_gte: BigDecimal
+  skillPoints_lte: BigDecimal
+  skillPoints_in: [BigDecimal!]
+  skillPoints_not_in: [BigDecimal!]
+  totalPoints: BigDecimal
+  totalPoints_not: BigDecimal
+  totalPoints_gt: BigDecimal
+  totalPoints_lt: BigDecimal
+  totalPoints_gte: BigDecimal
+  totalPoints_lte: BigDecimal
+  totalPoints_in: [BigDecimal!]
+  totalPoints_not_in: [BigDecimal!]
+  loyaltyPointsPerDay: [BigDecimal!]
+  loyaltyPointsPerDay_not: [BigDecimal!]
+  loyaltyPointsPerDay_contains: [BigDecimal!]
+  loyaltyPointsPerDay_contains_nocase: [BigDecimal!]
+  loyaltyPointsPerDay_not_contains: [BigDecimal!]
+  loyaltyPointsPerDay_not_contains_nocase: [BigDecimal!]
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+  and: [UserPointStat_filter]
+  or: [UserPointStat_filter]
+}
+
+enum UserPointStat_orderBy {
+  id
+  address
+  weekNumber
+  loyaltyPoints
+  volumePoints
+  skillPoints
+  totalPoints
+  loyaltyPointsPerDay
+}
+
+type _Block_ {
+  """The hash of the block"""
+  hash: Bytes
+  """The block number"""
+  number: Int!
+  """Integer representation of the timestamp stored in blocks for the chain"""
+  timestamp: Int
+}
+
+"""The type for the top-level _meta field"""
+type _Meta_ {
+  """
+  Information about a specific subgraph block. The hash of the block
+  will be null if the _meta field has a block constraint that asks for
+  a block number. It will be filled if the _meta field has no block constraint
+  and therefore asks for the latest  block
+  
+  """
+  block: _Block_!
+  """The deployment ID"""
+  deployment: String!
+  """If `true`, the subgraph encountered indexing errors at some past block"""
+  hasIndexingErrors: Boolean!
+}
+
+enum _SubgraphErrorPolicy_ {
+  """Data will be returned even if the subgraph has indexing errors"""
+  allow
+  """
+  If the subgraph has indexing errors, data will be omitted. The default.
+  """
+  deny
+}
