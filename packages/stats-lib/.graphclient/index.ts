@@ -54,7 +54,7 @@ export type Block_height = {
   number_gte?: InputMaybe<Scalars['Int']>;
 };
 
-export type EpochPointStat = {
+export type EpochTradingPointsRecord = {
   /** Address-epochType-epochNumber */
   id: Scalars['ID'];
   address: Scalars['String'];
@@ -71,7 +71,7 @@ export type EpochPointStat = {
   diversityPoints: Scalars['BigDecimal'];
 };
 
-export type EpochPointStat_filter = {
+export type EpochTradingPointsRecord_filter = {
   id?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
@@ -184,11 +184,11 @@ export type EpochPointStat_filter = {
   diversityPoints_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
-  and?: InputMaybe<Array<InputMaybe<EpochPointStat_filter>>>;
-  or?: InputMaybe<Array<InputMaybe<EpochPointStat_filter>>>;
+  and?: InputMaybe<Array<InputMaybe<EpochTradingPointsRecord_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<EpochTradingPointsRecord_filter>>>;
 };
 
-export type EpochPointStat_orderBy =
+export type EpochTradingPointsRecord_orderBy =
   | 'id'
   | 'address'
   | 'epochNumber'
@@ -203,7 +203,7 @@ export type EpochPointStat_orderBy =
   | 'relSkillPoints'
   | 'diversityPoints';
 
-export type EpochTradingStat = {
+export type EpochTradingStatsRecord = {
   /** Address-type-number */
   id: Scalars['ID'];
   /** Address */
@@ -234,7 +234,7 @@ export type EpochTradingStat = {
   totalLpFees: Scalars['BigDecimal'];
 };
 
-export type EpochTradingStat_filter = {
+export type EpochTradingStatsRecord_filter = {
   id?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
@@ -353,11 +353,11 @@ export type EpochTradingStat_filter = {
   totalLpFees_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
-  and?: InputMaybe<Array<InputMaybe<EpochTradingStat_filter>>>;
-  or?: InputMaybe<Array<InputMaybe<EpochTradingStat_filter>>>;
+  and?: InputMaybe<Array<InputMaybe<EpochTradingStatsRecord_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<EpochTradingStatsRecord_filter>>>;
 };
 
-export type EpochTradingStat_orderBy =
+export type EpochTradingStatsRecord_orderBy =
   | 'id'
   | 'address'
   | 'epochType'
@@ -383,46 +383,46 @@ export type OrderDirection =
   | 'desc';
 
 export type Query = {
-  epochTradingStat?: Maybe<EpochTradingStat>;
-  epochTradingStats: Array<EpochTradingStat>;
-  epochPointStat?: Maybe<EpochPointStat>;
-  epochPointStats: Array<EpochPointStat>;
+  epochTradingStatsRecord?: Maybe<EpochTradingStatsRecord>;
+  epochTradingStatsRecords: Array<EpochTradingStatsRecord>;
+  epochTradingPointsRecord?: Maybe<EpochTradingPointsRecord>;
+  epochTradingPointsRecords: Array<EpochTradingPointsRecord>;
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
 };
 
 
-export type QueryepochTradingStatArgs = {
+export type QueryepochTradingStatsRecordArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryepochTradingStatsArgs = {
+export type QueryepochTradingStatsRecordsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<EpochTradingStat_orderBy>;
+  orderBy?: InputMaybe<EpochTradingStatsRecord_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<EpochTradingStat_filter>;
+  where?: InputMaybe<EpochTradingStatsRecord_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryepochPointStatArgs = {
+export type QueryepochTradingPointsRecordArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryepochPointStatsArgs = {
+export type QueryepochTradingPointsRecordsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<EpochPointStat_orderBy>;
+  orderBy?: InputMaybe<EpochTradingPointsRecord_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<EpochPointStat_filter>;
+  where?: InputMaybe<EpochTradingPointsRecord_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -433,46 +433,46 @@ export type Query_metaArgs = {
 };
 
 export type Subscription = {
-  epochTradingStat?: Maybe<EpochTradingStat>;
-  epochTradingStats: Array<EpochTradingStat>;
-  epochPointStat?: Maybe<EpochPointStat>;
-  epochPointStats: Array<EpochPointStat>;
+  epochTradingStatsRecord?: Maybe<EpochTradingStatsRecord>;
+  epochTradingStatsRecords: Array<EpochTradingStatsRecord>;
+  epochTradingPointsRecord?: Maybe<EpochTradingPointsRecord>;
+  epochTradingPointsRecords: Array<EpochTradingPointsRecord>;
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
 };
 
 
-export type SubscriptionepochTradingStatArgs = {
+export type SubscriptionepochTradingStatsRecordArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionepochTradingStatsArgs = {
+export type SubscriptionepochTradingStatsRecordsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<EpochTradingStat_orderBy>;
+  orderBy?: InputMaybe<EpochTradingStatsRecord_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<EpochTradingStat_filter>;
+  where?: InputMaybe<EpochTradingStatsRecord_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionepochPointStatArgs = {
+export type SubscriptionepochTradingPointsRecordArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionepochPointStatsArgs = {
+export type SubscriptionepochTradingPointsRecordsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<EpochPointStat_orderBy>;
+  orderBy?: InputMaybe<EpochTradingPointsRecord_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<EpochPointStat_filter>;
+  where?: InputMaybe<EpochTradingPointsRecord_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -605,12 +605,12 @@ export type ResolversTypes = ResolversObject<{
   Block_height: Block_height;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Bytes: ResolverTypeWrapper<Scalars['Bytes']>;
-  EpochPointStat: ResolverTypeWrapper<EpochPointStat>;
-  EpochPointStat_filter: EpochPointStat_filter;
-  EpochPointStat_orderBy: EpochPointStat_orderBy;
-  EpochTradingStat: ResolverTypeWrapper<EpochTradingStat>;
-  EpochTradingStat_filter: EpochTradingStat_filter;
-  EpochTradingStat_orderBy: EpochTradingStat_orderBy;
+  EpochTradingPointsRecord: ResolverTypeWrapper<EpochTradingPointsRecord>;
+  EpochTradingPointsRecord_filter: EpochTradingPointsRecord_filter;
+  EpochTradingPointsRecord_orderBy: EpochTradingPointsRecord_orderBy;
+  EpochTradingStatsRecord: ResolverTypeWrapper<EpochTradingStatsRecord>;
+  EpochTradingStatsRecord_filter: EpochTradingStatsRecord_filter;
+  EpochTradingStatsRecord_orderBy: EpochTradingStatsRecord_orderBy;
   EpochType: EpochType;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
@@ -633,10 +633,10 @@ export type ResolversParentTypes = ResolversObject<{
   Block_height: Block_height;
   Boolean: Scalars['Boolean'];
   Bytes: Scalars['Bytes'];
-  EpochPointStat: EpochPointStat;
-  EpochPointStat_filter: EpochPointStat_filter;
-  EpochTradingStat: EpochTradingStat;
-  EpochTradingStat_filter: EpochTradingStat_filter;
+  EpochTradingPointsRecord: EpochTradingPointsRecord;
+  EpochTradingPointsRecord_filter: EpochTradingPointsRecord_filter;
+  EpochTradingStatsRecord: EpochTradingStatsRecord;
+  EpochTradingStatsRecord_filter: EpochTradingStatsRecord_filter;
   Float: Scalars['Float'];
   ID: Scalars['ID'];
   Int: Scalars['Int'];
@@ -676,7 +676,7 @@ export interface BytesScalarConfig extends GraphQLScalarTypeConfig<ResolversType
   name: 'Bytes';
 }
 
-export type EpochPointStatResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['EpochPointStat'] = ResolversParentTypes['EpochPointStat']> = ResolversObject<{
+export type EpochTradingPointsRecordResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['EpochTradingPointsRecord'] = ResolversParentTypes['EpochTradingPointsRecord']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   epochNumber?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -693,7 +693,7 @@ export type EpochPointStatResolvers<ContextType = MeshContext, ParentType extend
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type EpochTradingStatResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['EpochTradingStat'] = ResolversParentTypes['EpochTradingStat']> = ResolversObject<{
+export type EpochTradingStatsRecordResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['EpochTradingStatsRecord'] = ResolversParentTypes['EpochTradingStatsRecord']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   epochType?: Resolver<ResolversTypes['EpochType'], ParentType, ContextType>;
@@ -716,18 +716,18 @@ export interface Int8ScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type QueryResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  epochTradingStat?: Resolver<Maybe<ResolversTypes['EpochTradingStat']>, ParentType, ContextType, RequireFields<QueryepochTradingStatArgs, 'id' | 'subgraphError'>>;
-  epochTradingStats?: Resolver<Array<ResolversTypes['EpochTradingStat']>, ParentType, ContextType, RequireFields<QueryepochTradingStatsArgs, 'skip' | 'first' | 'subgraphError'>>;
-  epochPointStat?: Resolver<Maybe<ResolversTypes['EpochPointStat']>, ParentType, ContextType, RequireFields<QueryepochPointStatArgs, 'id' | 'subgraphError'>>;
-  epochPointStats?: Resolver<Array<ResolversTypes['EpochPointStat']>, ParentType, ContextType, RequireFields<QueryepochPointStatsArgs, 'skip' | 'first' | 'subgraphError'>>;
+  epochTradingStatsRecord?: Resolver<Maybe<ResolversTypes['EpochTradingStatsRecord']>, ParentType, ContextType, RequireFields<QueryepochTradingStatsRecordArgs, 'id' | 'subgraphError'>>;
+  epochTradingStatsRecords?: Resolver<Array<ResolversTypes['EpochTradingStatsRecord']>, ParentType, ContextType, RequireFields<QueryepochTradingStatsRecordsArgs, 'skip' | 'first' | 'subgraphError'>>;
+  epochTradingPointsRecord?: Resolver<Maybe<ResolversTypes['EpochTradingPointsRecord']>, ParentType, ContextType, RequireFields<QueryepochTradingPointsRecordArgs, 'id' | 'subgraphError'>>;
+  epochTradingPointsRecords?: Resolver<Array<ResolversTypes['EpochTradingPointsRecord']>, ParentType, ContextType, RequireFields<QueryepochTradingPointsRecordsArgs, 'skip' | 'first' | 'subgraphError'>>;
   _meta?: Resolver<Maybe<ResolversTypes['_Meta_']>, ParentType, ContextType, Partial<Query_metaArgs>>;
 }>;
 
 export type SubscriptionResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
-  epochTradingStat?: SubscriptionResolver<Maybe<ResolversTypes['EpochTradingStat']>, "epochTradingStat", ParentType, ContextType, RequireFields<SubscriptionepochTradingStatArgs, 'id' | 'subgraphError'>>;
-  epochTradingStats?: SubscriptionResolver<Array<ResolversTypes['EpochTradingStat']>, "epochTradingStats", ParentType, ContextType, RequireFields<SubscriptionepochTradingStatsArgs, 'skip' | 'first' | 'subgraphError'>>;
-  epochPointStat?: SubscriptionResolver<Maybe<ResolversTypes['EpochPointStat']>, "epochPointStat", ParentType, ContextType, RequireFields<SubscriptionepochPointStatArgs, 'id' | 'subgraphError'>>;
-  epochPointStats?: SubscriptionResolver<Array<ResolversTypes['EpochPointStat']>, "epochPointStats", ParentType, ContextType, RequireFields<SubscriptionepochPointStatsArgs, 'skip' | 'first' | 'subgraphError'>>;
+  epochTradingStatsRecord?: SubscriptionResolver<Maybe<ResolversTypes['EpochTradingStatsRecord']>, "epochTradingStatsRecord", ParentType, ContextType, RequireFields<SubscriptionepochTradingStatsRecordArgs, 'id' | 'subgraphError'>>;
+  epochTradingStatsRecords?: SubscriptionResolver<Array<ResolversTypes['EpochTradingStatsRecord']>, "epochTradingStatsRecords", ParentType, ContextType, RequireFields<SubscriptionepochTradingStatsRecordsArgs, 'skip' | 'first' | 'subgraphError'>>;
+  epochTradingPointsRecord?: SubscriptionResolver<Maybe<ResolversTypes['EpochTradingPointsRecord']>, "epochTradingPointsRecord", ParentType, ContextType, RequireFields<SubscriptionepochTradingPointsRecordArgs, 'id' | 'subgraphError'>>;
+  epochTradingPointsRecords?: SubscriptionResolver<Array<ResolversTypes['EpochTradingPointsRecord']>, "epochTradingPointsRecords", ParentType, ContextType, RequireFields<SubscriptionepochTradingPointsRecordsArgs, 'skip' | 'first' | 'subgraphError'>>;
   _meta?: SubscriptionResolver<Maybe<ResolversTypes['_Meta_']>, "_meta", ParentType, ContextType, Partial<Subscription_metaArgs>>;
 }>;
 
@@ -749,8 +749,8 @@ export type Resolvers<ContextType = MeshContext> = ResolversObject<{
   BigDecimal?: GraphQLScalarType;
   BigInt?: GraphQLScalarType;
   Bytes?: GraphQLScalarType;
-  EpochPointStat?: EpochPointStatResolvers<ContextType>;
-  EpochTradingStat?: EpochTradingStatResolvers<ContextType>;
+  EpochTradingPointsRecord?: EpochTradingPointsRecordResolvers<ContextType>;
+  EpochTradingStatsRecord?: EpochTradingStatsRecordResolvers<ContextType>;
   Int8?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
@@ -843,17 +843,17 @@ const merger = new(BareMerger as any)({
     get documents() {
       return [
       {
-        document: GetEpochTradingStatDocument,
+        document: GetEpochTradingStatsRecordDocument,
         get rawSDL() {
-          return printWithCache(GetEpochTradingStatDocument);
+          return printWithCache(GetEpochTradingStatsRecordDocument);
         },
-        location: 'GetEpochTradingStatDocument.graphql'
+        location: 'GetEpochTradingStatsRecordDocument.graphql'
       },{
-        document: GetEpochPointStatDocument,
+        document: GetEpochTradingPointsRecordDocument,
         get rawSDL() {
-          return printWithCache(GetEpochPointStatDocument);
+          return printWithCache(GetEpochTradingPointsRecordDocument);
         },
-        location: 'GetEpochPointStatDocument.graphql'
+        location: 'GetEpochTradingPointsRecordDocument.graphql'
       }
     ];
     },
@@ -892,24 +892,24 @@ export function getBuiltGraphSDK<TGlobalContext = any, TOperationContext = any>(
   const sdkRequester$ = getBuiltGraphClient().then(({ sdkRequesterFactory }) => sdkRequesterFactory(globalContext));
   return getSdk<TOperationContext, TGlobalContext>((...args) => sdkRequester$.then(sdkRequester => sdkRequester(...args)));
 }
-export type GetEpochTradingStatQueryVariables = Exact<{
-  epochTradingStatId: Scalars['ID'];
+export type GetEpochTradingStatsRecordQueryVariables = Exact<{
+  epochTradingStatsRecordId: Scalars['ID'];
 }>;
 
 
-export type GetEpochTradingStatQuery = { epochTradingStat?: Maybe<Pick<EpochTradingStat, 'id' | 'address' | 'epochType' | 'epochNumber' | 'totalVolumePerGroup' | 'totalBorrowingFees' | 'pairsTraded' | 'totalPnl' | 'totalPnlPercentage' | 'totalGovFees' | 'totalReferralFees' | 'totalTriggerFees' | 'totalStakerFees' | 'totalLpFees'>> };
+export type GetEpochTradingStatsRecordQuery = { epochTradingStatsRecord?: Maybe<Pick<EpochTradingStatsRecord, 'id' | 'address' | 'epochType' | 'epochNumber' | 'totalVolumePerGroup' | 'totalBorrowingFees' | 'pairsTraded' | 'totalPnl' | 'totalPnlPercentage' | 'totalGovFees' | 'totalReferralFees' | 'totalTriggerFees' | 'totalStakerFees' | 'totalLpFees'>> };
 
-export type GetEpochPointStatQueryVariables = Exact<{
-  epochPointStatId: Scalars['ID'];
+export type GetEpochTradingPointsRecordQueryVariables = Exact<{
+  epochTradingPointsRecordId: Scalars['ID'];
 }>;
 
 
-export type GetEpochPointStatQuery = { epochPointStat?: Maybe<Pick<EpochPointStat, 'id' | 'address' | 'epochType' | 'epochNumber' | 'loyaltyPoints' | 'volumePoints' | 'absSkillPoints' | 'relSkillPoints' | 'diversityPoints'>> };
+export type GetEpochTradingPointsRecordQuery = { epochTradingPointsRecord?: Maybe<Pick<EpochTradingPointsRecord, 'id' | 'address' | 'epochType' | 'epochNumber' | 'loyaltyPoints' | 'volumePoints' | 'absSkillPoints' | 'relSkillPoints' | 'diversityPoints'>> };
 
 
-export const GetEpochTradingStatDocument = gql`
-    query GetEpochTradingStat($epochTradingStatId: ID!) {
-  epochTradingStat(id: $epochTradingStatId) {
+export const GetEpochTradingStatsRecordDocument = gql`
+    query GetEpochTradingStatsRecord($epochTradingStatsRecordId: ID!) {
+  epochTradingStatsRecord(id: $epochTradingStatsRecordId) {
     id
     address
     epochType
@@ -926,10 +926,10 @@ export const GetEpochTradingStatDocument = gql`
     totalLpFees
   }
 }
-    ` as unknown as DocumentNode<GetEpochTradingStatQuery, GetEpochTradingStatQueryVariables>;
-export const GetEpochPointStatDocument = gql`
-    query GetEpochPointStat($epochPointStatId: ID!) {
-  epochPointStat(id: $epochPointStatId) {
+    ` as unknown as DocumentNode<GetEpochTradingStatsRecordQuery, GetEpochTradingStatsRecordQueryVariables>;
+export const GetEpochTradingPointsRecordDocument = gql`
+    query GetEpochTradingPointsRecord($epochTradingPointsRecordId: ID!) {
+  epochTradingPointsRecord(id: $epochTradingPointsRecordId) {
     id
     address
     epochType
@@ -941,18 +941,18 @@ export const GetEpochPointStatDocument = gql`
     diversityPoints
   }
 }
-    ` as unknown as DocumentNode<GetEpochPointStatQuery, GetEpochPointStatQueryVariables>;
+    ` as unknown as DocumentNode<GetEpochTradingPointsRecordQuery, GetEpochTradingPointsRecordQueryVariables>;
 
 
 
 export type Requester<C = {}, E = unknown> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>
 export function getSdk<C, E>(requester: Requester<C, E>) {
   return {
-    GetEpochTradingStat(variables: GetEpochTradingStatQueryVariables, options?: C): Promise<GetEpochTradingStatQuery> {
-      return requester<GetEpochTradingStatQuery, GetEpochTradingStatQueryVariables>(GetEpochTradingStatDocument, variables, options) as Promise<GetEpochTradingStatQuery>;
+    GetEpochTradingStatsRecord(variables: GetEpochTradingStatsRecordQueryVariables, options?: C): Promise<GetEpochTradingStatsRecordQuery> {
+      return requester<GetEpochTradingStatsRecordQuery, GetEpochTradingStatsRecordQueryVariables>(GetEpochTradingStatsRecordDocument, variables, options) as Promise<GetEpochTradingStatsRecordQuery>;
     },
-    GetEpochPointStat(variables: GetEpochPointStatQueryVariables, options?: C): Promise<GetEpochPointStatQuery> {
-      return requester<GetEpochPointStatQuery, GetEpochPointStatQueryVariables>(GetEpochPointStatDocument, variables, options) as Promise<GetEpochPointStatQuery>;
+    GetEpochTradingPointsRecord(variables: GetEpochTradingPointsRecordQueryVariables, options?: C): Promise<GetEpochTradingPointsRecordQuery> {
+      return requester<GetEpochTradingPointsRecordQuery, GetEpochTradingPointsRecordQueryVariables>(GetEpochTradingPointsRecordDocument, variables, options) as Promise<GetEpochTradingPointsRecordQuery>;
     }
   };
 }

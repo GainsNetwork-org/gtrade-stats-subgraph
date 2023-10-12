@@ -32,7 +32,7 @@ export type Block_height = {
   number_gte?: InputMaybe<Scalars['Int']>;
 };
 
-export type EpochPointStat = {
+export type EpochTradingPointsRecord = {
   /** Address-epochType-epochNumber */
   id: Scalars['ID'];
   address: Scalars['String'];
@@ -49,7 +49,7 @@ export type EpochPointStat = {
   diversityPoints: Scalars['BigDecimal'];
 };
 
-export type EpochPointStat_filter = {
+export type EpochTradingPointsRecord_filter = {
   id?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
@@ -162,11 +162,11 @@ export type EpochPointStat_filter = {
   diversityPoints_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
-  and?: InputMaybe<Array<InputMaybe<EpochPointStat_filter>>>;
-  or?: InputMaybe<Array<InputMaybe<EpochPointStat_filter>>>;
+  and?: InputMaybe<Array<InputMaybe<EpochTradingPointsRecord_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<EpochTradingPointsRecord_filter>>>;
 };
 
-export type EpochPointStat_orderBy =
+export type EpochTradingPointsRecord_orderBy =
   | 'id'
   | 'address'
   | 'epochNumber'
@@ -181,7 +181,7 @@ export type EpochPointStat_orderBy =
   | 'relSkillPoints'
   | 'diversityPoints';
 
-export type EpochTradingStat = {
+export type EpochTradingStatsRecord = {
   /** Address-type-number */
   id: Scalars['ID'];
   /** Address */
@@ -212,7 +212,7 @@ export type EpochTradingStat = {
   totalLpFees: Scalars['BigDecimal'];
 };
 
-export type EpochTradingStat_filter = {
+export type EpochTradingStatsRecord_filter = {
   id?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
@@ -331,11 +331,11 @@ export type EpochTradingStat_filter = {
   totalLpFees_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
-  and?: InputMaybe<Array<InputMaybe<EpochTradingStat_filter>>>;
-  or?: InputMaybe<Array<InputMaybe<EpochTradingStat_filter>>>;
+  and?: InputMaybe<Array<InputMaybe<EpochTradingStatsRecord_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<EpochTradingStatsRecord_filter>>>;
 };
 
-export type EpochTradingStat_orderBy =
+export type EpochTradingStatsRecord_orderBy =
   | 'id'
   | 'address'
   | 'epochType'
@@ -361,46 +361,46 @@ export type OrderDirection =
   | 'desc';
 
 export type Query = {
-  epochTradingStat?: Maybe<EpochTradingStat>;
-  epochTradingStats: Array<EpochTradingStat>;
-  epochPointStat?: Maybe<EpochPointStat>;
-  epochPointStats: Array<EpochPointStat>;
+  epochTradingStatsRecord?: Maybe<EpochTradingStatsRecord>;
+  epochTradingStatsRecords: Array<EpochTradingStatsRecord>;
+  epochTradingPointsRecord?: Maybe<EpochTradingPointsRecord>;
+  epochTradingPointsRecords: Array<EpochTradingPointsRecord>;
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
 };
 
 
-export type QueryepochTradingStatArgs = {
+export type QueryepochTradingStatsRecordArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryepochTradingStatsArgs = {
+export type QueryepochTradingStatsRecordsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<EpochTradingStat_orderBy>;
+  orderBy?: InputMaybe<EpochTradingStatsRecord_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<EpochTradingStat_filter>;
+  where?: InputMaybe<EpochTradingStatsRecord_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryepochPointStatArgs = {
+export type QueryepochTradingPointsRecordArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryepochPointStatsArgs = {
+export type QueryepochTradingPointsRecordsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<EpochPointStat_orderBy>;
+  orderBy?: InputMaybe<EpochTradingPointsRecord_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<EpochPointStat_filter>;
+  where?: InputMaybe<EpochTradingPointsRecord_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -411,46 +411,46 @@ export type Query_metaArgs = {
 };
 
 export type Subscription = {
-  epochTradingStat?: Maybe<EpochTradingStat>;
-  epochTradingStats: Array<EpochTradingStat>;
-  epochPointStat?: Maybe<EpochPointStat>;
-  epochPointStats: Array<EpochPointStat>;
+  epochTradingStatsRecord?: Maybe<EpochTradingStatsRecord>;
+  epochTradingStatsRecords: Array<EpochTradingStatsRecord>;
+  epochTradingPointsRecord?: Maybe<EpochTradingPointsRecord>;
+  epochTradingPointsRecords: Array<EpochTradingPointsRecord>;
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
 };
 
 
-export type SubscriptionepochTradingStatArgs = {
+export type SubscriptionepochTradingStatsRecordArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionepochTradingStatsArgs = {
+export type SubscriptionepochTradingStatsRecordsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<EpochTradingStat_orderBy>;
+  orderBy?: InputMaybe<EpochTradingStatsRecord_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<EpochTradingStat_filter>;
+  where?: InputMaybe<EpochTradingStatsRecord_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionepochPointStatArgs = {
+export type SubscriptionepochTradingPointsRecordArgs = {
   id: Scalars['ID'];
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionepochPointStatsArgs = {
+export type SubscriptionepochTradingPointsRecordsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<EpochPointStat_orderBy>;
+  orderBy?: InputMaybe<EpochTradingPointsRecord_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
-  where?: InputMaybe<EpochPointStat_filter>;
+  where?: InputMaybe<EpochTradingPointsRecord_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -493,13 +493,13 @@ export type _SubgraphErrorPolicy_ =
 
   export type QuerySdk = {
       /** null **/
-  epochTradingStat: InContextSdkMethod<Query['epochTradingStat'], QueryepochTradingStatArgs, MeshContext>,
+  epochTradingStatsRecord: InContextSdkMethod<Query['epochTradingStatsRecord'], QueryepochTradingStatsRecordArgs, MeshContext>,
   /** null **/
-  epochTradingStats: InContextSdkMethod<Query['epochTradingStats'], QueryepochTradingStatsArgs, MeshContext>,
+  epochTradingStatsRecords: InContextSdkMethod<Query['epochTradingStatsRecords'], QueryepochTradingStatsRecordsArgs, MeshContext>,
   /** null **/
-  epochPointStat: InContextSdkMethod<Query['epochPointStat'], QueryepochPointStatArgs, MeshContext>,
+  epochTradingPointsRecord: InContextSdkMethod<Query['epochTradingPointsRecord'], QueryepochTradingPointsRecordArgs, MeshContext>,
   /** null **/
-  epochPointStats: InContextSdkMethod<Query['epochPointStats'], QueryepochPointStatsArgs, MeshContext>,
+  epochTradingPointsRecords: InContextSdkMethod<Query['epochTradingPointsRecords'], QueryepochTradingPointsRecordsArgs, MeshContext>,
   /** Access to subgraph metadata **/
   _meta: InContextSdkMethod<Query['_meta'], Query_metaArgs, MeshContext>
   };
@@ -510,13 +510,13 @@ export type _SubgraphErrorPolicy_ =
 
   export type SubscriptionSdk = {
       /** null **/
-  epochTradingStat: InContextSdkMethod<Subscription['epochTradingStat'], SubscriptionepochTradingStatArgs, MeshContext>,
+  epochTradingStatsRecord: InContextSdkMethod<Subscription['epochTradingStatsRecord'], SubscriptionepochTradingStatsRecordArgs, MeshContext>,
   /** null **/
-  epochTradingStats: InContextSdkMethod<Subscription['epochTradingStats'], SubscriptionepochTradingStatsArgs, MeshContext>,
+  epochTradingStatsRecords: InContextSdkMethod<Subscription['epochTradingStatsRecords'], SubscriptionepochTradingStatsRecordsArgs, MeshContext>,
   /** null **/
-  epochPointStat: InContextSdkMethod<Subscription['epochPointStat'], SubscriptionepochPointStatArgs, MeshContext>,
+  epochTradingPointsRecord: InContextSdkMethod<Subscription['epochTradingPointsRecord'], SubscriptionepochTradingPointsRecordArgs, MeshContext>,
   /** null **/
-  epochPointStats: InContextSdkMethod<Subscription['epochPointStats'], SubscriptionepochPointStatsArgs, MeshContext>,
+  epochTradingPointsRecords: InContextSdkMethod<Subscription['epochTradingPointsRecords'], SubscriptionepochTradingPointsRecordsArgs, MeshContext>,
   /** Access to subgraph metadata **/
   _meta: InContextSdkMethod<Subscription['_meta'], Subscription_metaArgs, MeshContext>
   };

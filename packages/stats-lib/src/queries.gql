@@ -1,5 +1,5 @@
-query GetEpochTradingStat($epochTradingStatId: ID!) {
-  epochTradingStat(id: $epochTradingStatId) {
+query GetEpochTradingStatsRecord($epochTradingStatsRecordId: ID!) {
+  epochTradingStatsRecord(id: $epochTradingStatsRecordId) {
     id
     address
     epochType
@@ -17,8 +17,8 @@ query GetEpochTradingStat($epochTradingStatId: ID!) {
   }
 }
 
-query GetEpochPointStat($epochPointStatId: ID!) {
-  epochPointStat(id: $epochPointStatId) {
+query GetEpochTradingPointsRecord($epochTradingPointsRecordId: ID!) {
+  epochTradingPointsRecord(id: $epochTradingPointsRecordId) {
     id
     address
     epochType

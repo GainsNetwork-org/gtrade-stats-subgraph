@@ -238,7 +238,7 @@ const schemaAST = {
       "kind": "ObjectTypeDefinition",
       "name": {
         "kind": "Name",
-        "value": "EpochPointStat"
+        "value": "EpochTradingPointsRecord"
       },
       "fields": [
         {
@@ -507,7 +507,7 @@ const schemaAST = {
       "kind": "InputObjectTypeDefinition",
       "name": {
         "kind": "Name",
-        "value": "EpochPointStat_filter"
+        "value": "EpochTradingPointsRecord_filter"
       },
       "fields": [
         {
@@ -2372,7 +2372,7 @@ const schemaAST = {
               "kind": "NamedType",
               "name": {
                 "kind": "Name",
-                "value": "EpochPointStat_filter"
+                "value": "EpochTradingPointsRecord_filter"
               }
             }
           },
@@ -2390,7 +2390,7 @@ const schemaAST = {
               "kind": "NamedType",
               "name": {
                 "kind": "Name",
-                "value": "EpochPointStat_filter"
+                "value": "EpochTradingPointsRecord_filter"
               }
             }
           },
@@ -2403,7 +2403,7 @@ const schemaAST = {
       "kind": "EnumTypeDefinition",
       "name": {
         "kind": "Name",
-        "value": "EpochPointStat_orderBy"
+        "value": "EpochTradingPointsRecord_orderBy"
       },
       "values": [
         {
@@ -2517,7 +2517,7 @@ const schemaAST = {
       "kind": "ObjectTypeDefinition",
       "name": {
         "kind": "Name",
-        "value": "EpochTradingStat"
+        "value": "EpochTradingStatsRecord"
       },
       "fields": [
         {
@@ -2876,7 +2876,7 @@ const schemaAST = {
       "kind": "InputObjectTypeDefinition",
       "name": {
         "kind": "Name",
-        "value": "EpochTradingStat_filter"
+        "value": "EpochTradingStatsRecord_filter"
       },
       "fields": [
         {
@@ -4867,7 +4867,7 @@ const schemaAST = {
               "kind": "NamedType",
               "name": {
                 "kind": "Name",
-                "value": "EpochTradingStat_filter"
+                "value": "EpochTradingStatsRecord_filter"
               }
             }
           },
@@ -4885,7 +4885,7 @@ const schemaAST = {
               "kind": "NamedType",
               "name": {
                 "kind": "Name",
-                "value": "EpochTradingStat_filter"
+                "value": "EpochTradingStatsRecord_filter"
               }
             }
           },
@@ -4898,7 +4898,7 @@ const schemaAST = {
       "kind": "EnumTypeDefinition",
       "name": {
         "kind": "Name",
-        "value": "EpochTradingStat_orderBy"
+        "value": "EpochTradingStatsRecord_orderBy"
       },
       "values": [
         {
@@ -5097,7 +5097,7 @@ const schemaAST = {
           "kind": "FieldDefinition",
           "name": {
             "kind": "Name",
-            "value": "epochTradingStat"
+            "value": "epochTradingStatsRecord"
           },
           "arguments": [
             {
@@ -5170,7 +5170,7 @@ const schemaAST = {
             "kind": "NamedType",
             "name": {
               "kind": "Name",
-              "value": "EpochTradingStat"
+              "value": "EpochTradingStatsRecord"
             }
           },
           "directives": []
@@ -5179,7 +5179,7 @@ const schemaAST = {
           "kind": "FieldDefinition",
           "name": {
             "kind": "Name",
-            "value": "epochTradingStats"
+            "value": "epochTradingStatsRecords"
           },
           "arguments": [
             {
@@ -5230,7 +5230,7 @@ const schemaAST = {
                 "kind": "NamedType",
                 "name": {
                   "kind": "Name",
-                  "value": "EpochTradingStat_orderBy"
+                  "value": "EpochTradingStatsRecord_orderBy"
                 }
               },
               "directives": []
@@ -5260,7 +5260,7 @@ const schemaAST = {
                 "kind": "NamedType",
                 "name": {
                   "kind": "Name",
-                  "value": "EpochTradingStat_filter"
+                  "value": "EpochTradingStatsRecord_filter"
                 }
               },
               "directives": []
@@ -5323,7 +5323,7 @@ const schemaAST = {
                   "kind": "NamedType",
                   "name": {
                     "kind": "Name",
-                    "value": "EpochTradingStat"
+                    "value": "EpochTradingStatsRecord"
                   }
                 }
               }
@@ -5335,7 +5335,7 @@ const schemaAST = {
           "kind": "FieldDefinition",
           "name": {
             "kind": "Name",
-            "value": "epochPointStat"
+            "value": "epochTradingPointsRecord"
           },
           "arguments": [
             {
@@ -5408,7 +5408,7 @@ const schemaAST = {
             "kind": "NamedType",
             "name": {
               "kind": "Name",
-              "value": "EpochPointStat"
+              "value": "EpochTradingPointsRecord"
             }
           },
           "directives": []
@@ -5417,7 +5417,7 @@ const schemaAST = {
           "kind": "FieldDefinition",
           "name": {
             "kind": "Name",
-            "value": "epochPointStats"
+            "value": "epochTradingPointsRecords"
           },
           "arguments": [
             {
@@ -5468,7 +5468,7 @@ const schemaAST = {
                 "kind": "NamedType",
                 "name": {
                   "kind": "Name",
-                  "value": "EpochPointStat_orderBy"
+                  "value": "EpochTradingPointsRecord_orderBy"
                 }
               },
               "directives": []
@@ -5498,7 +5498,7 @@ const schemaAST = {
                 "kind": "NamedType",
                 "name": {
                   "kind": "Name",
-                  "value": "EpochPointStat_filter"
+                  "value": "EpochTradingPointsRecord_filter"
                 }
               },
               "directives": []
@@ -5561,7 +5561,7 @@ const schemaAST = {
                   "kind": "NamedType",
                   "name": {
                     "kind": "Name",
-                    "value": "EpochPointStat"
+                    "value": "EpochTradingPointsRecord"
                   }
                 }
               }
@@ -5621,7 +5621,7 @@ const schemaAST = {
           "kind": "FieldDefinition",
           "name": {
             "kind": "Name",
-            "value": "epochTradingStat"
+            "value": "epochTradingStatsRecord"
           },
           "arguments": [
             {
@@ -5694,7 +5694,7 @@ const schemaAST = {
             "kind": "NamedType",
             "name": {
               "kind": "Name",
-              "value": "EpochTradingStat"
+              "value": "EpochTradingStatsRecord"
             }
           },
           "directives": []
@@ -5703,7 +5703,7 @@ const schemaAST = {
           "kind": "FieldDefinition",
           "name": {
             "kind": "Name",
-            "value": "epochTradingStats"
+            "value": "epochTradingStatsRecords"
           },
           "arguments": [
             {
@@ -5754,7 +5754,7 @@ const schemaAST = {
                 "kind": "NamedType",
                 "name": {
                   "kind": "Name",
-                  "value": "EpochTradingStat_orderBy"
+                  "value": "EpochTradingStatsRecord_orderBy"
                 }
               },
               "directives": []
@@ -5784,7 +5784,7 @@ const schemaAST = {
                 "kind": "NamedType",
                 "name": {
                   "kind": "Name",
-                  "value": "EpochTradingStat_filter"
+                  "value": "EpochTradingStatsRecord_filter"
                 }
               },
               "directives": []
@@ -5847,7 +5847,7 @@ const schemaAST = {
                   "kind": "NamedType",
                   "name": {
                     "kind": "Name",
-                    "value": "EpochTradingStat"
+                    "value": "EpochTradingStatsRecord"
                   }
                 }
               }
@@ -5859,7 +5859,7 @@ const schemaAST = {
           "kind": "FieldDefinition",
           "name": {
             "kind": "Name",
-            "value": "epochPointStat"
+            "value": "epochTradingPointsRecord"
           },
           "arguments": [
             {
@@ -5932,7 +5932,7 @@ const schemaAST = {
             "kind": "NamedType",
             "name": {
               "kind": "Name",
-              "value": "EpochPointStat"
+              "value": "EpochTradingPointsRecord"
             }
           },
           "directives": []
@@ -5941,7 +5941,7 @@ const schemaAST = {
           "kind": "FieldDefinition",
           "name": {
             "kind": "Name",
-            "value": "epochPointStats"
+            "value": "epochTradingPointsRecords"
           },
           "arguments": [
             {
@@ -5992,7 +5992,7 @@ const schemaAST = {
                 "kind": "NamedType",
                 "name": {
                   "kind": "Name",
-                  "value": "EpochPointStat_orderBy"
+                  "value": "EpochTradingPointsRecord_orderBy"
                 }
               },
               "directives": []
@@ -6022,7 +6022,7 @@ const schemaAST = {
                 "kind": "NamedType",
                 "name": {
                   "kind": "Name",
-                  "value": "EpochPointStat_filter"
+                  "value": "EpochTradingPointsRecord_filter"
                 }
               },
               "directives": []
@@ -6085,7 +6085,7 @@ const schemaAST = {
                   "kind": "NamedType",
                   "name": {
                     "kind": "Name",
-                    "value": "EpochPointStat"
+                    "value": "EpochTradingPointsRecord"
                   }
                 }
               }
