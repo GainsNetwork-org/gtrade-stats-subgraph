@@ -9,35 +9,35 @@ import {
   ONE_BD,
 } from "../constants";
 
-export function updateRewardEntities(
+export function updatePointEntities(
   address: string,
   weekNumber: i32,
   dayNumber: i32,
-  Pnl: BigDecimal,
-  PnlPercentage: BigDecimal,
+  pnl: BigDecimal,
+  pnlPercentage: BigDecimal,
   groupNumber: i32,
   volume: BigDecimal
 ): void {
   // load all 4 entries: UserDaily, ProtocolDaily, UserWeekly, ProtocolWeekly
-  const userDailyPoints = createOrLoadUserPointStat(
+  const userDailyPoints = createOrLoadEpochTradingPointsRecord(
     address,
     EPOCH_TYPE.DAY,
     dayNumber,
     false
   );
-  const protocolDailyPoints = createOrLoadUserPointStat(
+  const protocolDailyPoints = createOrLoadEpochTradingPointsRecord(
     PROTOCOL,
     EPOCH_TYPE.DAY,
     dayNumber,
     false
   );
-  const userWeeklyPoints = createOrLoadUserPointStat(
+  const userWeeklyPoints = createOrLoadEpochTradingPointsRecord(
     address,
     EPOCH_TYPE.WEEK,
     weekNumber,
     false
   );
-  const protocolWeeklyPoints = createOrLoadUserPointStat(
+  const protocolWeeklyPoints = createOrLoadEpochTradingPointsRecord(
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     weekNumber,
@@ -49,14 +49,14 @@ export function updateRewardEntities(
     protocolDailyPoints,
     userWeeklyPoints,
     protocolWeeklyPoints,
-    Pnl
+    pnl
   );
   updateRelativeSkillPoints(
     userDailyPoints,
     protocolDailyPoints,
     userWeeklyPoints,
     protocolWeeklyPoints,
-    PnlPercentage
+    pnlPercentage
   );
   updateDiversityPoints(
     userDailyPoints,
@@ -228,7 +228,7 @@ export function calculateSkillPoints(
   return protocolNewPts;
 }
 
-export function updateRewards(
+export function updateFeeBasedPoints(
   address: string,
   stat: BigDecimal,
   timestamp: i32
@@ -236,28 +236,28 @@ export function updateRewards(
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
 
-  let userDailyStats = createOrLoadUserPointStat(
+  let userDailyStats = createOrLoadEpochTradingPointsRecord(
     address,
     EPOCH_TYPE.DAY,
     currentDayNumber,
     false
   );
 
-  let userWeeklyStats = createOrLoadUserPointStat(
+  let userWeeklyStats = createOrLoadEpochTradingPointsRecord(
     address,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
     false
   );
 
-  let dailyProtocolStats = createOrLoadUserPointStat(
+  let dailyProtocolStats = createOrLoadEpochTradingPointsRecord(
     PROTOCOL,
     EPOCH_TYPE.DAY,
     currentDayNumber,
     false
   );
 
-  let weeklyProtocolStats = createOrLoadUserPointStat(
+  let weeklyProtocolStats = createOrLoadEpochTradingPointsRecord(
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
@@ -370,14 +370,14 @@ export function generateId(
   return address + "-" + epochType + "-" + epochNumber.toString();
 }
 
-export function createOrLoadUserPointStat(
+export function createOrLoadEpochTradingPointsRecord(
   address: string,
   epochType: string,
   epochNumber: i32,
   save: boolean
 ): EpochTradingPointsRecord {
   log.info(
-    "[createOrLoadUserPointStat] address {}, epochType {}, epochNumber {}",
+    "[createOrLoadEpochTradingPointsRecord] address {}, epochType {}, epochNumber {}",
     [address, epochType.toString(), epochNumber.toString()]
   );
   const id = generateId(address, epochType, epochNumber);

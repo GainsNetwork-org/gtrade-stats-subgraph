@@ -1,2 +1,2 @@
-export * from "./aggregateTradingStats";
-export * from "./calculateRewards";
+export * from "./epochTradingStatsRecord";
+export * from "./calculatePoints";

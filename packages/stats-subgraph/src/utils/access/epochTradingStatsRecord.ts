@@ -1,6 +1,6 @@
 import { BigDecimal, log } from "@graphprotocol/graph-ts";
 import { EpochTradingStatsRecord } from "../../types/schema";
-import { updateRewardEntities } from "./calculateRewards";
+import { updatePointEntities } from "./calculatePoints";
 import {
   ZERO_BD,
   EPOCH_TYPE,
@@ -16,40 +16,40 @@ export function generateAggregateTradingStatsId(
   return address + "-" + epochType + "-" + epochNumber.toString();
 }
 
-export function createOrLoadAggregateTradingStats(
+export function createOrLoadEpochTradingStatsRecord(
   address: string,
   epochType: string,
   epochNumber: i32,
   save: boolean
 ): EpochTradingStatsRecord {
   log.info(
-    "[createOrLoadAggregateTradingStats] address {}, epochType {}, epochNumber {}",
+    "[createOrLoadEpochTradingStatsRecord] address {}, epochType {}, epochNumber {}",
     [address, epochType.toString(), epochNumber.toString()]
   );
   const id = generateAggregateTradingStatsId(address, epochType, epochNumber);
-  let aggregateTradingStats = EpochTradingStatsRecord.load(id);
-  if (aggregateTradingStats == null) {
-    aggregateTradingStats = new EpochTradingStatsRecord(id);
-    aggregateTradingStats.address = address;
-    aggregateTradingStats.epochType = epochType;
-    aggregateTradingStats.epochNumber = epochNumber;
-    aggregateTradingStats.totalVolumePerGroup = [];
-    aggregateTradingStats.totalBorrowingFees = ZERO_BD;
-    aggregateTradingStats.pairsTraded = [];
-    aggregateTradingStats.totalPnl = ZERO_BD;
-    aggregateTradingStats.totalPnlPercentage = ZERO_BD;
+  let epochTradingStatsRecord = EpochTradingStatsRecord.load(id);
+  if (epochTradingStatsRecord == null) {
+    epochTradingStatsRecord = new EpochTradingStatsRecord(id);
+    epochTradingStatsRecord.address = address;
+    epochTradingStatsRecord.epochType = epochType;
+    epochTradingStatsRecord.epochNumber = epochNumber;
+    epochTradingStatsRecord.totalVolumePerGroup = [];
+    epochTradingStatsRecord.totalBorrowingFees = ZERO_BD;
+    epochTradingStatsRecord.pairsTraded = [];
+    epochTradingStatsRecord.totalPnl = ZERO_BD;
+    epochTradingStatsRecord.totalPnlPercentage = ZERO_BD;
     // Add govFees, referralFees, triggerFees, lpFees, stakerFees
-    aggregateTradingStats.totalGovFees = ZERO_BD;
-    aggregateTradingStats.totalReferralFees = ZERO_BD;
-    aggregateTradingStats.totalTriggerFees = ZERO_BD;
-    aggregateTradingStats.totalLpFees = ZERO_BD;
-    aggregateTradingStats.totalStakerFees = ZERO_BD;
+    epochTradingStatsRecord.totalGovFees = ZERO_BD;
+    epochTradingStatsRecord.totalReferralFees = ZERO_BD;
+    epochTradingStatsRecord.totalTriggerFees = ZERO_BD;
+    epochTradingStatsRecord.totalLpFees = ZERO_BD;
+    epochTradingStatsRecord.totalStakerFees = ZERO_BD;
 
     if (save) {
-      aggregateTradingStats.save();
+      epochTradingStatsRecord.save();
     }
   }
-  return aggregateTradingStats as EpochTradingStatsRecord;
+  return epochTradingStatsRecord as EpochTradingStatsRecord;
 }
 
 /**
@@ -75,7 +75,7 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
 
   // Daily stats
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
-  const dailyStats = createOrLoadAggregateTradingStats(
+  const dailyStats = createOrLoadEpochTradingStatsRecord(
     address,
     EPOCH_TYPE.DAY,
     currentDayNumber,
@@ -86,7 +86,7 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
 
   // Weekly stats
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
-  const weeklyStats = createOrLoadAggregateTradingStats(
+  const weeklyStats = createOrLoadEpochTradingStatsRecord(
     address,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
@@ -95,7 +95,7 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
   _addOpenTradeStats(data, weeklyStats);
 
   // Daily protocol stats
-  const dailyProtocolStats = createOrLoadAggregateTradingStats(
+  const dailyProtocolStats = createOrLoadEpochTradingStatsRecord(
     PROTOCOL,
     EPOCH_TYPE.DAY,
     currentDayNumber,
@@ -104,7 +104,7 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
   _addOpenTradeStats(data, dailyProtocolStats);
 
   // Weekly protocol stats
-  const weeklyProtocolStats = createOrLoadAggregateTradingStats(
+  const weeklyProtocolStats = createOrLoadEpochTradingStatsRecord(
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
@@ -146,7 +146,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
 
   // Daily stats
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
-  const dailyStats = createOrLoadAggregateTradingStats(
+  const dailyStats = createOrLoadEpochTradingStatsRecord(
     address,
     EPOCH_TYPE.DAY,
     currentDayNumber,
@@ -156,7 +156,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
 
   // Weekly stats
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
-  const weeklyStats = createOrLoadAggregateTradingStats(
+  const weeklyStats = createOrLoadEpochTradingStatsRecord(
     address,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
@@ -165,7 +165,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
   _addCloseTradeStats(data, weeklyStats);
 
   // Daily protocol stats
-  const dailyProtocolStats = createOrLoadAggregateTradingStats(
+  const dailyProtocolStats = createOrLoadEpochTradingStatsRecord(
     PROTOCOL,
     EPOCH_TYPE.DAY,
     currentDayNumber,
@@ -174,7 +174,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
   _addCloseTradeStats(data, dailyProtocolStats);
 
   // Weekly protocol stats
-  const weeklyProtocolStats = createOrLoadAggregateTradingStats(
+  const weeklyProtocolStats = createOrLoadEpochTradingStatsRecord(
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
@@ -182,7 +182,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
   );
   _addCloseTradeStats(data, weeklyProtocolStats);
 
-  updateRewardEntities(
+  updatePointEntities(
     address,
     currentWeekNumber,
     currentDayNumber,
@@ -330,7 +330,7 @@ function _addStats(
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
 
-  let dailyStats = createOrLoadAggregateTradingStats(
+  let dailyStats = createOrLoadEpochTradingStatsRecord(
     address,
     EPOCH_TYPE.DAY,
     currentDayNumber,
@@ -338,7 +338,7 @@ function _addStats(
   );
   dailyStats = _addStat(stat, statName, dailyStats);
 
-  let weeklyStats = createOrLoadAggregateTradingStats(
+  let weeklyStats = createOrLoadEpochTradingStatsRecord(
     address,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
@@ -346,7 +346,7 @@ function _addStats(
   );
   weeklyStats = _addStat(stat, statName, weeklyStats);
 
-  let dailyProtocolStats = createOrLoadAggregateTradingStats(
+  let dailyProtocolStats = createOrLoadEpochTradingStatsRecord(
     PROTOCOL,
     EPOCH_TYPE.DAY,
     currentDayNumber,
@@ -354,7 +354,7 @@ function _addStats(
   );
   dailyProtocolStats = _addStat(stat, statName, dailyProtocolStats);
 
-  let weeklyProtocolStats = createOrLoadAggregateTradingStats(
+  let weeklyProtocolStats = createOrLoadEpochTradingStatsRecord(
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
