@@ -9,7 +9,7 @@ import {
   ONE_BD,
 } from "../constants";
 
-export function updatePointEntities(
+export function updatePointsOnClose(
   address: string,
   weekNumber: i32,
   dayNumber: i32,
@@ -73,39 +73,39 @@ export function updateAbsoluteSkillPoints(
   protocolDailyPoints: EpochTradingPointsRecord,
   userWeeklyPoints: EpochTradingPointsRecord,
   protocolWeeklyPoints: EpochTradingPointsRecord,
-  Pnl: BigDecimal
+  pnl: BigDecimal
 ): void {
-  let UserDailySkillPoints =
-    userDailyPoints.pnl.plus(Pnl) > ZERO_BD
-      ? userDailyPoints.pnl.plus(Pnl)
+  let userDailySkillPoints =
+    userDailyPoints.pnl.plus(pnl) > ZERO_BD
+      ? userDailyPoints.pnl.plus(pnl)
       : ZERO_BD;
-  let UserWeeklySkillPoints =
-    userWeeklyPoints.pnl.plus(Pnl) > ZERO_BD
-      ? userWeeklyPoints.pnl.plus(Pnl)
+  let userWeeklySkillPoints =
+    userWeeklyPoints.pnl.plus(pnl) > ZERO_BD
+      ? userWeeklyPoints.pnl.plus(pnl)
       : ZERO_BD;
   let protocolDailySkillPoints = calculateSkillPoints(
     userDailyPoints,
     protocolDailyPoints,
-    Pnl,
+    pnl,
     true
   );
   let protocolWeeklySkillPoints = calculateSkillPoints(
     userWeeklyPoints,
     protocolWeeklyPoints,
-    Pnl,
+    pnl,
     true
   );
 
   // update pnls
-  userDailyPoints.pnl = userDailyPoints.pnl.plus(Pnl);
-  protocolDailyPoints.pnl = protocolDailyPoints.pnl.plus(Pnl);
-  userWeeklyPoints.pnl = userWeeklyPoints.pnl.plus(Pnl);
-  protocolWeeklyPoints.pnl = protocolWeeklyPoints.pnl.plus(Pnl);
+  userDailyPoints.pnl = userDailyPoints.pnl.plus(pnl);
+  protocolDailyPoints.pnl = protocolDailyPoints.pnl.plus(pnl);
+  userWeeklyPoints.pnl = userWeeklyPoints.pnl.plus(pnl);
+  protocolWeeklyPoints.pnl = protocolWeeklyPoints.pnl.plus(pnl);
 
   // update skill points
-  userDailyPoints.absSkillPoints = UserDailySkillPoints;
+  userDailyPoints.absSkillPoints = userDailySkillPoints;
   protocolDailyPoints.absSkillPoints = protocolDailySkillPoints;
-  userWeeklyPoints.absSkillPoints = UserWeeklySkillPoints;
+  userWeeklyPoints.absSkillPoints = userWeeklySkillPoints;
   protocolWeeklyPoints.absSkillPoints = protocolWeeklySkillPoints;
 
   // Saving all the entities
@@ -120,43 +120,43 @@ export function updateRelativeSkillPoints(
   protocolDailyPoints: EpochTradingPointsRecord,
   userWeeklyPoints: EpochTradingPointsRecord,
   protocolWeeklyPoints: EpochTradingPointsRecord,
-  PnlPercentage: BigDecimal
+  pnlPercentage: BigDecimal
 ): void {
-  let UserDailySkillPoints =
-    userDailyPoints.pnlPercentage.plus(PnlPercentage) > ZERO_BD
-      ? userDailyPoints.pnlPercentage.plus(PnlPercentage)
+  let userDailySkillPoints =
+    userDailyPoints.pnlPercentage.plus(pnlPercentage) > ZERO_BD
+      ? userDailyPoints.pnlPercentage.plus(pnlPercentage)
       : ZERO_BD;
-  let UserWeeklySkillPoints =
-    userWeeklyPoints.pnlPercentage.plus(PnlPercentage) > ZERO_BD
-      ? userWeeklyPoints.pnlPercentage.plus(PnlPercentage)
+  let userWeeklySkillPoints =
+    userWeeklyPoints.pnlPercentage.plus(pnlPercentage) > ZERO_BD
+      ? userWeeklyPoints.pnlPercentage.plus(pnlPercentage)
       : ZERO_BD;
   let protocolDailySkillPoints = calculateSkillPoints(
     userDailyPoints,
     protocolDailyPoints,
-    PnlPercentage,
+    pnlPercentage,
     false
   );
   let protocolWeeklySkillPoints = calculateSkillPoints(
     userWeeklyPoints,
     protocolWeeklyPoints,
-    PnlPercentage,
+    pnlPercentage,
     false
   );
 
   // update pnls
   userDailyPoints.pnlPercentage =
-    userDailyPoints.pnlPercentage.plus(PnlPercentage);
+    userDailyPoints.pnlPercentage.plus(pnlPercentage);
   protocolDailyPoints.pnlPercentage =
-    protocolDailyPoints.pnlPercentage.plus(PnlPercentage);
+    protocolDailyPoints.pnlPercentage.plus(pnlPercentage);
   userWeeklyPoints.pnlPercentage =
-    userWeeklyPoints.pnlPercentage.plus(PnlPercentage);
+    userWeeklyPoints.pnlPercentage.plus(pnlPercentage);
   protocolWeeklyPoints.pnlPercentage =
-    protocolWeeklyPoints.pnlPercentage.plus(PnlPercentage);
+    protocolWeeklyPoints.pnlPercentage.plus(pnlPercentage);
 
   // update skill points
-  userDailyPoints.relSkillPoints = UserDailySkillPoints;
+  userDailyPoints.relSkillPoints = userDailySkillPoints;
   protocolDailyPoints.relSkillPoints = protocolDailySkillPoints;
-  userWeeklyPoints.relSkillPoints = UserWeeklySkillPoints;
+  userWeeklyPoints.relSkillPoints = userWeeklySkillPoints;
   protocolWeeklyPoints.relSkillPoints = protocolWeeklySkillPoints;
 
   // Saving all the entities
@@ -166,6 +166,8 @@ export function updateRelativeSkillPoints(
   protocolWeeklyPoints.save();
 }
 
+// @todo - add volume thresholds
+// @todo - is groupNumber accurate here...? btc/eth = 0, crypto = 1, forex = 2, commodities = 3?
 export function updateDiversityPoints(
   userDailyPoints: EpochTradingPointsRecord,
   protocolDailyPoints: EpochTradingPointsRecord,
@@ -179,6 +181,7 @@ export function updateDiversityPoints(
       volume > MIN_VOLUME &&
       userWeeklyPoints.groupsTraded[groupNumber] == ZERO_BD
     ) {
+      // @todo - daily points should be calculated independently than weekly? Wdyt...
       userDailyPoints.groupsTraded[groupNumber] = ONE_BD;
       protocolDailyPoints.groupsTraded[groupNumber] = ONE_BD;
       userWeeklyPoints.groupsTraded[groupNumber] = ONE_BD;
@@ -295,7 +298,7 @@ export function updateVolumePoints(
   protocolWeeklyStats.totalFeesPaid =
     protocolWeeklyStats.totalFeesPaid.plus(stat);
 
-  // Updating loyalty points
+  // Updating volume points
   userDailyStats.volumePoints = userDailyStats.volumePoints.plus(stat);
   userWeeklyStats.volumePoints = userWeeklyStats.volumePoints.plus(stat);
   protocolDailyStats.volumePoints = protocolDailyStats.volumePoints.plus(stat);
@@ -339,6 +342,7 @@ export function updateLoyaltyPoints(
   protocolWeeklyStats.save();
 }
 
+// @todo - should we just make this identical to gCredits? Same with volume.
 export function calculateLoyaltyPoints(fees: BigDecimal): BigDecimal {
   if (
     fees >= BigDecimal.fromString("8") &&

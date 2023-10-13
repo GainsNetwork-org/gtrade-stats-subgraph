@@ -1,6 +1,6 @@
 import { BigDecimal, log } from "@graphprotocol/graph-ts";
 import { EpochTradingStatsRecord } from "../../types/schema";
-import { updatePointEntities } from "./calculatePoints";
+import { updatePointsOnClose } from "./calculatePoints";
 import {
   ZERO_BD,
   EPOCH_TYPE,
@@ -182,7 +182,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
   );
   _addCloseTradeStats(data, weeklyProtocolStats);
 
-  updatePointEntities(
+  updatePointsOnClose(
     address,
     currentWeekNumber,
     currentDayNumber,
