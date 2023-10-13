@@ -6,7 +6,6 @@ import {
   GetEpochTradingStatsRecordsForEpochQuery,
   getBuiltGraphSDK,
   GetEpochTradingPointsRecordsForEpochQuery,
-  GetEpochTradingPointsRecordsForEpochDocument,
 } from "../.graphclient";
 import { CHAIN_ID_TO_SUBGRAPH, generateId } from "./helpers";
 
@@ -16,7 +15,7 @@ type Context = {
 };
 
 export class TradingStatsLibrary {
-  private graphClient;
+  private graphClient: typeof getBuiltGraphSDK;
   private subgraph: string;
   constructor(chainId: number) {
     const subgraph = CHAIN_ID_TO_SUBGRAPH[chainId];
