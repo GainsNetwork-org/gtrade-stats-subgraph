@@ -20,7 +20,7 @@
     "check": "tsc --pretty --noEmit",
     "clean": "rm -rf .graphclient node_modules",
     "dev": "graphclient serve-dev",
-    "prepublishOnly": "pnpm build",
+    "prepublishOnly": "npm run build",
     "start": "graphclient serve-prod",
     "validate": "graphclient validate"
   },
