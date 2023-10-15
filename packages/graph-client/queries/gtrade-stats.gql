@@ -1,0 +1,73 @@
+query GetEpochTradingStatsRecord($id: ID!) {
+  epochTradingStatsRecord(id: $id) {
+    id
+    address
+    epochType
+    epochNumber
+    totalVolumePerGroup
+    totalBorrowingFees
+    pairsTraded
+    totalPnl
+    totalPnlPercentage
+    totalGovFees
+    totalReferralFees
+    totalTriggerFees
+    totalStakerFees
+    totalLpFees
+  }
+}
+
+query GetEpochTradingPointsRecord($id: ID!) {
+  epochTradingPointsRecord(id: $id) {
+    id
+    address
+    epochType
+    epochNumber
+    loyaltyPoints
+    volumePoints
+    absSkillPoints
+    relSkillPoints
+    diversityPoints
+  }
+}
+
+query GetEpochTradingStatsRecordsForEpoch(
+  $skip: Int = 0
+  $first: Int = 1000
+  $where: EpochTradingStatsRecord_filter
+) {
+  epochTradingStatsRecords(skip: $skip, first: $first, where: $where) {
+    id
+    address
+    epochType
+    epochNumber
+    totalVolumePerGroup
+    totalBorrowingFees
+    pairsTraded
+    totalPnl
+    totalPnlPercentage
+    totalGovFees
+    totalReferralFees
+    totalTriggerFees
+    totalStakerFees
+    totalLpFees
+  }
+}
+
+query GetEpochTradingPointsRecordsForEpoch(
+  $skip: Int = 0
+  $first: Int = 1000
+  $where: EpochTradingPointsRecord_filter
+) {
+  epochTradingPointsRecords(skip: $skip, first: $first, where: $where) {
+    id
+    address
+    epochType
+    epochNumber
+    loyaltyPoints
+    volumePoints
+    absSkillPoints
+    relSkillPoints
+    diversityPoints
+  }
+}

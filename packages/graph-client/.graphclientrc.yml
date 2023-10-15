@@ -1,0 +1,19 @@
+sources:
+  - name: gtrade-stats
+    handler:
+      graphql:
+        endpoint: https://api.thegraph.com/subgraphs/name/gainsnetwork-org/{context.config.graphName:gtrade-stats-arbitrum}
+        retry: 3
+    transforms:
+      - autoPagination:
+          validateSchema: false
+          limitOfRecords: 5000
+
+  - name: gtoken
+    handler:
+      graphql:
+        endpoint: https://api.thegraph.com/subgraphs/name/thebuidler/{context.config.graphName:gtoken-arbitrum}
+        retry: 3
+
+documents:
+  - ./src/queries.gql
