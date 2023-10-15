@@ -16,4 +16,4 @@ sources:
         retry: 3
 
 documents:
-  - ./src/queries.gql
+  - ./queries/*.gql
