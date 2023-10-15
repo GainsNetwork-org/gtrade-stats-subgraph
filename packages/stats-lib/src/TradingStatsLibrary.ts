@@ -15,7 +15,7 @@ type Context = {
 };
 
 export class TradingStatsLibrary {
-  private graphClient: typeof getBuiltGraphSDK;
+  private graphClient;
   private subgraph: string;
   constructor(chainId: number) {
     const subgraph = CHAIN_ID_TO_SUBGRAPH[chainId];
