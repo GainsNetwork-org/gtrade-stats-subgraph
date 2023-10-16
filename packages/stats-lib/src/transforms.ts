@@ -1,4 +1,7 @@
-import { EpochTradingPointsRecord, EpochType } from ".graphclient";
+import {
+  EpochTradingPointsRecord,
+  EpochType,
+} from "@gainsnetwork/graph-client";
 
 export type EpochTradingPoints = {
   epochType: EpochType;

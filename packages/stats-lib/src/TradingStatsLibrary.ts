@@ -6,7 +6,7 @@ import {
   GetEpochTradingStatsRecordsForEpochQuery,
   getBuiltGraphSDK,
   GetEpochTradingPointsRecordsForEpochQuery,
-} from "../.graphclient";
+} from "@gainsnetwork/graph-client";
 import { CHAIN_ID_TO_SUBGRAPH, generateId } from "./helpers";
 
 type Context = {
@@ -89,8 +89,7 @@ export class TradingStatsLibrary {
     try {
       const result = await this.graphClient.GetEpochTradingStatsRecordsForEpoch(
         {
-          epochType,
-          epochNumber,
+          where: { epochType, epochNumber },
           skip: context?.skip || 0,
           first: context?.first || 1000,
         }
@@ -112,8 +111,7 @@ export class TradingStatsLibrary {
     try {
       const result =
         await this.graphClient.GetEpochTradingPointsRecordsForEpoch({
-          epochType,
-          epochNumber,
+          where: { epochType, epochNumber },
           skip: context?.skip || 0,
           first: context?.first || 1000,
         });

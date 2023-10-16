@@ -1,4 +1,7 @@
-import { EpochTradingPointsRecord, EpochType } from ".graphclient";
+import {
+  EpochTradingPointsRecord,
+  EpochType,
+} from "@gainsnetwork/graph-client";
 import { TradingStatsLibrary } from "./TradingStatsLibrary";
 import {
   EpochTradingPoints,
@@ -110,13 +113,17 @@ export class RewardsLibrary {
       transformEpochTradingPointsRecord(record as EpochTradingPointsRecord)
     );
 
-    const protocolTradingPoints = transformEpochTradingPointsRecord(
-      (await this.statsLibrary.getEpochTradingPointsRecord(
-        "protocol",
-        epochType,
-        epochNumber
-      )) as EpochTradingPointsRecord
+    // Find protocol points and remove from array
+    const ix = epochTradingPoints.findIndex(
+      points => points.address === "protocol"
     );
+    if (ix === -1) {
+      throw new Error(
+        `No protocol epoch trading points record found for epoch ${epochNumber}.`
+      );
+    }
+    const protocolTradingPoints = epochTradingPoints[ix];
+    epochTradingPoints.splice(ix, 1);
 
     return epochTradingPoints.map(userPoints =>
       convertPointsToRewardsForUser(

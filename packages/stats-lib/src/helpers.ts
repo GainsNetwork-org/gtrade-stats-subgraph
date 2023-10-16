@@ -1,4 +1,4 @@
-import { EpochType } from ".graphclient";
+import { EpochType } from "@gainsnetwork/graph-client";
 
 export const CHAIN_ID_TO_SUBGRAPH: { [chainId: number]: string } = {
   137: "gtrade-stats-polygon",
