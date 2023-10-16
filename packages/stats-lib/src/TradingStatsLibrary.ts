@@ -6,6 +6,7 @@ import {
   GetEpochTradingStatsRecordsForEpochQuery,
   getBuiltGraphSDK,
   GetEpochTradingPointsRecordsForEpochQuery,
+  GetTraderAndProtocolPointsRecordsForEpochQuery,
 } from "@gainsnetwork/graph-client";
 import { CHAIN_ID_TO_SUBGRAPH, generateId } from "./helpers";
 
@@ -116,6 +117,23 @@ export class TradingStatsLibrary {
           first: context?.first || 1000,
         });
       return result?.epochTradingPointsRecords;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getTraderAndProtocolPointsRecordsForEpoch(
+    address: string,
+    epochType: EpochType,
+    epochNumber: number
+  ): Promise<GetTraderAndProtocolPointsRecordsForEpochQuery | undefined> {
+    try {
+      const traderId = generateId(address, epochType, epochNumber);
+      const protocolId = generateId("protocol", epochType, epochNumber);
+      return this.graphClient.GetTraderAndProtocolPointsRecordsForEpoch({
+        traderId,
+        protocolId,
+      }) as Promise<GetTraderAndProtocolPointsRecordsForEpochQuery>;
     } catch (e) {
       console.error(e);
     }
