@@ -1,4 +1,4 @@
-import { RewardsConfig } from "./RewardsLibrary";
+import { RewardsConfig } from "./types";
 
 export const ARBITRUM_STIP_REWARDS: RewardsConfig = {
   totalRewards: 4000000,

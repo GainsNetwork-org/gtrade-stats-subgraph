@@ -1,38 +1,10 @@
-import {
-  EpochTradingPointsRecord,
-  EpochType,
-} from "@gainsnetwork/graph-client";
+import { EpochTradingPointsRecord } from "@gainsnetwork/graph-client";
 import { TradingStatsLibrary } from "./TradingStatsLibrary";
 import {
   EpochTradingPoints,
   transformEpochTradingPointsRecord,
 } from "./transforms";
-
-type RewardDistributionP = {
-  loyalty: number;
-  volume: number;
-  absSkill: number;
-  relSkill: number;
-  diversity: number;
-};
-
-export type RewardsConfig = {
-  totalRewards: number;
-  epochType: EpochType;
-  numEpochs: number;
-  startingEpoch: number;
-  rewardDistribution: RewardDistributionP;
-};
-
-type RewardResults = {
-  address: string;
-  total: number;
-  loyalty: number;
-  volume: number;
-  absSkill: number;
-  relSkill: number;
-  diversity: number;
-};
+import { RewardResults, RewardsConfig } from "./types";
 
 export class RewardsLibrary {
   private config: RewardsConfig;
