@@ -54,7 +54,7 @@ export class TradingStatsLibrary {
       const result = await this.graphClient.GetEpochTradingStatsRecord({
         id,
       });
-      return result?.epochTradingStatsRecord as GetEpochTradingStatsRecordQuery["epochTradingStatsRecord"];
+      return result?.epochTradingStatsRecord;
     } catch (e) {
       console.error(e);
     }
@@ -72,7 +72,7 @@ export class TradingStatsLibrary {
       const result = await this.graphClient.GetEpochTradingPointsRecord({
         id,
       });
-      return result?.epochTradingPointsRecord as GetEpochTradingPointsRecordQuery["epochTradingPointsRecord"];
+      return result?.epochTradingPointsRecord;
     } catch (e) {
       console.error(e);
     }
@@ -94,7 +94,7 @@ export class TradingStatsLibrary {
           first: context?.first || 1000,
         }
       );
-      return result?.epochTradingStatsRecords as GetEpochTradingStatsRecordsForEpochQuery["epochTradingStatsRecords"];
+      return result?.epochTradingStatsRecords;
     } catch (e) {
       console.error(e);
     }
@@ -115,7 +115,7 @@ export class TradingStatsLibrary {
           skip: context?.skip || 0,
           first: context?.first || 1000,
         });
-      return result?.epochTradingPointsRecords as GetEpochTradingPointsRecordsForEpochQuery["epochTradingPointsRecords"];
+      return result?.epochTradingPointsRecords;
     } catch (e) {
       console.error(e);
     }

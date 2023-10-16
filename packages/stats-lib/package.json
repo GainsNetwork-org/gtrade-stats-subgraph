@@ -2,7 +2,7 @@
   "name": "@gainsnetwork/stats-subgraph-lib",
   "version": "0.0.1-rc1",
   "description": "Fetching library for Gains Network Stats subgraph",
-  "main": "./lib/src/index.js",
+  "main": "./lib/index.js",
   "files": [
     "lib/**/*"
   ],
@@ -44,6 +44,6 @@
     "*.ts": "eslint --cache --cache-location .eslintcache --fix"
   },
   "dependencies": {
-    "@gainsnetwork/graph-client": "^0.0.1-rc1"
+    "@gainsnetwork/graph-client": "^0.0.1-rc5"
   }
 }
