@@ -5,7 +5,6 @@
     "src/**/*.test.ts"
   ],
   "include": [
-    "src/**/*.ts",
-    ".graphclient/**/*.ts"
+    "src/**/*.ts"
   ]
 }

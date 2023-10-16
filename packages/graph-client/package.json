@@ -1,8 +1,7 @@
 {
   "name": "@gainsnetwork/graph-client",
-  "version": "0.0.1-rc1",
+  "version": "0.0.1-rc2",
   "description": "Client library for Gains Network GraphQL API",
-  "type": "module",
   "main": ".graphclient/index.js",
   "types": ".graphclient/index.d.ts",
   "files": [
@@ -16,9 +15,9 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "graphclient build --fileType js --throwOnInvalidConfig && rm -f .graphclient/package.json",
+    "build": "npm run clean && graphclient build --fileType json --throwOnInvalidConfig",
     "check": "tsc --pretty --noEmit",
-    "clean": "rm -rf .graphclient node_modules",
+    "clean": "rm -rf .graphclient",
     "dev": "graphclient serve-dev",
     "prepublishOnly": "npm run build",
     "start": "graphclient serve-prod",
