@@ -15,5 +15,45 @@ sources:
         endpoint: https://api.thegraph.com/subgraphs/name/thebuidler/{context.config.graphName:gtoken-arbitrum}
         retry: 3
 
+additionalTypeDefs: |
+  # Types
+  type RewardDistributionP {
+    loyalty: Float!
+    volume: Float!
+    absSkill: Float!
+    relSkill: Float!
+    diversity: Float!
+  }
+
+  type RewardsConfig {
+    id: ID!
+    active: Boolean!
+    totalRewards: Int!
+    epochType: EpochType!
+    numEpochs: Int!
+    startingEpoch: Int!
+    rewardDistribution: RewardDistributionP!
+  }
+
+  type RewardResults {
+    address: String!
+    total: Float!
+    loyalty: Float!
+    volume: Float!
+    absSkill: Float!
+    relSkill: Float!
+    diversity: Float!
+  }
+
+  # Query extensions
+  extend type Query {
+    getActiveRewardsConfigs: [RewardsConfig!]!
+    getAddressRewardsForEpoch(address: String!, rewardConfigId: ID!, epoch: Int!): RewardResults!
+    getAllRewardsForEpoch(rewardConfigId: ID!, epoch: Int!, skip: Int = 0, first: Int = 1000): [RewardResults!]!
+  }
+
+additionalResolvers:
+  - ./resolvers/index.js
+
 documents:
   - ./queries/*.gql
