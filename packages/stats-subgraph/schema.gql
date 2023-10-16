@@ -3,7 +3,7 @@ enum EpochType {
   week
 }
 
-type AggregateTradingStats @entity {
+type EpochTradingStatsRecord @entity {
   "Address-type-number"
   id: ID!
 
@@ -45,4 +45,21 @@ type AggregateTradingStats @entity {
 
   "Total lp fees"
   totalLpFees: BigDecimal!
+}
+
+type EpochTradingPointsRecord @entity {
+  "Address-epochType-epochNumber"
+  id: ID!
+  address: String!
+  epochNumber: Int!
+  epochType: EpochType!
+  totalFeesPaid: BigDecimal!
+  pnl: BigDecimal!
+  pnlPercentage: BigDecimal!
+  groupsTraded: [BigDecimal!]!
+  loyaltyPoints: BigDecimal!
+  volumePoints: BigDecimal!
+  absSkillPoints: BigDecimal!
+  relSkillPoints: BigDecimal!
+  diversityPoints: BigDecimal!
 }

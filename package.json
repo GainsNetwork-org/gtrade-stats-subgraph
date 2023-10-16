@@ -1,35 +1,19 @@
 {
-  "name": "gtrade-points-subgraph",
-  "version": "0.0.1",
-  "description": "A subgraph that indexes gTrade point system based on on-chain events",
-  "main": "build/index.js",
-  "author": "",
-  "license": "GPL-3.0",
-  "directories": {
-    "src": "src"
-  },
+  "name": "gtrade-stats-monorepo",
+  "version": "1.0.0",
+  "description": "Monorepo for subgraph and fetching library",
+  "main": "index.js",
   "scripts": {
-    "clean": "rimraf ./src/types ./build subgraph.yaml",
-    "build": "npx graph build",
-    "codegen": "npx graph codegen --output-dir src/types/",
-    "deploy": "npx graph deploy --debug --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/",
-    "deploy:hosted": "npx graph deploy --product hosted-service --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ --access-token ${GRAPH_ACCESS_TOKEN}",
-    "configure:arbitrum": "pnpm clean && pnpm prepare:arbitrum && pnpm codegen",
-    "configure:polygon": "pnpm clean && pnpm prepare:polygon && pnpm codegen",
-    "prepare:arbitrum": "mustache config/arbitrum.json subgraph.yaml.mustache > subgraph.yaml",
-    "prepare:polygon": "mustache config/polygon.json subgraph.yaml.mustache > subgraph.yaml",
-    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-arbitrum",
-    "deploy:polygon": "pnpm clean && pnpm configure:polygon && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-polygon"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.58.0",
-    "@graphprotocol/graph-ts": "^0.31.0",
-    "@graphql-tools/load-files": "^7.0.0",
-    "@graphql-tools/merge": "^9.0.0",
-    "graphql": "^16.8.1",
-    "mustache": "^4.2.0",
-    "prettier": "^3.0.3",
-    "rimraf": "^5.0.5",
-    "source-map-support": "^0.5.21"
-  }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GainsNetwork-org/gtrade-stats-subgraph.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GainsNetwork-org/gtrade-stats-subgraph/issues"
+  },
+  "homepage": "https://github.com/GainsNetwork-org/gtrade-stats-subgraph#readme"
 }

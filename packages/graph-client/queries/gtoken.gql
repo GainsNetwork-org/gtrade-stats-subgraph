@@ -1,0 +1,8 @@
+query AccountVaultDetailsQuery($accountVaultId: ID!) {
+  accountVault(id: $accountVaultId) {
+    sharesBalance
+    sharesLocked
+    totalAssetsDeposited
+    totalAssetsWithdrawn
+  }
+}

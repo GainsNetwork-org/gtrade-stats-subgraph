@@ -8,6 +8,7 @@ import {
   addReferralFeeStats,
   addStakerFeeStats,
   addTriggerFeeStats,
+  updateFeeBasedPoints,
 } from "../../utils/access";
 import {
   MarketExecuted,
@@ -96,6 +97,7 @@ export function handleGovFeeCharged(event: GovFeeCharged): void {
   const timestamp = event.block.timestamp.toI32();
   log.info("[handleGovFeeCharged] {}", [event.transaction.hash.toHexString()]);
   addGovFeeStats(trader, govFee, timestamp);
+  updateFeeBasedPoints(trader, govFee, timestamp);
 }
 
 export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
@@ -106,6 +108,7 @@ export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
     event.transaction.hash.toHexString(),
   ]);
   addReferralFeeStats(trader, referralFee, timestamp);
+  updateFeeBasedPoints(trader, referralFee, timestamp);
 }
 
 export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
@@ -116,6 +119,7 @@ export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
     event.transaction.hash.toHexString(),
   ]);
   addTriggerFeeStats(trader, triggerFee, timestamp);
+  updateFeeBasedPoints(trader, triggerFee, timestamp);
 }
 
 export function handleStakerFeeCharged(event: SssFeeCharged): void {
@@ -126,6 +130,7 @@ export function handleStakerFeeCharged(event: SssFeeCharged): void {
     event.transaction.hash.toHexString(),
   ]);
   addStakerFeeStats(trader, stakerFee, timestamp);
+  updateFeeBasedPoints(trader, stakerFee, timestamp);
 }
 
 export function handleLpFeeCharged(event: DaiVaultFeeCharged): void {
@@ -134,6 +139,7 @@ export function handleLpFeeCharged(event: DaiVaultFeeCharged): void {
   const timestamp = event.block.timestamp.toI32();
   log.info("[handleLpFeeCharged] {}", [event.transaction.hash.toHexString()]);
   addLpFeeStats(trader, lpFee, timestamp);
+  updateFeeBasedPoints(trader, lpFee, timestamp);
 }
 
 function _handleOpenTrade(

@@ -1,0 +1,12 @@
+sources:
+  - name: gtrade-stats
+    handler:
+      graphql:
+        endpoint: https://api.thegraph.com/subgraphs/name/gainsnetwork-org/{context.config.graphName:gtrade-stats-arbitrum}
+    transforms:
+      - autoPagination:
+          validateSchema: true
+          limitOfRecords: 5000
+
+documents:
+  - ./src/queries.gql
