@@ -5,6 +5,7 @@ import {
   transformEpochTradingPointsRecord,
 } from "./transforms";
 import { RewardResults, RewardsConfig } from "./types";
+import { determineEpochNumber } from "./helpers";
 
 export class RewardsLibrary {
   private config: RewardsConfig;
@@ -51,7 +52,7 @@ export class RewardsLibrary {
     );
   }
 
-  async getAllRewardsForEpoch(epochNumber: number): Promise<any[]> {
+  async getAllRewardsForEpoch(epochNumber: number): Promise<RewardResults[]> {
     const { epochType, numEpochs, startingEpoch } = this.config;
     if (epochNumber > startingEpoch + numEpochs) {
       throw new Error(
@@ -107,6 +108,14 @@ export class RewardsLibrary {
         `Reward distribution must total 1, but got ${total} instead.`
       );
     }
+  }
+
+  async getAllRewardsForLastEpoch() {
+    const currentEpoch = determineEpochNumber(
+      Date.now() / 1000,
+      this.config.epochType
+    );
+    return this.getAllRewardsForEpoch(currentEpoch - 1);
   }
 }
 
