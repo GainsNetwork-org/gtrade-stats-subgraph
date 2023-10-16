@@ -25,7 +25,7 @@ additionalTypeDefs: |
     diversity: Float!
   }
 
-  type RewardsConfig {
+  type RewardConfig {
     id: ID!
     active: Boolean!
     totalRewards: Int!
@@ -47,7 +47,8 @@ additionalTypeDefs: |
 
   # Query extensions
   extend type Query {
-    getActiveRewardsConfigs: [RewardsConfig!]!
+    getActiveRewardConfigs: [RewardConfig!]!
+    getRewardConfig(id: ID!): RewardConfig
     getAddressRewardsForEpoch(address: String!, rewardConfigId: ID!, epoch: Int!): RewardResults!
     getAllRewardsForEpoch(rewardConfigId: ID!, epoch: Int!, skip: Int = 0, first: Int = 1000): [RewardResults!]!
   }
