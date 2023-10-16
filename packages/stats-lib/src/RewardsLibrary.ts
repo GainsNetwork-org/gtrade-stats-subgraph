@@ -16,7 +16,7 @@ type RewardDistributionP = {
   diversity: number;
 };
 
-type RewardsConfig = {
+export type RewardsConfig = {
   totalRewards: number;
   epochType: EpochType;
   numEpochs: number;
@@ -25,21 +25,13 @@ type RewardsConfig = {
 };
 
 type RewardResults = {
+  address: string;
   total: number;
   loyalty: number;
   volume: number;
   absSkill: number;
   relSkill: number;
   diversity: number;
-};
-
-const REWARD_RESULTS_SKELETON: RewardResults = {
-  total: 0,
-  loyalty: 0,
-  volume: 0,
-  absSkill: 0,
-  relSkill: 0,
-  diversity: 0,
 };
 
 export class RewardsLibrary {
@@ -53,7 +45,7 @@ export class RewardsLibrary {
     this.statsLibrary = statsLibrary;
   }
 
-  async getRewardsForUserForEpoch(
+  async getUserRewardsForEpoch(
     address: string,
     epochNumber: number
   ): Promise<RewardResults> {
@@ -87,9 +79,7 @@ export class RewardsLibrary {
     );
   }
 
-  async getRewardsForAllUsersForEpoch(
-    epochNumber: number
-  ): Promise<RewardResults[]> {
+  async getAllRewardsForEpoch(epochNumber: number): Promise<any[]> {
     const { epochType, numEpochs, startingEpoch } = this.config;
     if (epochNumber > startingEpoch + numEpochs) {
       throw new Error(
@@ -140,9 +130,9 @@ export class RewardsLibrary {
       (acc, curr) => acc + curr,
       0
     );
-    if (total !== 100) {
+    if (total !== 1) {
       throw new Error(
-        `Reward distribution must total 100, but got ${total} instead.`
+        `Reward distribution must total 1, but got ${total} instead.`
       );
     }
   }
@@ -153,35 +143,45 @@ const convertPointsToRewardsForUser = (
   protocolPoints: EpochTradingPoints,
   rewards: RewardsConfig
 ): RewardResults => {
-  const rewardResults = REWARD_RESULTS_SKELETON;
+  const rewardResults: RewardResults = {
+    address: userPoints.address,
+    total: 0,
+    loyalty: 0,
+    volume: 0,
+    absSkill: 0,
+    relSkill: 0,
+    diversity: 0,
+  };
+
+  const epochTotalRewards = rewards.totalRewards / rewards.numEpochs;
   rewardResults.loyalty = convertPointShareToRewards(
     userPoints.loyaltyPoints,
     protocolPoints.loyaltyPoints,
-    rewards.rewardDistribution.loyalty
+    rewards.rewardDistribution.loyalty * epochTotalRewards
   );
 
   rewardResults.volume = convertPointShareToRewards(
     userPoints.volumePoints,
     protocolPoints.volumePoints,
-    rewards.rewardDistribution.volume
+    rewards.rewardDistribution.volume * epochTotalRewards
   );
 
   rewardResults.absSkill = convertPointShareToRewards(
     userPoints.absSkillPoints,
     protocolPoints.absSkillPoints,
-    rewards.rewardDistribution.absSkill
+    rewards.rewardDistribution.absSkill * epochTotalRewards
   );
 
   rewardResults.relSkill = convertPointShareToRewards(
     userPoints.relSkillPoints,
     protocolPoints.relSkillPoints,
-    rewards.rewardDistribution.relSkill
+    rewards.rewardDistribution.relSkill * epochTotalRewards
   );
 
   rewardResults.diversity = convertPointShareToRewards(
     userPoints.diversityPoints,
     protocolPoints.diversityPoints,
-    rewards.rewardDistribution.diversity
+    rewards.rewardDistribution.diversity * epochTotalRewards
   );
 
   rewardResults.total =
