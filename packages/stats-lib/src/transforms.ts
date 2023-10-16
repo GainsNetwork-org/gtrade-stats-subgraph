@@ -1,18 +1,5 @@
-import {
-  EpochTradingPointsRecord,
-  EpochType,
-} from "@gainsnetwork/graph-client";
-
-export type EpochTradingPoints = {
-  epochType: EpochType;
-  epochNumber: number;
-  address: string;
-  loyaltyPoints: number;
-  volumePoints: number;
-  absSkillPoints: number;
-  relSkillPoints: number;
-  diversityPoints: number;
-};
+import { EpochTradingPointsRecord } from "@gainsnetwork/graph-client";
+import { EpochTradingPoints } from "./types";
 
 export const transformEpochTradingPointsRecord = (
   record: EpochTradingPointsRecord

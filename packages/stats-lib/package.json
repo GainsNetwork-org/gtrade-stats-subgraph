@@ -1,6 +1,6 @@
 {
   "name": "@gainsnetwork/stats-subgraph-lib",
-  "version": "0.0.1-rc2",
+  "version": "0.0.1-rc3",
   "description": "Fetching library for Gains Network Stats subgraph",
   "main": "./lib/index.js",
   "files": [
