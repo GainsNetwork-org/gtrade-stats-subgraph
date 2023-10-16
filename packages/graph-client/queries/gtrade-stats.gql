@@ -1,3 +1,15 @@
+fragment BaseEpochTradingPointsRecord on EpochTradingPointsRecord {
+  id
+  address
+  epochType
+  epochNumber
+  loyaltyPoints
+  volumePoints
+  absSkillPoints
+  relSkillPoints
+  diversityPoints
+}
+
 query GetEpochTradingStatsRecord($id: ID!) {
   epochTradingStatsRecord(id: $id) {
     id
@@ -19,15 +31,7 @@ query GetEpochTradingStatsRecord($id: ID!) {
 
 query GetEpochTradingPointsRecord($id: ID!) {
   epochTradingPointsRecord(id: $id) {
-    id
-    address
-    epochType
-    epochNumber
-    loyaltyPoints
-    volumePoints
-    absSkillPoints
-    relSkillPoints
-    diversityPoints
+    ...BaseEpochTradingPointsRecord
   }
 }
 
@@ -60,14 +64,18 @@ query GetEpochTradingPointsRecordsForEpoch(
   $where: EpochTradingPointsRecord_filter
 ) {
   epochTradingPointsRecords(skip: $skip, first: $first, where: $where) {
-    id
-    address
-    epochType
-    epochNumber
-    loyaltyPoints
-    volumePoints
-    absSkillPoints
-    relSkillPoints
-    diversityPoints
+    ...BaseEpochTradingPointsRecord
+  }
+}
+
+query GetTraderAndProtocolPointsRecordsForEpoch(
+  $traderId: ID!
+  $protocolId: ID!
+) {
+  trader: epochTradingPointsRecord(id: $traderId) {
+    ...BaseEpochTradingPointsRecord
+  }
+  protocol: epochTradingPointsRecord(id: $protocolId) {
+    ...BaseEpochTradingPointsRecord
   }
 }
