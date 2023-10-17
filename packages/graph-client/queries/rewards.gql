@@ -65,3 +65,17 @@ query GetAllRewardsForEpoch(
     ...BaseRewardResults
   }
 }
+
+query GetAllRewardsForLastEpoch(
+  $rewardConfigId: ID!
+  $skip: Int = 0
+  $first: Int = 1000
+) {
+  getAllRewardsForLastEpoch(
+    rewardConfigId: $rewardConfigId
+    skip: $skip
+    first: $first
+  ) {
+    ...BaseRewardResults
+  }
+}
