@@ -1,5 +1,5 @@
 import { EpochType } from "@gainsnetwork/graph-client";
-import { EpochTradingPoints, RewardResults, RewardsConfig } from "./types";
+import { EpochTradingPoints, RewardResults, RewardConfig } from "./types";
 
 export const CHAIN_ID_TO_SUBGRAPH: { [chainId: number]: string } = {
   137: "gtrade-stats-polygon",
@@ -61,7 +61,7 @@ export const determineEpochNumber = (
 export const convertPointsToRewardsForUser = (
   userPoints: EpochTradingPoints,
   protocolPoints: EpochTradingPoints,
-  rewards: RewardsConfig
+  rewards: RewardConfig
 ): RewardResults => {
   const rewardResults: RewardResults = {
     address: userPoints.address,

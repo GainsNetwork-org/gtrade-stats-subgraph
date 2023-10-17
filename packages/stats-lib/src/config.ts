@@ -1,6 +1,6 @@
-import { RewardsConfig } from "./types";
+import { RewardConfig } from "./types";
 
-export const ARBITRUM_STIP_REWARDS: RewardsConfig = {
+export const ARBITRUM_STIP_REWARDS: RewardConfig = {
   totalRewards: 4000000,
   epochType: "week",
   numEpochs: 14,

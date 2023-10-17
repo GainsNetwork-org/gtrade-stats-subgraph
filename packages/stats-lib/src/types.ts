@@ -8,7 +8,7 @@ export type RewardDistributionP = {
   diversity: number;
 };
 
-export type RewardsConfig = {
+export type RewardConfig = {
   totalRewards: number;
   epochType: EpochType;
   numEpochs: number;
