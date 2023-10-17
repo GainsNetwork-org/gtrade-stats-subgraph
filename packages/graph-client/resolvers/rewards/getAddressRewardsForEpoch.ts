@@ -3,11 +3,11 @@ import {
   QueryResolvers,
   QuerygetAddressRewardsForEpochArgs,
   getBuiltGraphSDK,
-} from "../../.graphclient";
+} from "./../../.graphclient/index.js";
 import {
   convertPointsToRewardsForUser,
   generateId,
-} from "../../helpers/rewards";
+} from "../../helpers/rewards.js";
 
 export const getAddressRewardsForEpoch: QueryResolvers["getAddressRewardsForEpoch"] =
   async (

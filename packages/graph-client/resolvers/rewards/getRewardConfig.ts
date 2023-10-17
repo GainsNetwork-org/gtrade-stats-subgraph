@@ -3,7 +3,7 @@ import {
   Query,
   QueryResolvers,
   QuerygetRewardConfigArgs,
-} from "../../.graphclient";
+} from "./../../.graphclient/index.js";
 import { ARBITRUM_STIP_REWARDS } from "./getActiveRewardConfigs";
 
 // @ts-ignore

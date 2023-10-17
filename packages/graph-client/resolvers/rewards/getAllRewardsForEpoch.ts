@@ -5,11 +5,11 @@ import {
   QueryResolvers,
   QuerygetAllRewardsForEpochArgs,
   getBuiltGraphSDK,
-} from ".graphclient";
+} from "./../../.graphclient/index.js";
 import {
   convertPointsToRewardsForUser,
   transformEpochTradingPointsRecord,
-} from "helpers/rewards";
+} from "../../helpers/rewards.js";
 
 export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
   async (

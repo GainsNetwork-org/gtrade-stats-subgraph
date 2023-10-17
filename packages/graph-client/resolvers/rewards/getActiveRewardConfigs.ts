@@ -1,4 +1,8 @@
-import { Query, QueryResolvers, EpochType } from "../../.graphclient";
+import {
+  Query,
+  QueryResolvers,
+  EpochType,
+} from "./../../.graphclient/index.js";
 
 export const ARBITRUM_STIP_REWARDS = {
   id: "arbitrum-stip-0",
