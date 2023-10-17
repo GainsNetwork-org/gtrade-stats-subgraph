@@ -1,3 +1,4 @@
 export * from "./getActiveRewardConfigs";
-export * from "./getAddressRewardsForEpoch";
 export * from "./getRewardConfig";
+export * from "./getAddressRewardsForEpoch";
+export * from "./getAllRewardsForEpoch";

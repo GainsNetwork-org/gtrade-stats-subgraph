@@ -6,6 +6,7 @@ import {
 } from "../../.graphclient";
 import { ARBITRUM_STIP_REWARDS } from "./getActiveRewardConfigs";
 
+// @ts-ignore
 export const getRewardConfig: QueryResolvers["getRewardConfig"] = async (
   root,
   args: QuerygetRewardConfigArgs,
