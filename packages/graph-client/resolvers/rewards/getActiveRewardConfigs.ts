@@ -16,7 +16,7 @@ export const ARBITRUM_STIP_REWARDS = {
   },
 };
 
-export const getActiveRewardsConfigs: QueryResolvers["getActiveRewardsConfigs"] =
-  (): Query["getActiveRewardsConfigs"] => {
+export const getActiveRewardConfigs: QueryResolvers["getActiveRewardConfigs"] =
+  (): Query["getActiveRewardConfigs"] => {
     return [ARBITRUM_STIP_REWARDS];
   };
