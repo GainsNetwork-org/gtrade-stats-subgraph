@@ -1,11 +1,16 @@
-import { EpochType } from "@gainsnetwork/graph-client";
-import { EpochTradingPoints, RewardResults, RewardConfig } from "./types";
+import {
+  EpochTradingPointsRecord,
+  EpochType,
+  RewardConfig,
+  RewardResults,
+} from "../.graphclient";
+import { EpochTradingPoints } from "../types/rewards";
 
-export const CHAIN_ID_TO_SUBGRAPH: { [chainId: number]: string } = {
-  137: "gtrade-stats-polygon",
-  80001: "gtrade-stats-mumbai",
-  42161: "gtrade-stats-arbitrum",
-};
+export const convertPointShareToRewards = (
+  points: number,
+  totalPoints: number,
+  totalReward: number
+) => (points / totalPoints) * totalReward;
 
 export const generateId = (
   address: string,
@@ -114,8 +119,16 @@ export const convertPointsToRewardsForUser = (
   return rewardResults;
 };
 
-export const convertPointShareToRewards = (
-  points: number,
-  totalPoints: number,
-  totalReward: number
-) => (points / totalPoints) * totalReward;
+export const transformEpochTradingPointsRecord = (
+  record: EpochTradingPointsRecord
+): EpochTradingPoints => ({
+  ...record,
+  epochType: record.epochType,
+  epochNumber: Number(record.epochNumber),
+  address: record.address,
+  loyaltyPoints: Number(record.loyaltyPoints),
+  volumePoints: Number(record.volumePoints),
+  absSkillPoints: Number(record.absSkillPoints),
+  relSkillPoints: Number(record.relSkillPoints),
+  diversityPoints: Number(record.diversityPoints),
+});

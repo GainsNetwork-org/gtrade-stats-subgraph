@@ -1,14 +1,14 @@
 import { EpochTradingPointsRecord } from "@gainsnetwork/graph-client";
 import { TradingStatsLibrary } from "./TradingStatsLibrary";
 import { transformEpochTradingPointsRecord } from "./transforms";
-import { RewardResults, RewardsConfig } from "./types";
+import { RewardResults, RewardConfig } from "./types";
 import { convertPointsToRewardsForUser, determineEpochNumber } from "./helpers";
 
 export class RewardsLibrary {
-  private config: RewardsConfig;
+  private config: RewardConfig;
   private statsLibrary: TradingStatsLibrary;
 
-  constructor(config: RewardsConfig, statsLibrary: TradingStatsLibrary) {
+  constructor(config: RewardConfig, statsLibrary: TradingStatsLibrary) {
     RewardsLibrary.validateConfig(config);
 
     this.config = config;
@@ -94,7 +94,7 @@ export class RewardsLibrary {
     );
   }
 
-  static validateConfig(config: RewardsConfig) {
+  static validateConfig(config: RewardConfig) {
     const { rewardDistribution } = config;
     const total = Object.values(rewardDistribution).reduce(
       (acc, curr) => acc + curr,
