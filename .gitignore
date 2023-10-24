@@ -12,6 +12,8 @@ yarn.lock
 **/build
 **/lib
 **/.graphclient
+**/subgraph.yaml
+subgraph.yaml
 
 # Logs
 logs
