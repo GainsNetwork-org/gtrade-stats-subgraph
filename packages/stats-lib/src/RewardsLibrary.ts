@@ -1,56 +1,21 @@
-import { EpochTradingPointsRecord, EpochType } from ".graphclient";
+import { EpochTradingPointsRecord } from "@gainsnetwork/graph-client";
 import { TradingStatsLibrary } from "./TradingStatsLibrary";
-import {
-  EpochTradingPoints,
-  transformEpochTradingPointsRecord,
-} from "./transforms";
-
-type RewardDistributionP = {
-  loyalty: number;
-  volume: number;
-  absSkill: number;
-  relSkill: number;
-  diversity: number;
-};
-
-type RewardsConfig = {
-  totalRewards: number;
-  epochType: EpochType;
-  numEpochs: number;
-  startingEpoch: number;
-  rewardDistribution: RewardDistributionP;
-};
-
-type RewardResults = {
-  total: number;
-  loyalty: number;
-  volume: number;
-  absSkill: number;
-  relSkill: number;
-  diversity: number;
-};
-
-const REWARD_RESULTS_SKELETON: RewardResults = {
-  total: 0,
-  loyalty: 0,
-  volume: 0,
-  absSkill: 0,
-  relSkill: 0,
-  diversity: 0,
-};
+import { transformEpochTradingPointsRecord } from "./transforms";
+import { RewardResults, RewardConfig } from "./types";
+import { convertPointsToRewardsForUser, determineEpochNumber } from "./helpers";
 
 export class RewardsLibrary {
-  private config: RewardsConfig;
+  private config: RewardConfig;
   private statsLibrary: TradingStatsLibrary;
 
-  constructor(config: RewardsConfig, statsLibrary: TradingStatsLibrary) {
+  constructor(config: RewardConfig, statsLibrary: TradingStatsLibrary) {
     RewardsLibrary.validateConfig(config);
 
     this.config = config;
     this.statsLibrary = statsLibrary;
   }
 
-  async getRewardsForUserForEpoch(
+  async getUserRewardsForEpoch(
     address: string,
     epochNumber: number
   ): Promise<RewardResults> {
@@ -84,9 +49,7 @@ export class RewardsLibrary {
     );
   }
 
-  async getRewardsForAllUsersForEpoch(
-    epochNumber: number
-  ): Promise<RewardResults[]> {
+  async getAllRewardsForEpoch(epochNumber: number): Promise<RewardResults[]> {
     const { epochType, numEpochs, startingEpoch } = this.config;
     if (epochNumber > startingEpoch + numEpochs) {
       throw new Error(
@@ -110,13 +73,17 @@ export class RewardsLibrary {
       transformEpochTradingPointsRecord(record as EpochTradingPointsRecord)
     );
 
-    const protocolTradingPoints = transformEpochTradingPointsRecord(
-      (await this.statsLibrary.getEpochTradingPointsRecord(
-        "protocol",
-        epochType,
-        epochNumber
-      )) as EpochTradingPointsRecord
+    // Find protocol points and remove from array
+    const ix = epochTradingPoints.findIndex(
+      points => points.address === "protocol"
     );
+    if (ix === -1) {
+      throw new Error(
+        `No protocol epoch trading points record found for epoch ${epochNumber}.`
+      );
+    }
+    const protocolTradingPoints = epochTradingPoints[ix];
+    epochTradingPoints.splice(ix, 1);
 
     return epochTradingPoints.map(userPoints =>
       convertPointsToRewardsForUser(
@@ -127,68 +94,24 @@ export class RewardsLibrary {
     );
   }
 
-  static validateConfig(config: RewardsConfig) {
+  static validateConfig(config: RewardConfig) {
     const { rewardDistribution } = config;
     const total = Object.values(rewardDistribution).reduce(
       (acc, curr) => acc + curr,
       0
     );
-    if (total !== 100) {
+    if (total !== 1) {
       throw new Error(
-        `Reward distribution must total 100, but got ${total} instead.`
+        `Reward distribution must total 1, but got ${total} instead.`
       );
     }
   }
+
+  async getAllRewardsForLastEpoch() {
+    const currentEpoch = determineEpochNumber(
+      Date.now() / 1000,
+      this.config.epochType
+    );
+    return this.getAllRewardsForEpoch(currentEpoch - 1);
+  }
 }
-
-const convertPointsToRewardsForUser = (
-  userPoints: EpochTradingPoints,
-  protocolPoints: EpochTradingPoints,
-  rewards: RewardsConfig
-): RewardResults => {
-  const rewardResults = REWARD_RESULTS_SKELETON;
-  rewardResults.loyalty = convertPointShareToRewards(
-    userPoints.loyaltyPoints,
-    protocolPoints.loyaltyPoints,
-    rewards.rewardDistribution.loyalty
-  );
-
-  rewardResults.volume = convertPointShareToRewards(
-    userPoints.volumePoints,
-    protocolPoints.volumePoints,
-    rewards.rewardDistribution.volume
-  );
-
-  rewardResults.absSkill = convertPointShareToRewards(
-    userPoints.absSkillPoints,
-    protocolPoints.absSkillPoints,
-    rewards.rewardDistribution.absSkill
-  );
-
-  rewardResults.relSkill = convertPointShareToRewards(
-    userPoints.relSkillPoints,
-    protocolPoints.relSkillPoints,
-    rewards.rewardDistribution.relSkill
-  );
-
-  rewardResults.diversity = convertPointShareToRewards(
-    userPoints.diversityPoints,
-    protocolPoints.diversityPoints,
-    rewards.rewardDistribution.diversity
-  );
-
-  rewardResults.total =
-    rewardResults.loyalty +
-    rewardResults.volume +
-    rewardResults.absSkill +
-    rewardResults.relSkill +
-    rewardResults.diversity;
-
-  return rewardResults;
-};
-
-const convertPointShareToRewards = (
-  points: number,
-  totalPoints: number,
-  totalReward: number
-) => (points / totalPoints) * totalReward;

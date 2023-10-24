@@ -11,6 +11,7 @@ yarn.lock
 **/src/types
 **/build
 **/lib
+**/.graphclient
 
 # Logs
 logs
