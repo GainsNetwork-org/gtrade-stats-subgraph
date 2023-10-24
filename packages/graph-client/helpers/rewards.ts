@@ -140,19 +140,19 @@ export const loyaltyTiers: LoyaltyTier[] = [
   { lowerBound: 400, upperBound: Infinity, returnValue: 50 },
 ];
 
-export const getLoyaltyTier = (fees: number): number => {
+export const getLoyaltyTier = (points: number): number => {
   for (const tier of loyaltyTiers) {
-    if (fees >= tier.lowerBound && fees < tier.upperBound) {
+    if (points >= tier.lowerBound && points < tier.upperBound) {
       return tier.returnValue;
     }
   }
   return 0;
 };
 
-export const getPointsFromNextTier = (fees: number): number => {
+export const getPointsFromNextTier = (points: number): number => {
   for (const tier of loyaltyTiers) {
-    if (fees >= tier.lowerBound && fees < tier.upperBound) {
-      return tier.upperBound - fees;
+    if (points >= tier.lowerBound && points < tier.upperBound) {
+      return tier.upperBound - points;
     }
   }
   return 0;
