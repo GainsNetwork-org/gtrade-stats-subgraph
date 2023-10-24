@@ -4,7 +4,7 @@ import {
   RewardConfig,
   RewardResults,
 } from "../.graphclient";
-import { EpochTradingPoints } from "../types/rewards";
+import { EpochTradingPoints, LoyaltyTier } from "../types/rewards";
 
 export const convertPointShareToRewards = (
   points: number,
@@ -132,3 +132,28 @@ export const transformEpochTradingPointsRecord = (
   relSkillPoints: Number(record.relSkillPoints),
   diversityPoints: Number(record.diversityPoints),
 });
+
+export const loyaltyTiers: LoyaltyTier[] = [
+  { lowerBound: 8, upperBound: 40, returnValue: 1 },
+  { lowerBound: 40, upperBound: 200, returnValue: 5 },
+  { lowerBound: 200, upperBound: 400, returnValue: 25 },
+  { lowerBound: 400, upperBound: Infinity, returnValue: 50 },
+];
+
+export const getLoyaltyTier = (fees: number): number => {
+  for (const tier of loyaltyTiers) {
+    if (fees >= tier.lowerBound && fees < tier.upperBound) {
+      return tier.returnValue;
+    }
+  }
+  return 0;
+};
+
+export const getPointsFromNextTier = (fees: number): number => {
+  for (const tier of loyaltyTiers) {
+    if (fees >= tier.lowerBound && fees < tier.upperBound) {
+      return tier.upperBound - fees;
+    }
+  }
+  return 0;
+};
