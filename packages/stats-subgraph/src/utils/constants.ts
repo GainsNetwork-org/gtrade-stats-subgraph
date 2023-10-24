@@ -12,9 +12,12 @@ export const THRESHOLD_GROUP_0 = BigDecimal.fromString("100");
 export const THRESHOLD_GROUP_1 = BigDecimal.fromString("250");
 export const THRESHOLD_GROUP_2 = BigDecimal.fromString("300");
 export const THRESHOLD_GROUP_3 = BigDecimal.fromString("500");
-export const VOLUME_THRESHOLDS = [THRESHOLD_GROUP_0,THRESHOLD_GROUP_1,THRESHOLD_GROUP_2,THRESHOLD_GROUP_3]
-
-
+export const VOLUME_THRESHOLDS = [
+  THRESHOLD_GROUP_0,
+  THRESHOLD_GROUP_1,
+  THRESHOLD_GROUP_2,
+  THRESHOLD_GROUP_3,
+];
 
 export const PROTOCOL = "protocol";
 

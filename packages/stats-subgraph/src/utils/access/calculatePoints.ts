@@ -16,7 +16,7 @@ export function updatePointsOnClose(
   pnl: BigDecimal,
   pnlPercentage: BigDecimal,
   groupNumber: i32,
-  pairNumber:i32,
+  pairNumber: i32,
   volume: BigDecimal
 ): void {
   // load all 4 entries: UserDaily, ProtocolDaily, UserWeekly, ProtocolWeekly
@@ -179,28 +179,24 @@ export function updateDiversityPoints(
   pairNumber: i32,
   volume: BigDecimal
 ): void {
-  let groupId = 0
-  let volume_threshold=0
-  if(groupNumber==0 && (pairNumber==0 || pairNumber==1)) {
-    groupId = 0
-  }
-  else if(groupNumber==0 && pairNumber >1) {
-    groupId = 1
-  }  
-  else if(groupNumber==1 ||groupNumber==8 || groupNumber==9  ) {
-    groupId = 2
-  }
-  else if(groupNumber==6 || groupNumber==7){
-    groupId = 3
-  }
-  else {
-    groupId=4
+  let groupId = 0;
+  let volumeThreshold = ZERO_BD;
+  if (groupNumber == 0 && (pairNumber == 0 || pairNumber == 1)) {
+    groupId = 0;
+  } else if (groupNumber == 0 && pairNumber > 1) {
+    groupId = 1;
+  } else if (groupNumber == 1 || groupNumber == 8 || groupNumber == 9) {
+    groupId = 2;
+  } else if (groupNumber == 6 || groupNumber == 7) {
+    groupId = 3;
+  } else {
+    groupId = 4;
   }
 
   if (groupId < 4) {
-    volume_threshold = VOLUME_THRESHOLDS[groupId]
+    volumeThreshold = VOLUME_THRESHOLDS[groupId];
     if (
-      volume >= volume_threshold &&
+      volume.ge(volumeThreshold) &&
       userWeeklyPoints.groupsTraded[groupId] == ZERO_BD
     ) {
       // @todo - daily points should be calculated independently than weekly? Wdyt...
