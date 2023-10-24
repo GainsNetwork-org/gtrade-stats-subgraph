@@ -5,7 +5,7 @@ import {
   EPOCH_TYPE,
   determineEpochNumber,
   PROTOCOL,
-  MIN_VOLUME,
+  VOLUME_THRESHOLDS,
   ONE_BD,
 } from "../constants";
 
@@ -16,6 +16,7 @@ export function updatePointsOnClose(
   pnl: BigDecimal,
   pnlPercentage: BigDecimal,
   groupNumber: i32,
+  pairNumber:i32,
   volume: BigDecimal
 ): void {
   // load all 4 entries: UserDaily, ProtocolDaily, UserWeekly, ProtocolWeekly
@@ -64,6 +65,7 @@ export function updatePointsOnClose(
     userWeeklyPoints,
     protocolWeeklyPoints,
     groupNumber,
+    pairNumber,
     volume
   );
 }
@@ -174,18 +176,38 @@ export function updateDiversityPoints(
   userWeeklyPoints: EpochTradingPointsRecord,
   protocolWeeklyPoints: EpochTradingPointsRecord,
   groupNumber: i32,
+  pairNumber: i32,
   volume: BigDecimal
 ): void {
-  if (groupNumber < 4) {
+  let groupId = 0
+  let volume_threshold=0
+  if(groupNumber==0 && (pairNumber==0 || pairNumber==1)) {
+    groupId = 0
+  }
+  else if(groupNumber==0 && pairNumber >1) {
+    groupId = 1
+  }  
+  else if(groupNumber==1 ||groupNumber==8 || groupNumber==9  ) {
+    groupId = 2
+  }
+  else if(groupNumber==6 || groupNumber==7){
+    groupId = 3
+  }
+  else {
+    groupId=4
+  }
+
+  if (groupId < 4) {
+    volume_threshold = VOLUME_THRESHOLDS[groupId]
     if (
-      volume > MIN_VOLUME &&
-      userWeeklyPoints.groupsTraded[groupNumber] == ZERO_BD
+      volume >= volume_threshold &&
+      userWeeklyPoints.groupsTraded[groupId] == ZERO_BD
     ) {
       // @todo - daily points should be calculated independently than weekly? Wdyt...
-      userDailyPoints.groupsTraded[groupNumber] = ONE_BD;
-      protocolDailyPoints.groupsTraded[groupNumber] = ONE_BD;
-      userWeeklyPoints.groupsTraded[groupNumber] = ONE_BD;
-      protocolWeeklyPoints.groupsTraded[groupNumber] = ONE_BD;
+      userDailyPoints.groupsTraded[groupId] = ONE_BD;
+      protocolDailyPoints.groupsTraded[groupId] = ONE_BD;
+      userWeeklyPoints.groupsTraded[groupId] = ONE_BD;
+      protocolWeeklyPoints.groupsTraded[groupId] = ONE_BD;
 
       userDailyPoints.diversityPoints =
         userDailyPoints.diversityPoints.plus(ONE_BD);

@@ -189,6 +189,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
     data.pnl,
     data.pnlPercentage,
     data.groupIndex,
+    data.pairIndex,
     data.positionSize
   );
 }

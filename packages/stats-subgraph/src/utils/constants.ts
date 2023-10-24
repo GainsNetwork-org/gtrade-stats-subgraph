@@ -6,7 +6,14 @@ export const DAI_DECIMALS = 18;
 export const DAI_DECIMALS_BD = exponentToBigDecimal(DAI_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
-export const MIN_VOLUME = BigDecimal.fromString("100");
+
+//DIVERSITY POINTS THRESHOLDS BY GROUP
+export const THRESHOLD_GROUP_0 = BigDecimal.fromString("100");
+export const THRESHOLD_GROUP_1 = BigDecimal.fromString("250");
+export const THRESHOLD_GROUP_2 = BigDecimal.fromString("300");
+export const THRESHOLD_GROUP_3 = BigDecimal.fromString("500");
+export const VOLUME_THRESHOLDS = [THRESHOLD_GROUP_0,THRESHOLD_GROUP_1,THRESHOLD_GROUP_2,THRESHOLD_GROUP_3]
+
 
 
 export const PROTOCOL = "protocol";
