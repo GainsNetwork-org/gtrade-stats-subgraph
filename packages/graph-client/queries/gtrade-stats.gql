@@ -59,11 +59,17 @@ query GetEpochTradingStatsRecordsForEpoch(
 }
 
 query GetEpochTradingPointsRecordsForEpoch(
-  $skip: Int = 0
   $first: Int = 1000
   $where: EpochTradingPointsRecord_filter
+  $orderBy: EpochTradingPointsRecord_orderBy
+  $orderDirection: OrderDirection
 ) {
-  epochTradingPointsRecords(skip: $skip, first: $first, where: $where) {
+  epochTradingPointsRecords(
+    first: $first
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
     ...BaseEpochTradingPointsRecord
   }
 }

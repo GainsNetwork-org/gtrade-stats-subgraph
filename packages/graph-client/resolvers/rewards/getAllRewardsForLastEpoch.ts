@@ -11,7 +11,7 @@ export const getAllRewardsForLastEpoch: QueryResolvers["getAllRewardsForLastEpoc
     root,
     args: QuerygetAllRewardsForLastEpochArgs
   ): Promise<Query["getAllRewardsForLastEpoch"]> => {
-    const { rewardConfigId, skip, first } = args;
+    const { rewardConfigId } = args;
     const sdk = getBuiltGraphSDK();
     const rewardConfig = (await sdk.GetRewardConfig({ id: rewardConfigId }))
       .getRewardConfig;
@@ -28,8 +28,6 @@ export const getAllRewardsForLastEpoch: QueryResolvers["getAllRewardsForLastEpoc
       await sdk.GetAllRewardsForEpoch({
         rewardConfigId,
         epoch: currentEpoch - 1,
-        first,
-        skip,
       })
     ).getAllRewardsForEpoch;
   };
