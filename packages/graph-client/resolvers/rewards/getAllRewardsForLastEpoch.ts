@@ -5,16 +5,23 @@ import {
   getBuiltGraphSDK,
 } from "./../../.graphclient/index.js";
 import { determineEpochNumber } from "../../helpers/rewards.js";
+import { STATS_SUBGRAPH } from "../../helpers/config.js";
 
 export const getAllRewardsForLastEpoch: QueryResolvers["getAllRewardsForLastEpoch"] =
   async (
     root,
-    args: QuerygetAllRewardsForLastEpochArgs
+    args: QuerygetAllRewardsForLastEpochArgs,
+    context
   ): Promise<Query["getAllRewardsForLastEpoch"]> => {
     const { rewardConfigId } = args;
+    const { chainId } = context;
     const sdk = getBuiltGraphSDK();
-    const rewardConfig = (await sdk.GetRewardConfig({ id: rewardConfigId }))
-      .getRewardConfig;
+    const rewardConfig = (
+      await sdk.GetRewardConfig(
+        { id: rewardConfigId },
+        { ...context, graphName: STATS_SUBGRAPH[+chainId] }
+      )
+    ).getRewardConfig;
 
     if (!rewardConfig) {
       throw new Error(`Reward config ${rewardConfigId} not found`);
@@ -25,9 +32,12 @@ export const getAllRewardsForLastEpoch: QueryResolvers["getAllRewardsForLastEpoc
     );
 
     return (
-      await sdk.GetAllRewardsForEpoch({
-        rewardConfigId,
-        epoch: currentEpoch - 1,
-      })
+      await sdk.GetAllRewardsForEpoch(
+        {
+          rewardConfigId,
+          epoch: currentEpoch - 1,
+        },
+        { ...context, graphName: STATS_SUBGRAPH[+chainId] }
+      )
     ).getAllRewardsForEpoch;
   };

@@ -1,4 +1,3 @@
-import { GraphQLResolveInfo } from "graphql";
 import {
   EpochTradingPointsRecord,
   GetEpochTradingPointsRecordsForEpochQuery,
@@ -12,18 +11,23 @@ import {
   convertPointsToRewardsForUser,
   transformEpochTradingPointsRecord,
 } from "../../helpers/rewards.js";
+import { STATS_SUBGRAPH } from "../../helpers/config.js";
 
 export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
   async (
     root,
     args: QuerygetAllRewardsForEpochArgs,
-    context,
-    info: GraphQLResolveInfo
+    context
   ): Promise<Query["getAllRewardsForEpoch"]> => {
     const { rewardConfigId, epoch } = args;
+    const { chainId } = context;
     const sdk = getBuiltGraphSDK();
-    const rewardConfig = (await sdk.GetRewardConfig({ id: rewardConfigId }))
-      .getRewardConfig;
+    const rewardConfig = (
+      await sdk.GetRewardConfig(
+        { id: rewardConfigId },
+        { ...context, graphName: STATS_SUBGRAPH[+chainId] }
+      )
+    ).getRewardConfig;
 
     if (!rewardConfig) {
       throw new Error(`Reward config ${rewardConfigId} not found`);
@@ -38,7 +42,8 @@ export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
     const _epochTradingPoints = await getEpochTradingPoints(
       sdk,
       epoch,
-      rewardConfig
+      rewardConfig,
+      context
     );
 
     if (!_epochTradingPoints) {
@@ -74,10 +79,12 @@ const fetchEpochTradingPointsRecords = async (
   sdk: ReturnType<typeof getBuiltGraphSDK>,
   epoch: number,
   rewardConfig: RewardConfig,
-  lastId: string | null
+  lastId: string | null,
+  context
 ): Promise<
   GetEpochTradingPointsRecordsForEpochQuery["epochTradingPointsRecords"]
 > => {
+  const { chainId } = context;
   const whereClause = {
     epochType: rewardConfig.epochType,
     epochNumber: epoch,
@@ -87,12 +94,15 @@ const fetchEpochTradingPointsRecords = async (
     whereClause["id_gt"] = lastId;
   }
 
-  const response = await sdk.GetEpochTradingPointsRecordsForEpoch({
-    first: 1000,
-    where: whereClause,
-    orderBy: "id",
-    orderDirection: "asc",
-  });
+  const response = await sdk.GetEpochTradingPointsRecordsForEpoch(
+    {
+      first: 1000,
+      where: whereClause,
+      orderBy: "id",
+      orderDirection: "asc",
+    },
+    { ...context, graphName: STATS_SUBGRAPH[+chainId] }
+  );
 
   return response.epochTradingPointsRecords;
 };
@@ -100,7 +110,8 @@ const fetchEpochTradingPointsRecords = async (
 const getEpochTradingPoints = async (
   sdk: ReturnType<typeof getBuiltGraphSDK>,
   epoch: number,
-  rewardConfig: RewardConfig
+  rewardConfig: RewardConfig,
+  context
 ) => {
   let lastId: string | null = null;
   let hasMore = true;
@@ -112,7 +123,8 @@ const getEpochTradingPoints = async (
       sdk,
       epoch,
       rewardConfig,
-      lastId
+      lastId,
+      context
     );
     epochTradingPoints.push(...records);
 

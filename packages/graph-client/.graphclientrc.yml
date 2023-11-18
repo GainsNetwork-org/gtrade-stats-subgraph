@@ -2,7 +2,7 @@ sources:
   - name: gtrade-stats
     handler:
       graphql:
-        endpoint: https://api.thegraph.com/subgraphs/name/gainsnetwork-org/{context.config.graphName:gtrade-stats-arbitrum}
+        endpoint: https://api.thegraph.com/subgraphs/name/gainsnetwork-org/{context.graphName:gtrade-stats-arbitrum}
         retry: 3
     transforms:
       - autoPagination:
@@ -12,7 +12,7 @@ sources:
   - name: gtoken
     handler:
       graphql:
-        endpoint: https://api.thegraph.com/subgraphs/name/thebuidler/{context.config.graphName:gtoken-arbitrum}
+        endpoint: https://api.thegraph.com/subgraphs/name/thebuidler/{context.graphName:gtoken-arbitrum}
         retry: 3
 
 additionalTypeDefs: |
@@ -59,3 +59,6 @@ additionalResolvers:
 
 documents:
   - ./queries/*.gql
+
+codegen:
+  contextType: "MeshContext & { chainId: string; graphName: string; }"

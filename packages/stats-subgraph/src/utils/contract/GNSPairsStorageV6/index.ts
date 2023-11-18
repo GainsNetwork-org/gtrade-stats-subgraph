@@ -8,6 +8,7 @@ import {
   NETWORKS,
   ARBITRUM_ADDRESSES,
   POLYGON_ADDRESSES,
+  MUMBAI_ADDRESSES,
 } from "../../constants";
 import { GNSPairsStorageV6 } from "../../../types/GNSTradingCallbacksV6_4_1/GNSPairsStorageV6";
 import { convertPercentage } from "..";
@@ -18,7 +19,7 @@ export function getPairsStorageContract(): GNSPairsStorageV6 {
       ? ARBITRUM_ADDRESSES
       : dataSource.network() == NETWORKS.POLYGON
       ? POLYGON_ADDRESSES
-      : null;
+      : MUMBAI_ADDRESSES;
 
   if (config == null) {
     throw new Error("Network not supported");

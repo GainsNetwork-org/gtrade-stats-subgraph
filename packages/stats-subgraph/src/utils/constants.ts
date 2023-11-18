@@ -45,6 +45,10 @@ export const POLYGON_ADDRESSES: NetworkAddresses = {
   gnsPairsStorageV6: "0x6e5326e944F528c243B9Ca5d14fe5C9269a8c922",
 };
 
+export const MUMBAI_ADDRESSES: NetworkAddresses = {
+  gnsPairsStorageV6: "0x2b497ff78bA1F803141Ecca0F98eF3c5B5B64d26",
+};
+
 class EpochTypes {
   DAY!: string;
   WEEK!: string;
