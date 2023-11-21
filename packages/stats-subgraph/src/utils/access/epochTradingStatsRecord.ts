@@ -11,22 +11,31 @@ import {
 export function generateAggregateTradingStatsId(
   address: string,
   epochType: string,
-  epochNumber: i32
+  epochNumber: i32,
+  collateral: string | null
 ): string {
-  return address + "-" + epochType + "-" + epochNumber.toString();
+  return address + "-" + epochType + "-" + epochNumber.toString() + collateral
+    ? "-" + collateral
+    : "";
 }
 
 export function createOrLoadEpochTradingStatsRecord(
   address: string,
   epochType: string,
   epochNumber: i32,
+  collateral: string | null,
   save: boolean
 ): EpochTradingStatsRecord {
   log.info(
     "[createOrLoadEpochTradingStatsRecord] address {}, epochType {}, epochNumber {}",
     [address, epochType.toString(), epochNumber.toString()]
   );
-  const id = generateAggregateTradingStatsId(address, epochType, epochNumber);
+  const id = generateAggregateTradingStatsId(
+    address,
+    epochType,
+    epochNumber,
+    collateral
+  );
   let epochTradingStatsRecord = EpochTradingStatsRecord.load(id);
   if (epochTradingStatsRecord == null) {
     epochTradingStatsRecord = new EpochTradingStatsRecord(id);
@@ -56,6 +65,7 @@ export function createOrLoadEpochTradingStatsRecord(
  * @dev This function is called when a user opens a trade
  */
 export class addOpenTradeStatsInput {
+  collateral: string | null;
   address: string;
   pairIndex: i32;
   groupIndex: i32;
@@ -67,6 +77,7 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
   const pairIndex = data.pairIndex;
   const positionSize = data.positionSize;
   const timestamp = data.timestamp;
+  const collateral = data.collateral;
   log.info("[addOpenTradeStats] address {} pairIndex {}, positionSize {}", [
     address,
     pairIndex.toString(),
@@ -79,6 +90,7 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
     address,
     EPOCH_TYPE.DAY,
     currentDayNumber,
+    collateral,
     false
   );
 
@@ -90,6 +102,7 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
     address,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
+    collateral,
     false
   );
   _addOpenTradeStats(data, weeklyStats);
@@ -99,6 +112,7 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
     PROTOCOL,
     EPOCH_TYPE.DAY,
     currentDayNumber,
+    collateral,
     false
   );
   _addOpenTradeStats(data, dailyProtocolStats);
@@ -108,12 +122,19 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
+    collateral,
     false
   );
   _addOpenTradeStats(data, weeklyProtocolStats);
 }
 
+function _handleCloseTradeCollateralStats(
+  data: addCloseTradeStatsInput,
+  timestamp: i32
+) {}
+
 export class addCloseTradeStatsInput {
+  collateral: string | null;
   address: string;
   pairIndex: i32;
   groupIndex: i32;

@@ -187,11 +187,25 @@ function _handleOpenTrade(
   positionSize: BigDecimal,
   timestamp: i32
 ): void {
+  const groupIndex = getGroupIndex(network, collateral, pairIndex).toI32();
+  // Add collateral specific stats
   addOpenTradeStats({
+    collateral,
     address: trader,
     pairIndex: pairIndex.toI32(),
-    groupIndex: getGroupIndex(network, collateral, pairIndex).toI32(),
+    groupIndex,
     positionSize,
+    timestamp,
+  });
+
+  // Calculate and add normalized stats
+  const positionSizeUsd = positionSize.times(collateralToUsd);
+  addOpenTradeStats({
+    collateral: null,
+    address: trader,
+    pairIndex: pairIndex.toI32(),
+    groupIndex,
+    positionSize: positionSizeUsd,
     timestamp,
   });
 }
@@ -207,18 +221,35 @@ function _handleCloseTrade(
   timestamp: i32,
   collateralSentToTrader: BigDecimal
 ): void {
+  const groupIndex = getGroupIndex(network, collateral, pairIndex).toI32();
   const initialCollateral = positionSize.div(leverage);
   const pnl = collateralSentToTrader.minus(initialCollateral);
   const pnlPercentage = pnl
     .div(initialCollateral)
     .times(BigDecimal.fromString("100"));
 
+  // Add collateral specific stats
   addCloseTradeStats({
+    collateral,
     address: trader,
     pairIndex: pairIndex.toI32(),
-    groupIndex: getGroupIndex(network, collateral, pairIndex).toI32(),
+    groupIndex,
     positionSize,
     pnl,
+    pnlPercentage,
+    timestamp,
+  });
+
+  // Calculate and add normalized stats
+  const positionSizeUsd = positionSize.times(collateralToUsd);
+  const pnlUsd = pnl.times(collateralToUsd);
+  addCloseTradeStats({
+    collateral: null,
+    address: trader,
+    pairIndex: pairIndex.toI32(),
+    groupIndex,
+    positionSize: positionSizeUsd,
+    pnl: pnlUsd,
     pnlPercentage,
     timestamp,
   });
