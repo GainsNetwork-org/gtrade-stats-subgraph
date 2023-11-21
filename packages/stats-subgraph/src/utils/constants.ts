@@ -4,6 +4,10 @@ export const ZERO_BD = BigDecimal.fromString("0");
 export const ONE_BD = BigDecimal.fromString("1");
 export const DAI_DECIMALS = 18;
 export const DAI_DECIMALS_BD = exponentToBigDecimal(DAI_DECIMALS);
+export const ARB_DECIMALS = 18;
+export const ARB_DECIMALS_BD = exponentToBigDecimal(ARB_DECIMALS);
+export const ETH_DECIMALS = 18;
+export const ETH_DECIMALS_BD = exponentToBigDecimal(ETH_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
 
@@ -20,6 +24,9 @@ export const VOLUME_THRESHOLDS = [
 ];
 
 export const PROTOCOL = "protocol";
+export const DAI = "dai";
+export const ETH = "eth";
+export const ARB = "arb";
 
 class Networks {
   POLYGON!: string;
@@ -35,18 +42,58 @@ export const NETWORKS: Networks = {
 
 class NetworkAddresses {
   gnsPairsStorageV6!: string;
+  gnsTradingCallbacksV6_4_1!: string;
 }
 
-export const ARBITRUM_ADDRESSES: NetworkAddresses = {
-  gnsPairsStorageV6: "0xf67Df2a4339eC1591615d94599081Dd037960d4b",
+class CollateralAddresses {
+  DAI!: NetworkAddresses;
+  ETH!: NetworkAddresses;
+  ARB!: NetworkAddresses;
+}
+
+export const ARBITRUM_COLLATERALS: CollateralAddresses = {
+  DAI: {
+    gnsPairsStorageV6: "0xf67Df2a4339eC1591615d94599081Dd037960d4b",
+    gnsTradingCallbacksV6_4_1: "0x298a695906e16aeA0a184A2815A76eAd1a0b7522",
+  },
+  ETH: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+  },
+  ARB: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+  },
 };
 
-export const POLYGON_ADDRESSES: NetworkAddresses = {
-  gnsPairsStorageV6: "0x6e5326e944F528c243B9Ca5d14fe5C9269a8c922",
+export const POLYGON_COLLATERALS: CollateralAddresses = {
+  DAI: {
+    gnsPairsStorageV6: "0x6e5326e944F528c243B9Ca5d14fe5C9269a8c922",
+    gnsTradingCallbacksV6_4_1: "0x82e59334da8C667797009BBe82473B55c7A6b311",
+  },
+  ETH: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+  },
+  ARB: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+  },
 };
 
-export const MUMBAI_ADDRESSES: NetworkAddresses = {
-  gnsPairsStorageV6: "0x2b497ff78bA1F803141Ecca0F98eF3c5B5B64d26",
+export const MUMBAI_COLLATERALS: CollateralAddresses = {
+  DAI: {
+    gnsPairsStorageV6: "0x2b497ff78bA1F803141Ecca0F98eF3c5B5B64d26",
+    gnsTradingCallbacksV6_4_1: "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
+  },
+  ETH: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+  },
+  ARB: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+  },
 };
 
 class EpochTypes {

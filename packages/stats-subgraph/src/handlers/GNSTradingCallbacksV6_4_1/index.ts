@@ -27,6 +27,8 @@ import {
 } from "../../utils/contract";
 
 export function handleMarketExecuted(event: MarketExecuted): void {
+  // Get collateral stack
+  const collateral = getCollateral(event.address.toHexString());
   const trade = event.params.t;
   const open = event.params.open;
   const daiSentToTrader = convertDai(event.params.daiSentToTrader);

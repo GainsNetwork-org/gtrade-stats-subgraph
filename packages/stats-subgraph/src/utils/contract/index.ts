@@ -16,3 +16,8 @@ export function convertPercentageToDecimal(percentage: BigInt): BigDecimal {
     .div(PRECISION_DECIMALS_BD)
     .div(BigDecimal.fromString("100"));
 }
+
+export function getCollateralFromAddress(address: string): string {
+  if (address == "0x0000") {
+  }
+}
