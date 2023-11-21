@@ -118,64 +118,98 @@ export function handleLimitExecuted(event: LimitExecuted): void {
 }
 
 export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
+  const { collateral, collateralToUsd } = getCollateralDetails(event);
   const trader = event.params.trader.toHexString();
   const borrowingFee = convertDaiToDecimal(event.params.feeValueDai);
   const timestamp = event.block.timestamp.toI32();
   log.info("[handleBorrowingFeeCharged] {}", [
     event.transaction.hash.toHexString(),
   ]);
-  addBorrowingFeeStats(trader, borrowingFee, timestamp);
+  addBorrowingFeeStats(trader, borrowingFee, timestamp, collateral);
+
+  // Calculate and add normalized stats
+  const borrowingFeeUsd = borrowingFee.times(collateralToUsd);
+  addBorrowingFeeStats(trader, borrowingFeeUsd, timestamp, null);
 }
 
 export function handleGovFeeCharged(event: GovFeeCharged): void {
+  const { collateral, collateralToUsd } = getCollateralDetails(event);
   const trader = event.params.trader.toHexString();
   const govFee = convertDaiToDecimal(event.params.valueDai);
   const timestamp = event.block.timestamp.toI32();
   log.info("[handleGovFeeCharged] {}", [event.transaction.hash.toHexString()]);
-  addGovFeeStats(trader, govFee, timestamp);
-  updateFeeBasedPoints(trader, govFee, timestamp);
+  addGovFeeStats(trader, govFee, timestamp, collateral);
+  updateFeeBasedPoints(trader, govFee, timestamp, collateral);
+  
+  // Calculate and add normalized stats
+  const govFeeUsd = govFee.times(collateralToUsd);
+  addGovFeeStats(trader, govFeeUsd, timestamp, null);
+  updateFeeBasedPoints(trader, govFeeUsd, timestamp, null
 }
 
 export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
+  const { collateral, collateralToUsd } = getCollateralDetails(event);
   const trader = event.params.trader.toHexString();
   const referralFee = convertDaiToDecimal(event.params.valueDai);
   const timestamp = event.block.timestamp.toI32();
   log.info("[handleReferralFeeCharged] {}", [
     event.transaction.hash.toHexString(),
   ]);
-  addReferralFeeStats(trader, referralFee, timestamp);
-  updateFeeBasedPoints(trader, referralFee, timestamp);
+  addReferralFeeStats(trader, referralFee, timestamp, collateral);
+  updateFeeBasedPoints(trader, referralFee, timestamp, collateral);
+
+  // Calculate and add normalized stats
+  const referralFeeUsd = referralFee.times(collateralToUsd);
+  addReferralFeeStats(trader, referralFeeUsd, timestamp, null);
+  updateFeeBasedPoints(trader, referralFeeUsd, timestamp, null);
 }
 
 export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
+  const { collateral, collateralToUsd } = getCollateralDetails(event);
   const trader = event.params.trader.toHexString();
   const triggerFee = convertDaiToDecimal(event.params.valueDai);
   const timestamp = event.block.timestamp.toI32();
   log.info("[handleTriggerFeeCharged] {}", [
     event.transaction.hash.toHexString(),
   ]);
-  addTriggerFeeStats(trader, triggerFee, timestamp);
-  updateFeeBasedPoints(trader, triggerFee, timestamp);
+  addTriggerFeeStats(trader, triggerFee, timestamp, collateral);
+  updateFeeBasedPoints(trader, triggerFee, timestamp, collateral);
+
+  // Calculate and add normalized stats
+  const triggerFeeUsd = triggerFee.times(collateralToUsd);
+  addTriggerFeeStats(trader, triggerFeeUsd, timestamp, null);
+  updateFeeBasedPoints(trader, triggerFeeUsd, timestamp, null
 }
 
 export function handleStakerFeeCharged(event: SssFeeCharged): void {
+  const { collateral, collateralToUsd } = getCollateralDetails(event);
   const trader = event.params.trader.toHexString();
   const stakerFee = convertDaiToDecimal(event.params.valueDai);
   const timestamp = event.block.timestamp.toI32();
   log.info("[handleStakerFeeCharged] {}", [
     event.transaction.hash.toHexString(),
   ]);
-  addStakerFeeStats(trader, stakerFee, timestamp);
-  updateFeeBasedPoints(trader, stakerFee, timestamp);
+  addStakerFeeStats(trader, stakerFee, timestamp, collateral);
+  updateFeeBasedPoints(trader, stakerFee, timestamp, collateral);
+
+  // Calculate and add normalized stats
+  const stakerFeeUsd = stakerFee.times(collateralToUsd);
+  addStakerFeeStats(trader, stakerFeeUsd, timestamp, null);
 }
 
 export function handleLpFeeCharged(event: DaiVaultFeeCharged): void {
+  const { collateral, collateralToUsd } = getCollateralDetails(event);
   const trader = event.params.trader.toHexString();
   const lpFee = convertDaiToDecimal(event.params.valueDai);
   const timestamp = event.block.timestamp.toI32();
   log.info("[handleLpFeeCharged] {}", [event.transaction.hash.toHexString()]);
-  addLpFeeStats(trader, lpFee, timestamp);
-  updateFeeBasedPoints(trader, lpFee, timestamp);
+  addLpFeeStats(trader, lpFee, timestamp, collateral);
+  updateFeeBasedPoints(trader, lpFee, timestamp, collateral);
+
+  // Calculate and add normalized stats
+  const lpFeeUsd = lpFee.times(collateralToUsd);
+  addLpFeeStats(trader, lpFeeUsd, timestamp, null);
+  updateFeeBasedPoints(trader, lpFeeUsd, timestamp, null);
 }
 
 function _handleOpenTrade(

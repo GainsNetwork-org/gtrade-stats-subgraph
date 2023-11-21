@@ -14,9 +14,14 @@ export function generateAggregateTradingStatsId(
   epochNumber: i32,
   collateral: string | null
 ): string {
-  return address + "-" + epochType + "-" + epochNumber.toString() + collateral
-    ? "-" + collateral
-    : "";
+  return (
+    address +
+    "-" +
+    epochType +
+    "-" +
+    epochNumber.toString() +
+    (collateral ? "-" + collateral : "")
+  );
 }
 
 export function createOrLoadEpochTradingStatsRecord(
@@ -128,11 +133,6 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
   _addOpenTradeStats(data, weeklyProtocolStats);
 }
 
-function _handleCloseTradeCollateralStats(
-  data: addCloseTradeStatsInput,
-  timestamp: i32
-) {}
-
 export class addCloseTradeStatsInput {
   collateral: string | null;
   address: string;
@@ -148,6 +148,7 @@ export class addCloseTradeStatsInput {
  * @dev This function is called when a user closes a trade
  */
 export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
+  const collateral = data.collateral;
   const address = data.address;
   const pairIndex = data.pairIndex;
   const positionSize = data.positionSize;
@@ -171,6 +172,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
     address,
     EPOCH_TYPE.DAY,
     currentDayNumber,
+    collateral,
     false
   );
   _addCloseTradeStats(data, dailyStats);
@@ -181,6 +183,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
     address,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
+    collateral,
     false
   );
   _addCloseTradeStats(data, weeklyStats);
@@ -190,6 +193,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
     PROTOCOL,
     EPOCH_TYPE.DAY,
     currentDayNumber,
+    collateral,
     false
   );
   _addCloseTradeStats(data, dailyProtocolStats);
@@ -199,6 +203,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
+    collateral,
     false
   );
   _addCloseTradeStats(data, weeklyProtocolStats);
@@ -207,6 +212,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
     address,
     currentWeekNumber,
     currentDayNumber,
+    collateral,
     data.pnl,
     data.pnlPercentage,
     data.groupIndex,
@@ -298,55 +304,86 @@ function _addCloseTradeStats(
 export function addBorrowingFeeStats(
   address: string,
   borrowingFee: BigDecimal,
-  timestamp: i32
+  timestamp: i32,
+  collateral: string | null
 ): EpochTradingStatsRecord[] {
-  return _addStats(address, borrowingFee, timestamp, "totalBorrowingFees");
+  return _addStats(
+    address,
+    borrowingFee,
+    timestamp,
+    collateral,
+    "totalBorrowingFees"
+  );
 }
 
 export function addGovFeeStats(
   address: string,
   govFee: BigDecimal,
-  timestamp: i32
+  timestamp: i32,
+  collateral: string | null
 ): EpochTradingStatsRecord[] {
-  return _addStats(address, govFee, timestamp, "totalGovFees");
+  return _addStats(address, govFee, timestamp, collateral, "totalGovFees");
 }
 
 export function addReferralFeeStats(
   address: string,
   referralFee: BigDecimal,
-  timestamp: i32
+  timestamp: i32,
+  collateral: string | null
 ): EpochTradingStatsRecord[] {
-  return _addStats(address, referralFee, timestamp, "totalReferralFees");
+  return _addStats(
+    address,
+    referralFee,
+    timestamp,
+    collateral,
+    "totalReferralFees"
+  );
 }
 
 export function addTriggerFeeStats(
   address: string,
   triggerFee: BigDecimal,
-  timestamp: i32
+  timestamp: i32,
+  collateral: string | null
 ): EpochTradingStatsRecord[] {
-  return _addStats(address, triggerFee, timestamp, "totalTriggerFees");
+  return _addStats(
+    address,
+    triggerFee,
+    timestamp,
+    collateral,
+    "totalTriggerFees"
+  );
 }
 
 export function addLpFeeStats(
   address: string,
   lpFee: BigDecimal,
-  timestamp: i32
+  timestamp: i32,
+  collateral: string | null
 ): EpochTradingStatsRecord[] {
-  return _addStats(address, lpFee, timestamp, "totalLpFees");
+  return _addStats(address, lpFee, timestamp, collateral, "totalLpFees");
 }
 
 export function addStakerFeeStats(
   address: string,
   stakerFee: BigDecimal,
-  timestamp: i32
+  timestamp: i32,
+  collateral: string | null
 ): EpochTradingStatsRecord[] {
-  return _addStats(address, stakerFee, timestamp, "totalStakerFees");
+  return _addStats(
+    address,
+    stakerFee,
+    timestamp,
+    collateral,
+    "totalStakerFees"
+  );
 }
 
 function _addStats(
   address: string,
   stat: BigDecimal,
   timestamp: i32,
+  collateral: string | null,
   statName: string
 ): EpochTradingStatsRecord[] {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
@@ -356,6 +393,7 @@ function _addStats(
     address,
     EPOCH_TYPE.DAY,
     currentDayNumber,
+    collateral,
     false
   );
   dailyStats = _addStat(stat, statName, dailyStats);
@@ -364,6 +402,7 @@ function _addStats(
     address,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
+    collateral,
     false
   );
   weeklyStats = _addStat(stat, statName, weeklyStats);
@@ -372,6 +411,7 @@ function _addStats(
     PROTOCOL,
     EPOCH_TYPE.DAY,
     currentDayNumber,
+    collateral,
     false
   );
   dailyProtocolStats = _addStat(stat, statName, dailyProtocolStats);
@@ -380,6 +420,7 @@ function _addStats(
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
+    collateral,
     false
   );
   weeklyProtocolStats = _addStat(stat, statName, weeklyProtocolStats);

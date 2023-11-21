@@ -13,6 +13,7 @@ export function updatePointsOnClose(
   address: string,
   weekNumber: i32,
   dayNumber: i32,
+  collateral: string | null,
   pnl: BigDecimal,
   pnlPercentage: BigDecimal,
   groupNumber: i32,
@@ -24,24 +25,28 @@ export function updatePointsOnClose(
     address,
     EPOCH_TYPE.DAY,
     dayNumber,
+    collateral,
     false
   );
   const protocolDailyPoints = createOrLoadEpochTradingPointsRecord(
     PROTOCOL,
     EPOCH_TYPE.DAY,
     dayNumber,
+    collateral,
     false
   );
   const userWeeklyPoints = createOrLoadEpochTradingPointsRecord(
     address,
     EPOCH_TYPE.WEEK,
     weekNumber,
+    collateral,
     false
   );
   const protocolWeeklyPoints = createOrLoadEpochTradingPointsRecord(
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     weekNumber,
+    collateral,
     false
   );
 
@@ -252,7 +257,8 @@ export function calculateSkillPoints(
 export function updateFeeBasedPoints(
   address: string,
   stat: BigDecimal,
-  timestamp: i32
+  timestamp: i32,
+  collateral: string | null
 ): void {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
@@ -261,6 +267,7 @@ export function updateFeeBasedPoints(
     address,
     EPOCH_TYPE.DAY,
     currentDayNumber,
+    collateral,
     false
   );
 
@@ -268,6 +275,7 @@ export function updateFeeBasedPoints(
     address,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
+    collateral,
     false
   );
 
@@ -275,6 +283,7 @@ export function updateFeeBasedPoints(
     PROTOCOL,
     EPOCH_TYPE.DAY,
     currentDayNumber,
+    collateral,
     false
   );
 
@@ -282,6 +291,7 @@ export function updateFeeBasedPoints(
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
+    collateral,
     false
   );
 
@@ -387,22 +397,31 @@ export function calculateLoyaltyPoints(fees: BigDecimal): BigDecimal {
 export function generateId(
   address: string,
   epochType: string,
-  epochNumber: i32
+  epochNumber: i32,
+  collateral: string | null
 ): string {
-  return address + "-" + epochType + "-" + epochNumber.toString();
+  return (
+    address +
+    "-" +
+    epochType +
+    "-" +
+    epochNumber.toString() +
+    (collateral ? "-" + collateral : "")
+  );
 }
 
 export function createOrLoadEpochTradingPointsRecord(
   address: string,
   epochType: string,
   epochNumber: i32,
+  collateral: string | null,
   save: boolean
 ): EpochTradingPointsRecord {
   log.info(
     "[createOrLoadEpochTradingPointsRecord] address {}, epochType {}, epochNumber {}",
     [address, epochType.toString(), epochNumber.toString()]
   );
-  const id = generateId(address, epochType, epochNumber);
+  const id = generateId(address, epochType, epochNumber, collateral);
   let epochTradingPointsRecord = EpochTradingPointsRecord.load(id);
   if (epochTradingPointsRecord == null) {
     epochTradingPointsRecord = new EpochTradingPointsRecord(id);
