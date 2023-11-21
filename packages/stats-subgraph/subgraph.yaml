@@ -6,9 +6,9 @@ schema:
 dataSources:
   - kind: ethereum
     name: GNSTradingCallbacksV6_4_1
-    network: 'mumbai'
+    network: "mumbai"
     source:
-      address: '0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE'
+      address: "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE"
       abi: GNSTradingCallbacksV6_4_1
       startBlock: 40700000
     mapping:
@@ -22,6 +22,10 @@ dataSources:
           file: ./abis/GNSTradingCallbacksV6_4_1.json
         - name: GNSPairsStorageV6
           file: ./abis/GNSPairsStorageV6.json
+        - name: GNSPriceAggregator
+          file: ./abis/GNSPriceAggregator.json
+        - name: IChainlinkFeed
+          file: ./abis/IChainlinkFeed.json
       eventHandlers:
         - event: MarketExecuted(indexed uint256,(address,uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256,uint256),bool,uint256,uint256,uint256,int256,uint256)
           handler: handleMarketExecuted

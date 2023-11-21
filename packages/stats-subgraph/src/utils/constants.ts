@@ -24,9 +24,18 @@ export const VOLUME_THRESHOLDS = [
 ];
 
 export const PROTOCOL = "protocol";
-export const DAI = "dai";
-export const ETH = "eth";
-export const ARB = "arb";
+
+class Collaterals {
+  DAI!: string;
+  ETH!: string;
+  ARB!: string;
+}
+
+export const COLLATERALS: Collaterals = {
+  DAI: "dai",
+  ETH: "eth",
+  ARB: "arb",
+};
 
 class Networks {
   POLYGON!: string;
@@ -43,6 +52,7 @@ export const NETWORKS: Networks = {
 class Addresses {
   gnsPairsStorageV6!: string;
   gnsTradingCallbacksV6_4_1!: string;
+  gnsPriceAggregator: string;
 }
 
 class CollateralAddresses {
@@ -52,23 +62,26 @@ class CollateralAddresses {
 }
 
 class NetworkAddresses {
-  POLYGON!: CollateralAddresses;
-  MUMBAI!: CollateralAddresses;
-  ARBITRUM!: CollateralAddresses;
+  "matic"!: CollateralAddresses;
+  "mumbai"!: CollateralAddresses;
+  "arbitrum-one"!: CollateralAddresses;
 }
 
 export const ARBITRUM_COLLATERALS: CollateralAddresses = {
   DAI: {
     gnsPairsStorageV6: "0xf67Df2a4339eC1591615d94599081Dd037960d4b",
     gnsTradingCallbacksV6_4_1: "0x298a695906e16aeA0a184A2815A76eAd1a0b7522",
+    gnsPriceAggregator: "0x2e44a81701A8355E59B3204B4a9Fe8FC43CbE0C3",
   },
   ETH: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
   },
   ARB: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
   },
 };
 
@@ -76,14 +89,17 @@ export const POLYGON_COLLATERALS: CollateralAddresses = {
   DAI: {
     gnsPairsStorageV6: "0x6e5326e944F528c243B9Ca5d14fe5C9269a8c922",
     gnsTradingCallbacksV6_4_1: "0x82e59334da8C667797009BBe82473B55c7A6b311",
+    gnsPriceAggregator: "0x126F32723c5FC8DFEB17c46b7B7dD3dCd458A816",
   },
   ETH: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
   },
   ARB: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
   },
 };
 
@@ -91,21 +107,24 @@ export const MUMBAI_COLLATERALS: CollateralAddresses = {
   DAI: {
     gnsPairsStorageV6: "0x2b497ff78bA1F803141Ecca0F98eF3c5B5B64d26",
     gnsTradingCallbacksV6_4_1: "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
+    gnsPriceAggregator: "0x5a284f0f52a8Ea4A33033EfB3Ffd723db9bbe312",
   },
   ETH: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
   },
   ARB: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
   },
 };
 
 export const NETWORK_ADDRESSES: NetworkAddresses = {
-  POLYGON: POLYGON_COLLATERALS,
-  MUMBAI: MUMBAI_COLLATERALS,
-  ARBITRUM: ARBITRUM_COLLATERALS,
+  matic: POLYGON_COLLATERALS,
+  mumbai: MUMBAI_COLLATERALS,
+  "arbitrum-one": ARBITRUM_COLLATERALS,
 };
 
 class EpochTypes {

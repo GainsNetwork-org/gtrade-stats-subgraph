@@ -22,6 +22,10 @@ dataSources:
           file: ./abis/GNSTradingCallbacksV6_4_1.json
         - name: GNSPairsStorageV6
           file: ./abis/GNSPairsStorageV6.json
+        - name: GNSPriceAggregator
+          file: ./abis/GNSPriceAggregator.json
+        - name: IChainlinkFeed
+          file: ./abis/IChainlinkFeed.json
       eventHandlers:
         - event: MarketExecuted(indexed uint256,(address,uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256,uint256),bool,uint256,uint256,uint256,int256,uint256)
           handler: handleMarketExecuted

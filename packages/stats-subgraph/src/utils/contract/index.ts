@@ -1,8 +1,13 @@
 import { BigInt, BigDecimal } from "@graphprotocol/graph-ts";
-import { DAI_DECIMALS_BD, PRECISION_DECIMALS_BD } from "../constants";
+import {
+  COLLATERALS,
+  DAI_DECIMALS_BD,
+  NETWORK_ADDRESSES,
+  PRECISION_DECIMALS_BD,
+} from "../constants";
 export * from "./GNSPairsStorageV6";
 
-export function convertDai(dai: BigInt): BigDecimal {
+export function convertDaiToDecimal(dai: BigInt): BigDecimal {
   return dai.toBigDecimal().div(DAI_DECIMALS_BD);
 }
 
@@ -17,10 +22,28 @@ export function convertPercentageToDecimal(percentage: BigInt): BigDecimal {
     .div(BigDecimal.fromString("100"));
 }
 
+export function convertCollateralToUsd(
+  amount: BigDecimal,
+  collateralToUsd: BigDecimal
+): BigDecimal {
+  return amount.times(collateralToUsd);
+}
+
 export function getCollateralFromCallbacksAddress(
   network: string,
   address: string
 ): string {
-  if (address == "0x0000") {
+  if (NETWORK_ADDRESSES[network][COLLATERALS.DAI] == address) {
+    return COLLATERALS.DAI;
   }
+
+  if (NETWORK_ADDRESSES[network][COLLATERALS.ETH] == address) {
+    return COLLATERALS.ETH;
+  }
+
+  if (NETWORK_ADDRESSES[network][COLLATERALS.ARB] == address) {
+    return COLLATERALS.ARB;
+  }
+
+  throw new Error("Collateral not supported");
 }
