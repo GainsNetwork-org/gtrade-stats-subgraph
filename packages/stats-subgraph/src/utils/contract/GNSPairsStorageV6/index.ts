@@ -14,8 +14,8 @@ import { GNSPairsStorageV6 } from "../../../types/GNSTradingCallbacksV6_4_1/GNSP
 import { convertPercentage } from "..";
 
 export function getPairsStorageContract(
-  network: String,
-  collateral: String
+  network: string,
+  collateral: string
 ): GNSPairsStorageV6 {
   const config = NETWORKS[+network][+collateral];
 
@@ -30,8 +30,8 @@ export function getPairsStorageContract(
  * @returns totalOpenFeeP = pairOpenFeeP * 2 + pairNftLimitOrderFeeP
  */
 export function getTotalOpenFeeP(
-  network: String,
-  collateral: String,
+  network: string,
+  collateral: string,
   pairIndex: BigInt
 ): BigDecimal {
   const pairsStorageContract = getPairsStorageContract(network, collateral);
@@ -53,8 +53,8 @@ export function getTotalOpenFeeP(
  * @returns totalCloseFeeP = pairCloseFeeP + pairNftLimitOrderFeeP
  */
 export function getTotalCloseFeeP(
-  network: String,
-  collateral: String,
+  network: string,
+  collateral: string,
   pairIndex: BigInt,
   isLiq: boolean
 ): BigDecimal {
@@ -80,8 +80,8 @@ export function getLiquidationFeeP(pairIndex: BigInt): BigDecimal {
 }
 
 export function getGroupIndex(
-  network: String,
-  collateral: String,
+  network: string,
+  collateral: string,
   pairIndex: BigInt
 ): BigInt {
   const pairsStorageContract = getPairsStorageContract(network, collateral);

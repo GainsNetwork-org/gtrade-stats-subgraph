@@ -40,15 +40,21 @@ export const NETWORKS: Networks = {
   ARBITRUM: "arbitrum-one",
 };
 
-class NetworkAddresses {
+class Addresses {
   gnsPairsStorageV6!: string;
   gnsTradingCallbacksV6_4_1!: string;
 }
 
 class CollateralAddresses {
-  DAI!: NetworkAddresses;
-  ETH!: NetworkAddresses;
-  ARB!: NetworkAddresses;
+  DAI!: Addresses;
+  ETH!: Addresses;
+  ARB!: Addresses;
+}
+
+class NetworkAddresses {
+  POLYGON!: CollateralAddresses;
+  MUMBAI!: CollateralAddresses;
+  ARBITRUM!: CollateralAddresses;
 }
 
 export const ARBITRUM_COLLATERALS: CollateralAddresses = {
@@ -94,6 +100,12 @@ export const MUMBAI_COLLATERALS: CollateralAddresses = {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
   },
+};
+
+export const NETWORK_ADDRESSES: NetworkAddresses = {
+  POLYGON: POLYGON_COLLATERALS,
+  MUMBAI: MUMBAI_COLLATERALS,
+  ARBITRUM: ARBITRUM_COLLATERALS,
 };
 
 class EpochTypes {

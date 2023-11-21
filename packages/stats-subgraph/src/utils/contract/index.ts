@@ -17,7 +17,10 @@ export function convertPercentageToDecimal(percentage: BigInt): BigDecimal {
     .div(BigDecimal.fromString("100"));
 }
 
-export function getCollateralFromAddress(address: string): string {
+export function getCollateralFromCallbacksAddress(
+  network: string,
+  address: string
+): string {
   if (address == "0x0000") {
   }
 }
