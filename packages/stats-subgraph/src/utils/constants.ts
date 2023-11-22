@@ -55,16 +55,10 @@ class Addresses {
   gnsPriceAggregator: string;
 }
 
-class CollateralAddresses {
+export class CollateralAddresses {
   DAI!: Addresses;
   ETH!: Addresses;
   ARB!: Addresses;
-}
-
-class NetworkAddresses {
-  "matic"!: CollateralAddresses;
-  "mumbai"!: CollateralAddresses;
-  "arbitrum-one"!: CollateralAddresses;
 }
 
 export const ARBITRUM_COLLATERALS: CollateralAddresses = {
@@ -119,12 +113,6 @@ export const MUMBAI_COLLATERALS: CollateralAddresses = {
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
   },
-};
-
-export const NETWORK_ADDRESSES: NetworkAddresses = {
-  matic: POLYGON_COLLATERALS,
-  mumbai: MUMBAI_COLLATERALS,
-  "arbitrum-one": ARBITRUM_COLLATERALS,
 };
 
 class EpochTypes {
@@ -191,4 +179,50 @@ export function toDecimal(value: BigInt, decimals: i32): BigDecimal {
   return value
     .toBigDecimal()
     .div(exponentToBigDecimal(decimals).truncate(decimals));
+}
+
+export function getNetworkCollaterals(network: string): CollateralAddresses {
+  if (network === NETWORKS.ARBITRUM) {
+    return ARBITRUM_COLLATERALS;
+  }
+
+  if (network == NETWORKS.POLYGON) {
+    return POLYGON_COLLATERALS;
+  }
+
+  if (network === NETWORKS.MUMBAI) {
+    return MUMBAI_COLLATERALS;
+  }
+
+  throw new Error("Network not supported");
+}
+
+export function getNetworkCollateralAddressesFromNetwork(
+  networkCollaterals: CollateralAddresses,
+  collateral: string
+): Addresses {
+  if (collateral === COLLATERALS.DAI) {
+    return networkCollaterals.DAI;
+  }
+
+  if (collateral === COLLATERALS.ETH) {
+    return networkCollaterals.ETH;
+  }
+
+  if (collateral === COLLATERALS.ARB) {
+    return networkCollaterals.ARB;
+  }
+
+  throw new Error("Collateral not supported");
+}
+
+export function getNetworkCollateralAddresses(
+  network: string,
+  collateral: string
+): Addresses {
+  const collateralAddresses = getNetworkCollaterals(network);
+  return getNetworkCollateralAddressesFromNetwork(
+    collateralAddresses,
+    collateral
+  );
 }

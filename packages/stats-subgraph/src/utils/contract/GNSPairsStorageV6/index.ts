@@ -1,5 +1,5 @@
 import { Address, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
-import { NETWORK_ADDRESSES } from "../../constants";
+import { getNetworkCollateralAddresses } from "../../constants";
 import { GNSPairsStorageV6 } from "../../../types/GNSTradingCallbacksV6_4_1/GNSPairsStorageV6";
 import { convertPercentage } from "..";
 
@@ -7,12 +7,17 @@ export function getPairsStorageContract(
   network: string,
   collateral: string
 ): GNSPairsStorageV6 {
-  const config = NETWORK_ADDRESSES[network][collateral];
+  const collateralAddresses = getNetworkCollateralAddresses(
+    network,
+    collateral
+  );
 
-  if (config == null) {
+  if (collateralAddresses == null) {
     throw new Error("Network not supported");
   }
-  return GNSPairsStorageV6.bind(Address.fromString(config.gnsPairsStorageV6));
+  return GNSPairsStorageV6.bind(
+    Address.fromString(collateralAddresses.gnsPairsStorageV6)
+  );
 }
 
 /**

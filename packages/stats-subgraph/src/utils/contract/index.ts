@@ -2,8 +2,8 @@ import { BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 import {
   COLLATERALS,
   DAI_DECIMALS_BD,
-  NETWORK_ADDRESSES,
   PRECISION_DECIMALS_BD,
+  getNetworkCollaterals,
 } from "../constants";
 export * from "./GNSPairsStorageV6";
 
@@ -33,15 +33,16 @@ export function getCollateralFromCallbacksAddress(
   network: string,
   address: string
 ): string {
-  if (NETWORK_ADDRESSES[network][COLLATERALS.DAI] == address) {
+  const collateralAddresses = getNetworkCollaterals(network);
+  if (collateralAddresses.DAI.gnsTradingCallbacksV6_4_1 == address) {
     return COLLATERALS.DAI;
   }
 
-  if (NETWORK_ADDRESSES[network][COLLATERALS.ETH] == address) {
+  if (collateralAddresses.ETH.gnsTradingCallbacksV6_4_1 == address) {
     return COLLATERALS.ETH;
   }
 
-  if (NETWORK_ADDRESSES[network][COLLATERALS.ARB] == address) {
+  if (collateralAddresses.ARB.gnsTradingCallbacksV6_4_1 == address) {
     return COLLATERALS.ARB;
   }
 
