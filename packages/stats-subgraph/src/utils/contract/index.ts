@@ -34,17 +34,23 @@ export function getCollateralFromCallbacksAddress(
   address: string
 ): string {
   const collateralAddresses = getNetworkCollaterals(network);
-  if (collateralAddresses.DAI.gnsTradingCallbacksV6_4_1 == address) {
+  if (
+    collateralAddresses.DAI.gnsTradingCallbacksV6_4_1.toLowerCase() == address
+  ) {
     return COLLATERALS.DAI;
   }
 
-  if (collateralAddresses.ETH.gnsTradingCallbacksV6_4_1 == address) {
+  if (
+    collateralAddresses.ETH.gnsTradingCallbacksV6_4_1.toLowerCase() == address
+  ) {
     return COLLATERALS.ETH;
   }
 
-  if (collateralAddresses.ARB.gnsTradingCallbacksV6_4_1 == address) {
+  if (
+    collateralAddresses.ARB.gnsTradingCallbacksV6_4_1.toLowerCase() == address
+  ) {
     return COLLATERALS.ARB;
   }
 
-  throw new Error("Collateral not supported");
+  throw new Error("Callbacks address not found " + address);
 }

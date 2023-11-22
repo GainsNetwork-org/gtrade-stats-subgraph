@@ -182,7 +182,7 @@ export function toDecimal(value: BigInt, decimals: i32): BigDecimal {
 }
 
 export function getNetworkCollaterals(network: string): CollateralAddresses {
-  if (network === NETWORKS.ARBITRUM) {
+  if (network == NETWORKS.ARBITRUM) {
     return ARBITRUM_COLLATERALS;
   }
 
@@ -190,7 +190,7 @@ export function getNetworkCollaterals(network: string): CollateralAddresses {
     return POLYGON_COLLATERALS;
   }
 
-  if (network === NETWORKS.MUMBAI) {
+  if (network == NETWORKS.MUMBAI) {
     return MUMBAI_COLLATERALS;
   }
 
@@ -201,15 +201,15 @@ export function getNetworkCollateralAddressesFromNetwork(
   networkCollaterals: CollateralAddresses,
   collateral: string
 ): Addresses {
-  if (collateral === COLLATERALS.DAI) {
+  if (collateral == COLLATERALS.DAI) {
     return networkCollaterals.DAI;
   }
 
-  if (collateral === COLLATERALS.ETH) {
+  if (collateral == COLLATERALS.ETH) {
     return networkCollaterals.ETH;
   }
 
-  if (collateral === COLLATERALS.ARB) {
+  if (collateral == COLLATERALS.ARB) {
     return networkCollaterals.ARB;
   }
 
