@@ -157,3 +157,29 @@ export const getPointsFromNextTier = (points: number): number => {
   }
   return 0;
 };
+
+export const DIVERSITY_THRESHOLD = 0;
+export const getDiversityGroupFromPairIndex = (
+  pairIndex: number,
+  groupIndex: number
+): number => {
+  let groupId = 0;
+  if (groupIndex == 0 && (pairIndex == 0 || pairIndex == 1)) {
+    groupId = 0;
+  } else if (groupIndex == 0 && pairIndex > 1) {
+    groupId = 1;
+  } else if (groupIndex == 1 || groupIndex == 8 || groupIndex == 9) {
+    groupId = 2;
+  } else if (groupIndex == 6 || groupIndex == 7) {
+    groupId = 3;
+  } else {
+    groupId = 4;
+  }
+  return groupId;
+};
+export const getPointsFromDiversityTreshold = (existingFees: number) => {
+  if (existingFees < DIVERSITY_THRESHOLD) {
+    return DIVERSITY_THRESHOLD - existingFees;
+  }
+  return 0;
+};
