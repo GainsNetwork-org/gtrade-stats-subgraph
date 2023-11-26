@@ -3,6 +3,13 @@ enum EpochType {
   week
 }
 
+enum Collateral {
+  _all_
+  dai
+  eth
+  arb
+}
+
 type EpochTradingStatsRecord @entity {
   "Address-type-number-collateral"
   id: ID!
@@ -15,6 +22,9 @@ type EpochTradingStatsRecord @entity {
 
   "Epoch Number"
   epochNumber: Int!
+
+  "Collateral"
+  collateral: Collateral!
 
   "Total Volume"
   totalVolumePerGroup: [BigDecimal!]!

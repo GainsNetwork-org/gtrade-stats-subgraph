@@ -6,6 +6,7 @@ import {
   EPOCH_TYPE,
   determineEpochNumber,
   PROTOCOL,
+  COLLATERALS,
 } from "../constants";
 
 export function generateAggregateTradingStatsId(
@@ -47,6 +48,9 @@ export function createOrLoadEpochTradingStatsRecord(
     epochTradingStatsRecord.address = address;
     epochTradingStatsRecord.epochType = epochType;
     epochTradingStatsRecord.epochNumber = epochNumber;
+    epochTradingStatsRecord.collateral = collateral
+      ? collateral
+      : COLLATERALS._ALL_;
     epochTradingStatsRecord.totalVolumePerGroup = [];
     epochTradingStatsRecord.totalBorrowingFees = ZERO_BD;
     epochTradingStatsRecord.pairsTraded = [];

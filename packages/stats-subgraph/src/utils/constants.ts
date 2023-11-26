@@ -26,12 +26,14 @@ export const VOLUME_THRESHOLDS = [
 export const PROTOCOL = "protocol";
 
 class Collaterals {
+  _ALL_!: string;
   DAI!: string;
   ETH!: string;
   ARB!: string;
 }
 
 export const COLLATERALS: Collaterals = {
+  _ALL_: "_all_",
   DAI: "dai",
   ETH: "eth",
   ARB: "arb",
