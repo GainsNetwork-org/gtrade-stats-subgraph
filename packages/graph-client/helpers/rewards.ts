@@ -183,3 +183,10 @@ export const getPointsFromDiversityTreshold = (existingFees: number) => {
   }
   return 0;
 };
+
+export const COLLATERALS = {
+  _ALL_: "_all_",
+  DAI: "dai",
+  ETH: "eth",
+  ARB: "arb",
+};

@@ -8,6 +8,7 @@ import {
   getBuiltGraphSDK,
 } from "./../../.graphclient/index.js";
 import {
+  COLLATERALS,
   convertPointsToRewardsForUser,
   transformEpochTradingPointsRecord,
 } from "../../helpers/rewards.js";
@@ -88,6 +89,7 @@ const fetchEpochTradingPointsRecords = async (
   const whereClause = {
     epochType: rewardConfig.epochType,
     epochNumber: epoch,
+    collateral: COLLATERALS._ALL_, // @todo this is hardcoded for now - need to support further configs later
   };
 
   if (lastId) {
