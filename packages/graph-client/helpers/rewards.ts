@@ -3,6 +3,7 @@ import {
   EpochType,
   RewardConfig,
   RewardResults,
+  Collateral,
 } from "../.graphclient";
 import { EpochTradingPoints, LoyaltyTier } from "../types/rewards";
 
@@ -185,8 +186,8 @@ export const getPointsFromDiversityTreshold = (existingFees: number) => {
 };
 
 export const COLLATERALS = {
-  _ALL_: "_all_",
-  DAI: "dai",
-  ETH: "eth",
-  ARB: "arb",
+  _ALL_: "_all_" as Collateral,
+  DAI: "dai" as Collateral,
+  ETH: "eth" as Collateral,
+  ARB: "arb" as Collateral,
 };
