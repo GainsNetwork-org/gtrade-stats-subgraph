@@ -33,8 +33,13 @@ export function createOrLoadEpochTradingStatsRecord(
   save: boolean
 ): EpochTradingStatsRecord {
   log.info(
-    "[createOrLoadEpochTradingStatsRecord] address {}, epochType {}, epochNumber {}",
-    [address, epochType.toString(), epochNumber.toString()]
+    "[createOrLoadEpochTradingStatsRecord] address {}, epochType {}, epochNumber {}, collateral {}",
+    [
+      address,
+      epochType.toString(),
+      epochNumber.toString(),
+      collateral ? collateral : "_all_",
+    ]
   );
   const id = generateAggregateTradingStatsId(
     address,

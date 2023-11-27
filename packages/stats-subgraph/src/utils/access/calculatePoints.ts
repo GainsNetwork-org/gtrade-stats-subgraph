@@ -7,6 +7,7 @@ import {
   PROTOCOL,
   VOLUME_THRESHOLDS,
   ONE_BD,
+  COLLATERALS,
 } from "../constants";
 
 export function updatePointsOnClose(
@@ -418,8 +419,13 @@ export function createOrLoadEpochTradingPointsRecord(
   save: boolean
 ): EpochTradingPointsRecord {
   log.info(
-    "[createOrLoadEpochTradingPointsRecord] address {}, epochType {}, epochNumber {}",
-    [address, epochType.toString(), epochNumber.toString()]
+    "[createOrLoadEpochTradingPointsRecord] address {}, epochType {}, epochNumber {}, collateral {}",
+    [
+      address,
+      epochType.toString(),
+      epochNumber.toString(),
+      collateral ? collateral : "_all_",
+    ]
   );
   const id = generateId(address, epochType, epochNumber, collateral);
   let epochTradingPointsRecord = EpochTradingPointsRecord.load(id);
@@ -428,6 +434,9 @@ export function createOrLoadEpochTradingPointsRecord(
     epochTradingPointsRecord.address = address;
     epochTradingPointsRecord.epochNumber = epochNumber;
     epochTradingPointsRecord.epochType = epochType;
+    epochTradingPointsRecord.collateral = collateral
+      ? collateral
+      : COLLATERALS._ALL_;
     epochTradingPointsRecord.totalFeesPaid = BigDecimal.fromString("0");
     epochTradingPointsRecord.pnl = BigDecimal.fromString("0");
     epochTradingPointsRecord.pnlPercentage = BigDecimal.fromString("0");

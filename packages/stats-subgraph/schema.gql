@@ -63,6 +63,7 @@ type EpochTradingPointsRecord @entity {
   address: String!
   epochNumber: Int!
   epochType: EpochType!
+  collateral: Collateral!
   totalFeesPaid: BigDecimal!
   pnl: BigDecimal!
   pnlPercentage: BigDecimal!
