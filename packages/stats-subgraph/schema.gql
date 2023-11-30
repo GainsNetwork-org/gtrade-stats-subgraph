@@ -69,7 +69,7 @@ type EpochTradingPointsRecord @entity {
   pnlPercentage: BigDecimal!
   groupsTraded: [BigDecimal!]!
   loyaltyPoints: BigDecimal!
-  volumePoints: BigDecimal!
+  feePoints: BigDecimal!
   absSkillPoints: BigDecimal!
   relSkillPoints: BigDecimal!
   diversityPoints: BigDecimal!
