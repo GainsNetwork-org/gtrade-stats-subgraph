@@ -10,22 +10,26 @@ fragment BaseEpochTradingPointsRecord on EpochTradingPointsRecord {
   diversityPoints
 }
 
+fragment BaseEpochTradingStatsRecord on EpochTradingStatsRecord {
+  id
+  address
+  epochType
+  epochNumber
+  totalVolumePerGroup
+  totalBorrowingFees
+  pairsTraded
+  totalPnl
+  totalPnlPercentage
+  totalGovFees
+  totalReferralFees
+  totalTriggerFees
+  totalStakerFees
+  totalLpFees
+}
+
 query GetEpochTradingStatsRecord($id: ID!) {
   epochTradingStatsRecord(id: $id) {
-    id
-    address
-    epochType
-    epochNumber
-    totalVolumePerGroup
-    totalBorrowingFees
-    pairsTraded
-    totalPnl
-    totalPnlPercentage
-    totalGovFees
-    totalReferralFees
-    totalTriggerFees
-    totalStakerFees
-    totalLpFees
+    ...BaseEpochTradingStatsRecord
   }
 }
 
@@ -41,20 +45,7 @@ query GetEpochTradingStatsRecordsForEpoch(
   $where: EpochTradingStatsRecord_filter
 ) {
   epochTradingStatsRecords(skip: $skip, first: $first, where: $where) {
-    id
-    address
-    epochType
-    epochNumber
-    totalVolumePerGroup
-    totalBorrowingFees
-    pairsTraded
-    totalPnl
-    totalPnlPercentage
-    totalGovFees
-    totalReferralFees
-    totalTriggerFees
-    totalStakerFees
-    totalLpFees
+    ...BaseEpochTradingStatsRecord
   }
 }
 
@@ -82,6 +73,21 @@ query GetTraderAndProtocolPointsRecordsForEpoch(
     ...BaseEpochTradingPointsRecord
   }
   protocol: epochTradingPointsRecord(id: $protocolId) {
+    ...BaseEpochTradingPointsRecord
+  }
+}
+
+query GetTraderAndProtocolRecordsForEpoch($traderId: ID!, $protocolId: ID!) {
+  traderStats: epochTradingStatsRecord(id: $traderId) {
+    ...BaseEpochTradingStatsRecord
+  }
+  protocolStats: epochTradingStatsRecord(id: $protocolId) {
+    ...BaseEpochTradingStatsRecord
+  }
+  traderPoints: epochTradingPointsRecord(id: $traderId) {
+    ...BaseEpochTradingPointsRecord
+  }
+  protocolPoints: epochTradingPointsRecord(id: $protocolId) {
     ...BaseEpochTradingPointsRecord
   }
 }

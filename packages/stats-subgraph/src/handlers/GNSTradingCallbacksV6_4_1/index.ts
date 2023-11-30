@@ -147,6 +147,7 @@ export function handleGovFeeCharged(event: GovFeeCharged): void {
   const trader = event.params.trader.toHexString();
   const govFee = convertDaiToDecimal(event.params.valueDai);
   const timestamp = event.block.timestamp.toI32();
+
   log.info("[handleGovFeeCharged] {}", [event.transaction.hash.toHexString()]);
   addGovFeeStats(trader, govFee, timestamp, collateralDetails.collateral);
   updateFeeBasedPoints(trader, govFee, timestamp, collateralDetails.collateral);
