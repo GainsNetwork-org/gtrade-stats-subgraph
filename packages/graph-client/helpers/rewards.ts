@@ -141,19 +141,19 @@ export const loyaltyTiers: LoyaltyTier[] = [
   { lowerBound: 400, upperBound: Infinity, returnValue: 50 },
 ];
 
-export const getLoyaltyTier = (points: number): number => {
+export const getLoyaltyTier = (fees: number): number => {
   for (const tier of loyaltyTiers) {
-    if (points >= tier.lowerBound && points < tier.upperBound) {
+    if (fees >= tier.lowerBound && fees < tier.upperBound) {
       return tier.returnValue;
     }
   }
   return 0;
 };
 
-export const getPointsFromNextTier = (points: number): number => {
+export const getFeesFromNextTier = (fees: number): number => {
   for (const tier of loyaltyTiers) {
-    if (points >= tier.lowerBound && points < tier.upperBound) {
-      return tier.upperBound - points;
+    if (fees >= tier.lowerBound && fees < tier.upperBound) {
+      return tier.upperBound - fees;
     }
   }
   return 0;
@@ -178,7 +178,7 @@ export const getDiversityGroupFromPairIndex = (
   }
   return groupId;
 };
-export const getPointsFromDiversityTreshold = (existingFees: number) => {
+export const getFeesFromDiversityTreshold = (existingFees: number) => {
   if (existingFees < DIVERSITY_THRESHOLD) {
     return DIVERSITY_THRESHOLD - existingFees;
   }
