@@ -13,7 +13,7 @@ export const ARBITRUM_STIP_REWARDS = {
   startingEpoch: 0,
   rewardDistribution: {
     loyalty: 0.1,
-    volume: 0.7,
+    fee: 0.7,
     absSkill: 0.1,
     relSkill: 0.05,
     diversity: 0.05,

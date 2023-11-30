@@ -73,7 +73,7 @@ export const convertPointsToRewardsForUser = (
     address: userPoints.address,
     total: 0,
     loyalty: 0,
-    volume: 0,
+    fee: 0,
     absSkill: 0,
     relSkill: 0,
     diversity: 0,
@@ -86,10 +86,10 @@ export const convertPointsToRewardsForUser = (
     rewards.rewardDistribution.loyalty * epochTotalRewards
   );
 
-  rewardResults.volume = convertPointShareToRewards(
-    userPoints.volumePoints,
-    protocolPoints.volumePoints,
-    rewards.rewardDistribution.volume * epochTotalRewards
+  rewardResults.fee = convertPointShareToRewards(
+    userPoints.feePoints,
+    protocolPoints.feePoints,
+    rewards.rewardDistribution.fee * epochTotalRewards
   );
 
   rewardResults.absSkill = convertPointShareToRewards(
@@ -112,7 +112,7 @@ export const convertPointsToRewardsForUser = (
 
   rewardResults.total =
     rewardResults.loyalty +
-    rewardResults.volume +
+    rewardResults.fee +
     rewardResults.absSkill +
     rewardResults.relSkill +
     rewardResults.diversity;
@@ -128,7 +128,7 @@ export const transformEpochTradingPointsRecord = (
   epochNumber: Number(record.epochNumber),
   address: record.address,
   loyaltyPoints: Number(record.loyaltyPoints),
-  volumePoints: Number(record.volumePoints),
+  feePoints: Number(record.feePoints),
   absSkillPoints: Number(record.absSkillPoints),
   relSkillPoints: Number(record.relSkillPoints),
   diversityPoints: Number(record.diversityPoints),

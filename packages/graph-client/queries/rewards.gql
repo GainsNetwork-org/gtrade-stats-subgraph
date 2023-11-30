@@ -7,7 +7,7 @@ fragment BaseRewardConfig on RewardConfig {
   startingEpoch
   rewardDistribution {
     loyalty
-    volume
+    fee
     absSkill
     relSkill
     diversity
@@ -18,7 +18,7 @@ fragment BaseRewardResults on RewardResults {
   address
   total
   loyalty
-  volume
+  fee
   absSkill
   relSkill
   diversity

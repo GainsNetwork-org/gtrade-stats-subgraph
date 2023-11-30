@@ -4,7 +4,7 @@ fragment BaseEpochTradingPointsRecord on EpochTradingPointsRecord {
   epochType
   epochNumber
   loyaltyPoints
-  volumePoints
+  feePoints
   absSkillPoints
   relSkillPoints
   diversityPoints

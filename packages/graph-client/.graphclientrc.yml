@@ -19,7 +19,7 @@ additionalTypeDefs: |
   # Types
   type RewardDistributionP {
     loyalty: Float!
-    volume: Float!
+    fee: Float!
     absSkill: Float!
     relSkill: Float!
     diversity: Float!
@@ -39,7 +39,7 @@ additionalTypeDefs: |
     address: String!
     total: Float!
     loyalty: Float!
-    volume: Float!
+    fee: Float!
     absSkill: Float!
     relSkill: Float!
     diversity: Float!
