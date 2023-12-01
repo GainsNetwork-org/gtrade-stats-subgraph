@@ -18,6 +18,8 @@ export const ARBITRUM_STIP_REWARDS = {
     relSkill: 0.05,
     diversity: 0.0,
   },
+  rewardsPairIx: 109,
+  capFeeRewards: true,
 };
 
 export const getActiveRewardConfigs: QueryResolvers["getActiveRewardConfigs"] =

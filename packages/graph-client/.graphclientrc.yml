@@ -33,6 +33,8 @@ additionalTypeDefs: |
     numEpochs: Int!
     startingEpoch: Int!
     rewardDistribution: RewardDistributionP!
+    rewardsPairIx: Int
+    capFeeRewards: Boolean
   }
 
   type RewardResults {
@@ -50,8 +52,8 @@ additionalTypeDefs: |
     getActiveRewardConfigs: [RewardConfig!]!
     getRewardConfig(id: ID!): RewardConfig
     getAddressRewardsForEpoch(address: String!, rewardConfigId: ID!, epoch: Int!): RewardResults!
-    getAllRewardsForEpoch(rewardConfigId: ID!, epoch: Int!, skip: Int = 0, first: Int = 1000): [RewardResults!]!
-    getAllRewardsForLastEpoch(rewardConfigId: ID!, skip: Int = 0, first: Int = 1000): [RewardResults!]!
+    getAllRewardsForEpoch(rewardConfigId: ID!, epoch: Int!): [RewardResults!]!
+    getAllRewardsForLastEpoch(rewardConfigId: ID!): [RewardResults!]!
   }
 
 additionalResolvers:

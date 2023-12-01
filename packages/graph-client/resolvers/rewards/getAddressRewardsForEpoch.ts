@@ -56,6 +56,23 @@ export const getAddressRewardsForEpoch: QueryResolvers["getAddressRewardsForEpoc
       );
     }
 
+    // Cap fee rewards if necessary
+    if (rewardConfig.capFeeRewards) {
+      const rewardsPairIx: number = rewardConfig.rewardsPairIx;
+      const prices = (await (
+        await fetch("https://backend-pricing.eu.gains.trade/charts")
+      ).json()) as { opens: number[] };
+      const rewardsToUsd: number = prices.opens[rewardsPairIx];
+      const rewardsInUsd =
+        rewardConfig.rewardDistribution.fee *
+        (rewardConfig.totalRewards / rewardConfig.numEpochs) *
+        rewardsToUsd;
+      const protocolFees = addressAndProtocolPoints.protocol.totalFeesPaid;
+      if (rewardsInUsd > protocolFees) {
+        rewardConfig.rewardDistribution.fee *= protocolFees / rewardsInUsd;
+      }
+    }
+
     return convertPointsToRewardsForUser(
       addressAndProtocolPoints.trader,
       addressAndProtocolPoints.protocol,

@@ -9,6 +9,7 @@ export type EpochTradingPoints = {
   absSkillPoints: number;
   relSkillPoints: number;
   diversityPoints: number;
+  totalFeesPaid: number;
 };
 
 export type LoyaltyTier = {

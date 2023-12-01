@@ -67,6 +67,23 @@ export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
     const protocolTradingPoints = epochTradingPoints[ix];
     epochTradingPoints.splice(ix, 1);
 
+    // Cap fee rewards if necessary
+    if (rewardConfig.capFeeRewards) {
+      const rewardsPairIx: number = rewardConfig.rewardsPairIx;
+      const prices = (await (
+        await fetch("https://backend-pricing.eu.gains.trade/charts")
+      ).json()) as { opens: number[] };
+      const rewardsToUsd: number = prices.opens[rewardsPairIx];
+      const rewardsInUsd =
+        rewardConfig.rewardDistribution.fee *
+        (rewardConfig.totalRewards / rewardConfig.numEpochs) *
+        rewardsToUsd;
+      const protocolFees = protocolTradingPoints.totalFeesPaid;
+      if (rewardsInUsd > protocolFees) {
+        rewardConfig.rewardDistribution.fee *= protocolFees / rewardsInUsd;
+      }
+    }
+
     return epochTradingPoints.map(userPoints =>
       convertPointsToRewardsForUser(
         userPoints,
