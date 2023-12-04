@@ -51,9 +51,9 @@ additionalTypeDefs: |
   extend type Query {
     getActiveRewardConfigs: [RewardConfig!]!
     getRewardConfig(id: ID!): RewardConfig
-    getAddressRewardsForEpoch(address: String!, rewardConfigId: ID!, epoch: Int!): RewardResults!
-    getAllRewardsForEpoch(rewardConfigId: ID!, epoch: Int!): [RewardResults!]!
-    getAllRewardsForLastEpoch(rewardConfigId: ID!): [RewardResults!]!
+    getAddressRewardsForEpoch(address: String!, rewardConfigId: ID!, epoch: Int!, rewardToUsd: Float): RewardResults!
+    getAllRewardsForEpoch(rewardConfigId: ID!, epoch: Int!, rewardToUsd: Float): [RewardResults!]!
+    getAllRewardsForLastEpoch(rewardConfigId: ID!, rewardToUsd: Float): [RewardResults!]!
   }
 
 additionalResolvers:

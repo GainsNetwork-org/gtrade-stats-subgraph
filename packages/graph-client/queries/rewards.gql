@@ -42,24 +42,37 @@ query GetAddressRewardsForEpoch(
   $address: String!
   $rewardConfigId: ID!
   $epoch: Int!
+  $rewardToUsd: Float
 ) {
   getAddressRewardsForEpoch(
     address: $address
     rewardConfigId: $rewardConfigId
     epoch: $epoch
+    rewardToUsd: $rewardToUsd
   ) {
     ...BaseRewardResults
   }
 }
 
-query GetAllRewardsForEpoch($rewardConfigId: ID!, $epoch: Int!) {
-  getAllRewardsForEpoch(rewardConfigId: $rewardConfigId, epoch: $epoch) {
+query GetAllRewardsForEpoch(
+  $rewardConfigId: ID!
+  $epoch: Int!
+  $rewardToUsd: Float
+) {
+  getAllRewardsForEpoch(
+    rewardConfigId: $rewardConfigId
+    epoch: $epoch
+    rewardToUsd: $rewardToUsd
+  ) {
     ...BaseRewardResults
   }
 }
 
-query GetAllRewardsForLastEpoch($rewardConfigId: ID!) {
-  getAllRewardsForLastEpoch(rewardConfigId: $rewardConfigId) {
+query GetAllRewardsForLastEpoch($rewardConfigId: ID!, $rewardToUsd: Float) {
+  getAllRewardsForLastEpoch(
+    rewardConfigId: $rewardConfigId
+    rewardToUsd: $rewardToUsd
+  ) {
     ...BaseRewardResults
   }
 }

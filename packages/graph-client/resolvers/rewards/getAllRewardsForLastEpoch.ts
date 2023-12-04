@@ -13,7 +13,7 @@ export const getAllRewardsForLastEpoch: QueryResolvers["getAllRewardsForLastEpoc
     args: QuerygetAllRewardsForLastEpochArgs,
     context
   ): Promise<Query["getAllRewardsForLastEpoch"]> => {
-    const { rewardConfigId } = args;
+    const { rewardConfigId, rewardToUsd } = args;
     const { chainId } = context;
     const sdk = getBuiltGraphSDK();
     const rewardConfig = (
@@ -36,6 +36,7 @@ export const getAllRewardsForLastEpoch: QueryResolvers["getAllRewardsForLastEpoc
         {
           rewardConfigId,
           epoch: currentEpoch - 1,
+          rewardToUsd,
         },
         { ...context, graphName: STATS_SUBGRAPH[+chainId] }
       )

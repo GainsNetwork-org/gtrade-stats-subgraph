@@ -21,6 +21,7 @@ export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
     context
   ): Promise<Query["getAllRewardsForEpoch"]> => {
     const { rewardConfigId, epoch } = args;
+    let { rewardToUsd } = args;
     const { chainId } = context;
     const sdk = getBuiltGraphSDK();
     const rewardConfig = (
@@ -69,18 +70,19 @@ export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
 
     // Cap fee rewards if necessary
     if (rewardConfig.capFeeRewards) {
-      const rewardsPairIx: number = rewardConfig.rewardsPairIx;
-      const prices = (await (
-        await fetch("https://backend-pricing.eu.gains.trade/charts")
-      ).json()) as { opens: number[] };
-      const rewardsToUsd: number = prices.opens[rewardsPairIx];
-      const rewardsInUsd =
-        rewardConfig.rewardDistribution.fee *
-        (rewardConfig.totalRewards / rewardConfig.numEpochs) *
-        rewardsToUsd;
-      const protocolFees = protocolTradingPoints.totalFeesPaid;
-      if (rewardsInUsd > protocolFees) {
-        rewardConfig.rewardDistribution.fee *= protocolFees / rewardsInUsd;
+      if (rewardToUsd) {
+        const rewardsInUsd =
+          rewardConfig.rewardDistribution.fee *
+          (rewardConfig.totalRewards / rewardConfig.numEpochs) *
+          rewardToUsd;
+        const protocolFees = protocolTradingPoints.totalFeesPaid;
+        if (rewardsInUsd > protocolFees) {
+          rewardConfig.rewardDistribution.fee *= protocolFees / rewardsInUsd;
+        }
+      } else {
+        console.warn(
+          "No rewardToUsd provided, so not capping fee rewards. This may result in incorrect rewards."
+        );
       }
     }
 
