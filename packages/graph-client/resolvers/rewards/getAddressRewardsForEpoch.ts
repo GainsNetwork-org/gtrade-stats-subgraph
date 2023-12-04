@@ -16,8 +16,7 @@ export const getAddressRewardsForEpoch: QueryResolvers["getAddressRewardsForEpoc
     args: QuerygetAddressRewardsForEpochArgs,
     context
   ): Promise<Query["getAddressRewardsForEpoch"]> => {
-    const { address, epoch, rewardConfigId } = args;
-    let { rewardToUsd } = args;
+    const { address, epoch, rewardConfigId, rewardToUsd } = args;
     const { chainId } = context;
     const sdk = getBuiltGraphSDK();
     const rewardConfig = (

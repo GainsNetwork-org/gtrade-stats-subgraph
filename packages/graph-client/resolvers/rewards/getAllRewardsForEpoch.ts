@@ -20,8 +20,7 @@ export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
     args: QuerygetAllRewardsForEpochArgs,
     context
   ): Promise<Query["getAllRewardsForEpoch"]> => {
-    const { rewardConfigId, epoch } = args;
-    let { rewardToUsd } = args;
+    const { rewardConfigId, epoch, rewardToUsd } = args;
     const { chainId } = context;
     const sdk = getBuiltGraphSDK();
     const rewardConfig = (
