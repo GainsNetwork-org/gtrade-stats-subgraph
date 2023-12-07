@@ -4,6 +4,10 @@ export const ZERO_BD = BigDecimal.fromString("0");
 export const ONE_BD = BigDecimal.fromString("1");
 export const DAI_DECIMALS = 18;
 export const DAI_DECIMALS_BD = exponentToBigDecimal(DAI_DECIMALS);
+export const ARB_DECIMALS = 18;
+export const ARB_DECIMALS_BD = exponentToBigDecimal(ARB_DECIMALS);
+export const ETH_DECIMALS = 18;
+export const ETH_DECIMALS_BD = exponentToBigDecimal(ETH_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
 
@@ -21,6 +25,20 @@ export const VOLUME_THRESHOLDS = [
 
 export const PROTOCOL = "protocol";
 
+class Collaterals {
+  _ALL_!: string;
+  DAI!: string;
+  ETH!: string;
+  ARB!: string;
+}
+
+export const COLLATERALS: Collaterals = {
+  _ALL_: "_all_",
+  DAI: "dai",
+  ETH: "eth",
+  ARB: "arb",
+};
+
 class Networks {
   POLYGON!: string;
   MUMBAI!: string;
@@ -33,20 +51,70 @@ export const NETWORKS: Networks = {
   ARBITRUM: "arbitrum-one",
 };
 
-class NetworkAddresses {
+class Addresses {
   gnsPairsStorageV6!: string;
+  gnsTradingCallbacksV6_4_1!: string;
+  gnsPriceAggregator: string;
 }
 
-export const ARBITRUM_ADDRESSES: NetworkAddresses = {
-  gnsPairsStorageV6: "0xf67Df2a4339eC1591615d94599081Dd037960d4b",
+export class CollateralAddresses {
+  DAI!: Addresses;
+  ETH!: Addresses;
+  ARB!: Addresses;
+}
+
+export const ARBITRUM_COLLATERALS: CollateralAddresses = {
+  DAI: {
+    gnsPairsStorageV6: "0xf67Df2a4339eC1591615d94599081Dd037960d4b",
+    gnsTradingCallbacksV6_4_1: "0x298a695906e16aeA0a184A2815A76eAd1a0b7522",
+    gnsPriceAggregator: "0x2e44a81701A8355E59B3204B4a9Fe8FC43CbE0C3",
+  },
+  ETH: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
+  },
+  ARB: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
+  },
 };
 
-export const POLYGON_ADDRESSES: NetworkAddresses = {
-  gnsPairsStorageV6: "0x6e5326e944F528c243B9Ca5d14fe5C9269a8c922",
+export const POLYGON_COLLATERALS: CollateralAddresses = {
+  DAI: {
+    gnsPairsStorageV6: "0x6e5326e944F528c243B9Ca5d14fe5C9269a8c922",
+    gnsTradingCallbacksV6_4_1: "0x82e59334da8C667797009BBe82473B55c7A6b311",
+    gnsPriceAggregator: "0x126F32723c5FC8DFEB17c46b7B7dD3dCd458A816",
+  },
+  ETH: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
+  },
+  ARB: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
+  },
 };
 
-export const MUMBAI_ADDRESSES: NetworkAddresses = {
-  gnsPairsStorageV6: "0x2b497ff78bA1F803141Ecca0F98eF3c5B5B64d26",
+export const MUMBAI_COLLATERALS: CollateralAddresses = {
+  DAI: {
+    gnsPairsStorageV6: "0x2b497ff78bA1F803141Ecca0F98eF3c5B5B64d26",
+    gnsTradingCallbacksV6_4_1: "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
+    gnsPriceAggregator: "0x5a284f0f52a8Ea4A33033EfB3Ffd723db9bbe312",
+  },
+  ETH: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
+  },
+  ARB: {
+    gnsPairsStorageV6: "",
+    gnsTradingCallbacksV6_4_1: "",
+    gnsPriceAggregator: "",
+  },
 };
 
 class EpochTypes {
@@ -113,4 +181,50 @@ export function toDecimal(value: BigInt, decimals: i32): BigDecimal {
   return value
     .toBigDecimal()
     .div(exponentToBigDecimal(decimals).truncate(decimals));
+}
+
+export function getNetworkCollaterals(network: string): CollateralAddresses {
+  if (network == NETWORKS.ARBITRUM) {
+    return ARBITRUM_COLLATERALS;
+  }
+
+  if (network == NETWORKS.POLYGON) {
+    return POLYGON_COLLATERALS;
+  }
+
+  if (network == NETWORKS.MUMBAI) {
+    return MUMBAI_COLLATERALS;
+  }
+
+  throw new Error("Network not supported");
+}
+
+export function getNetworkCollateralAddressesFromNetwork(
+  networkCollaterals: CollateralAddresses,
+  collateral: string
+): Addresses {
+  if (collateral == COLLATERALS.DAI) {
+    return networkCollaterals.DAI;
+  }
+
+  if (collateral == COLLATERALS.ETH) {
+    return networkCollaterals.ETH;
+  }
+
+  if (collateral == COLLATERALS.ARB) {
+    return networkCollaterals.ARB;
+  }
+
+  throw new Error("Collateral not supported");
+}
+
+export function getNetworkCollateralAddresses(
+  network: string,
+  collateral: string
+): Addresses {
+  const collateralAddresses = getNetworkCollaterals(network);
+  return getNetworkCollateralAddressesFromNetwork(
+    collateralAddresses,
+    collateral
+  );
 }

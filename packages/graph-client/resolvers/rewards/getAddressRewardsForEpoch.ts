@@ -16,7 +16,7 @@ export const getAddressRewardsForEpoch: QueryResolvers["getAddressRewardsForEpoc
     args: QuerygetAddressRewardsForEpochArgs,
     context
   ): Promise<Query["getAddressRewardsForEpoch"]> => {
-    const { address, epoch, rewardConfigId } = args;
+    const { address, epoch, rewardConfigId, rewardToUsd } = args;
     const { chainId } = context;
     const sdk = getBuiltGraphSDK();
     const rewardConfig = (
@@ -54,6 +54,24 @@ export const getAddressRewardsForEpoch: QueryResolvers["getAddressRewardsForEpoc
       throw new Error(
         `No points found for trader ${address} and epoch ${epoch}`
       );
+    }
+
+    // Cap fee rewards if necessary
+    if (rewardConfig.capFeeRewards) {
+      if (rewardToUsd) {
+        const rewardsInUsd =
+          rewardConfig.rewardDistribution.fee *
+          (rewardConfig.totalRewards / rewardConfig.numEpochs) *
+          rewardToUsd;
+        const protocolFees = addressAndProtocolPoints.protocol.totalFeesPaid;
+        if (rewardsInUsd > protocolFees) {
+          rewardConfig.rewardDistribution.fee *= protocolFees / rewardsInUsd;
+        }
+      } else {
+        console.warn(
+          "No rewardToUsd provided, so not capping fee rewards. This may result in incorrect rewards."
+        );
+      }
     }
 
     return convertPointsToRewardsForUser(

@@ -1,38 +1,35 @@
-import {
-  Address,
-  dataSource,
-  BigInt,
-  BigDecimal,
-} from "@graphprotocol/graph-ts";
-import {
-  NETWORKS,
-  ARBITRUM_ADDRESSES,
-  POLYGON_ADDRESSES,
-  MUMBAI_ADDRESSES,
-} from "../../constants";
+import { Address, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
+import { getNetworkCollateralAddresses } from "../../constants";
 import { GNSPairsStorageV6 } from "../../../types/GNSTradingCallbacksV6_4_1/GNSPairsStorageV6";
 import { convertPercentage } from "..";
 
-export function getPairsStorageContract(): GNSPairsStorageV6 {
-  const config =
-    dataSource.network() == NETWORKS.ARBITRUM
-      ? ARBITRUM_ADDRESSES
-      : dataSource.network() == NETWORKS.POLYGON
-      ? POLYGON_ADDRESSES
-      : MUMBAI_ADDRESSES;
+export function getPairsStorageContract(
+  network: string,
+  collateral: string
+): GNSPairsStorageV6 {
+  const collateralAddresses = getNetworkCollateralAddresses(
+    network,
+    collateral
+  );
 
-  if (config == null) {
+  if (collateralAddresses == null) {
     throw new Error("Network not supported");
   }
-  return GNSPairsStorageV6.bind(Address.fromString(config.gnsPairsStorageV6));
+  return GNSPairsStorageV6.bind(
+    Address.fromString(collateralAddresses.gnsPairsStorageV6)
+  );
 }
 
 /**
  * @param pairIndex
  * @returns totalOpenFeeP = pairOpenFeeP * 2 + pairNftLimitOrderFeeP
  */
-export function getTotalOpenFeeP(pairIndex: BigInt): BigDecimal {
-  const pairsStorageContract = getPairsStorageContract();
+export function getTotalOpenFeeP(
+  network: string,
+  collateral: string,
+  pairIndex: BigInt
+): BigDecimal {
+  const pairsStorageContract = getPairsStorageContract(network, collateral);
   const pairOpenFeeP = convertPercentage(
     pairsStorageContract.pairOpenFeeP(pairIndex)
   );
@@ -51,10 +48,12 @@ export function getTotalOpenFeeP(pairIndex: BigInt): BigDecimal {
  * @returns totalCloseFeeP = pairCloseFeeP + pairNftLimitOrderFeeP
  */
 export function getTotalCloseFeeP(
+  network: string,
+  collateral: string,
   pairIndex: BigInt,
   isLiq: boolean
 ): BigDecimal {
-  const pairsStorageContract = getPairsStorageContract();
+  const pairsStorageContract = getPairsStorageContract(network, collateral);
   const pairCloseFeeP = convertPercentage(
     pairsStorageContract.pairCloseFeeP(pairIndex)
   );
@@ -75,7 +74,11 @@ export function getLiquidationFeeP(pairIndex: BigInt): BigDecimal {
   return BigDecimal.fromString("5");
 }
 
-export function getGroupIndex(pairIndex: BigInt): BigInt {
-  const pairsStorageContract = getPairsStorageContract();
+export function getGroupIndex(
+  network: string,
+  collateral: string,
+  pairIndex: BigInt
+): BigInt {
+  const pairsStorageContract = getPairsStorageContract(network, collateral);
   return pairsStorageContract.pairs(pairIndex).getGroupIndex();
 }

@@ -5,10 +5,11 @@ export type EpochTradingPoints = {
   epochNumber: number;
   address: string;
   loyaltyPoints: number;
-  volumePoints: number;
+  feePoints: number;
   absSkillPoints: number;
   relSkillPoints: number;
   diversityPoints: number;
+  totalFeesPaid: number;
 };
 
 export type LoyaltyTier = {

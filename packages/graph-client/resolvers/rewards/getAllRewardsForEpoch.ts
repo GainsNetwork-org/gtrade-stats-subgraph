@@ -8,6 +8,7 @@ import {
   getBuiltGraphSDK,
 } from "./../../.graphclient/index.js";
 import {
+  COLLATERALS,
   convertPointsToRewardsForUser,
   transformEpochTradingPointsRecord,
 } from "../../helpers/rewards.js";
@@ -19,7 +20,7 @@ export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
     args: QuerygetAllRewardsForEpochArgs,
     context
   ): Promise<Query["getAllRewardsForEpoch"]> => {
-    const { rewardConfigId, epoch } = args;
+    const { rewardConfigId, epoch, rewardToUsd } = args;
     const { chainId } = context;
     const sdk = getBuiltGraphSDK();
     const rewardConfig = (
@@ -66,6 +67,24 @@ export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
     const protocolTradingPoints = epochTradingPoints[ix];
     epochTradingPoints.splice(ix, 1);
 
+    // Cap fee rewards if necessary
+    if (rewardConfig.capFeeRewards) {
+      if (rewardToUsd) {
+        const rewardsInUsd =
+          rewardConfig.rewardDistribution.fee *
+          (rewardConfig.totalRewards / rewardConfig.numEpochs) *
+          rewardToUsd;
+        const protocolFees = protocolTradingPoints.totalFeesPaid;
+        if (rewardsInUsd > protocolFees) {
+          rewardConfig.rewardDistribution.fee *= protocolFees / rewardsInUsd;
+        }
+      } else {
+        console.warn(
+          "No rewardToUsd provided, so not capping fee rewards. This may result in incorrect rewards."
+        );
+      }
+    }
+
     return epochTradingPoints.map(userPoints =>
       convertPointsToRewardsForUser(
         userPoints,
@@ -88,6 +107,7 @@ const fetchEpochTradingPointsRecords = async (
   const whereClause = {
     epochType: rewardConfig.epochType,
     epochNumber: epoch,
+    collateral: COLLATERALS._ALL_, // @todo this is hardcoded for now - need to support further configs later
   };
 
   if (lastId) {

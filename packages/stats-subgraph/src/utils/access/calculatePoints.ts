@@ -7,12 +7,14 @@ import {
   PROTOCOL,
   VOLUME_THRESHOLDS,
   ONE_BD,
+  COLLATERALS,
 } from "../constants";
 
 export function updatePointsOnClose(
   address: string,
   weekNumber: i32,
   dayNumber: i32,
+  collateral: string | null,
   pnl: BigDecimal,
   pnlPercentage: BigDecimal,
   groupNumber: i32,
@@ -24,24 +26,28 @@ export function updatePointsOnClose(
     address,
     EPOCH_TYPE.DAY,
     dayNumber,
+    collateral,
     false
   );
   const protocolDailyPoints = createOrLoadEpochTradingPointsRecord(
     PROTOCOL,
     EPOCH_TYPE.DAY,
     dayNumber,
+    collateral,
     false
   );
   const userWeeklyPoints = createOrLoadEpochTradingPointsRecord(
     address,
     EPOCH_TYPE.WEEK,
     weekNumber,
+    collateral,
     false
   );
   const protocolWeeklyPoints = createOrLoadEpochTradingPointsRecord(
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     weekNumber,
+    collateral,
     false
   );
 
@@ -168,7 +174,7 @@ export function updateRelativeSkillPoints(
   protocolWeeklyPoints.save();
 }
 
-// @todo - add volume thresholds
+// @todo - add volume thresholds for diversity groups
 // @todo - is groupNumber accurate here...? btc/eth = 0, crypto = 1, forex = 2, commodities = 3?
 export function updateDiversityPoints(
   userDailyPoints: EpochTradingPointsRecord,
@@ -193,6 +199,7 @@ export function updateDiversityPoints(
     groupId = 4;
   }
 
+  // @todo Are we comparing against cumulative volume or just per trade? Needs to be cumulative for the epoch duration.
   if (groupId < 4) {
     volumeThreshold = VOLUME_THRESHOLDS[groupId];
     if (
@@ -252,7 +259,8 @@ export function calculateSkillPoints(
 export function updateFeeBasedPoints(
   address: string,
   stat: BigDecimal,
-  timestamp: i32
+  timestamp: i32,
+  collateral: string | null
 ): void {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
@@ -261,6 +269,7 @@ export function updateFeeBasedPoints(
     address,
     EPOCH_TYPE.DAY,
     currentDayNumber,
+    collateral,
     false
   );
 
@@ -268,6 +277,7 @@ export function updateFeeBasedPoints(
     address,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
+    collateral,
     false
   );
 
@@ -275,6 +285,7 @@ export function updateFeeBasedPoints(
     PROTOCOL,
     EPOCH_TYPE.DAY,
     currentDayNumber,
+    collateral,
     false
   );
 
@@ -282,10 +293,11 @@ export function updateFeeBasedPoints(
     PROTOCOL,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
+    collateral,
     false
   );
 
-  updateVolumePoints(
+  updateFeePoints(
     stat,
     userDailyStats,
     userWeeklyStats,
@@ -301,7 +313,7 @@ export function updateFeeBasedPoints(
   );
 }
 
-export function updateVolumePoints(
+export function updateFeePoints(
   stat: BigDecimal,
   userDailyStats: EpochTradingPointsRecord,
   userWeeklyStats: EpochTradingPointsRecord,
@@ -316,12 +328,11 @@ export function updateVolumePoints(
   protocolWeeklyStats.totalFeesPaid =
     protocolWeeklyStats.totalFeesPaid.plus(stat);
 
-  // Updating volume points
-  userDailyStats.volumePoints = userDailyStats.volumePoints.plus(stat);
-  userWeeklyStats.volumePoints = userWeeklyStats.volumePoints.plus(stat);
-  protocolDailyStats.volumePoints = protocolDailyStats.volumePoints.plus(stat);
-  protocolWeeklyStats.volumePoints =
-    protocolWeeklyStats.volumePoints.plus(stat);
+  // Updating fee points
+  userDailyStats.feePoints = userDailyStats.feePoints.plus(stat);
+  userWeeklyStats.feePoints = userWeeklyStats.feePoints.plus(stat);
+  protocolDailyStats.feePoints = protocolDailyStats.feePoints.plus(stat);
+  protocolWeeklyStats.feePoints = protocolWeeklyStats.feePoints.plus(stat);
 
   // Saving all the entities
   userDailyStats.save();
@@ -360,7 +371,6 @@ export function updateLoyaltyPoints(
   protocolWeeklyStats.save();
 }
 
-// @todo - should we just make this identical to gCredits? Same with volume.
 export function calculateLoyaltyPoints(fees: BigDecimal): BigDecimal {
   if (
     fees >= BigDecimal.fromString("8") &&
@@ -387,28 +397,45 @@ export function calculateLoyaltyPoints(fees: BigDecimal): BigDecimal {
 export function generateId(
   address: string,
   epochType: string,
-  epochNumber: i32
+  epochNumber: i32,
+  collateral: string | null
 ): string {
-  return address + "-" + epochType + "-" + epochNumber.toString();
+  return (
+    address +
+    "-" +
+    epochType +
+    "-" +
+    epochNumber.toString() +
+    (collateral ? "-" + collateral : "")
+  );
 }
 
 export function createOrLoadEpochTradingPointsRecord(
   address: string,
   epochType: string,
   epochNumber: i32,
+  collateral: string | null,
   save: boolean
 ): EpochTradingPointsRecord {
   log.info(
-    "[createOrLoadEpochTradingPointsRecord] address {}, epochType {}, epochNumber {}",
-    [address, epochType.toString(), epochNumber.toString()]
+    "[createOrLoadEpochTradingPointsRecord] address {}, epochType {}, epochNumber {}, collateral {}",
+    [
+      address,
+      epochType.toString(),
+      epochNumber.toString(),
+      collateral ? collateral : "_all_",
+    ]
   );
-  const id = generateId(address, epochType, epochNumber);
+  const id = generateId(address, epochType, epochNumber, collateral);
   let epochTradingPointsRecord = EpochTradingPointsRecord.load(id);
   if (epochTradingPointsRecord == null) {
     epochTradingPointsRecord = new EpochTradingPointsRecord(id);
     epochTradingPointsRecord.address = address;
     epochTradingPointsRecord.epochNumber = epochNumber;
     epochTradingPointsRecord.epochType = epochType;
+    epochTradingPointsRecord.collateral = collateral
+      ? collateral
+      : COLLATERALS._ALL_;
     epochTradingPointsRecord.totalFeesPaid = BigDecimal.fromString("0");
     epochTradingPointsRecord.pnl = BigDecimal.fromString("0");
     epochTradingPointsRecord.pnlPercentage = BigDecimal.fromString("0");
@@ -422,7 +449,7 @@ export function createOrLoadEpochTradingPointsRecord(
     epochTradingPointsRecord.diversityPoints = BigDecimal.fromString("0");
     epochTradingPointsRecord.absSkillPoints = BigDecimal.fromString("0");
     epochTradingPointsRecord.relSkillPoints = BigDecimal.fromString("0");
-    epochTradingPointsRecord.volumePoints = BigDecimal.fromString("0");
+    epochTradingPointsRecord.feePoints = BigDecimal.fromString("0");
     if (save) {
       epochTradingPointsRecord.save();
     }

@@ -1,11 +1,13 @@
 {
   "network": "mumbai",
-  "gnsTradingCallbacksV6_4_1": {
-    "address": "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
-    "startBlock": 40700000
-  },
-  "gnsPairsStorageV6": {
-    "address": "0x2b497ff78bA1F803141Ecca0F98eF3c5B5B64d26",
-    "startBlock": 40700000
+  "DAI": {
+    "gnsTradingCallbacksV6_4_1": {
+      "address": "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
+      "startBlock": 40700000
+    },
+    "gnsPairsStorageV6": {
+      "address": "0x2b497ff78bA1F803141Ecca0F98eF3c5B5B64d26",
+      "startBlock": 40700000
+    }
   }
 }

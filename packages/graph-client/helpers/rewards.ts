@@ -3,6 +3,7 @@ import {
   EpochType,
   RewardConfig,
   RewardResults,
+  Collateral,
 } from "../.graphclient";
 import { EpochTradingPoints, LoyaltyTier } from "../types/rewards";
 
@@ -72,7 +73,7 @@ export const convertPointsToRewardsForUser = (
     address: userPoints.address,
     total: 0,
     loyalty: 0,
-    volume: 0,
+    fee: 0,
     absSkill: 0,
     relSkill: 0,
     diversity: 0,
@@ -85,10 +86,10 @@ export const convertPointsToRewardsForUser = (
     rewards.rewardDistribution.loyalty * epochTotalRewards
   );
 
-  rewardResults.volume = convertPointShareToRewards(
-    userPoints.volumePoints,
-    protocolPoints.volumePoints,
-    rewards.rewardDistribution.volume * epochTotalRewards
+  rewardResults.fee = convertPointShareToRewards(
+    userPoints.feePoints,
+    protocolPoints.feePoints,
+    rewards.rewardDistribution.fee * epochTotalRewards
   );
 
   rewardResults.absSkill = convertPointShareToRewards(
@@ -111,7 +112,7 @@ export const convertPointsToRewardsForUser = (
 
   rewardResults.total =
     rewardResults.loyalty +
-    rewardResults.volume +
+    rewardResults.fee +
     rewardResults.absSkill +
     rewardResults.relSkill +
     rewardResults.diversity;
@@ -127,7 +128,7 @@ export const transformEpochTradingPointsRecord = (
   epochNumber: Number(record.epochNumber),
   address: record.address,
   loyaltyPoints: Number(record.loyaltyPoints),
-  volumePoints: Number(record.volumePoints),
+  feePoints: Number(record.feePoints),
   absSkillPoints: Number(record.absSkillPoints),
   relSkillPoints: Number(record.relSkillPoints),
   diversityPoints: Number(record.diversityPoints),
@@ -140,20 +141,53 @@ export const loyaltyTiers: LoyaltyTier[] = [
   { lowerBound: 400, upperBound: Infinity, returnValue: 50 },
 ];
 
-export const getLoyaltyTier = (points: number): number => {
+export const getLoyaltyTier = (fees: number): number => {
   for (const tier of loyaltyTiers) {
-    if (points >= tier.lowerBound && points < tier.upperBound) {
+    if (fees >= tier.lowerBound && fees < tier.upperBound) {
       return tier.returnValue;
     }
   }
   return 0;
 };
 
-export const getPointsFromNextTier = (points: number): number => {
+export const getFeesFromNextTier = (fees: number): number => {
   for (const tier of loyaltyTiers) {
-    if (points >= tier.lowerBound && points < tier.upperBound) {
-      return tier.upperBound - points;
+    if (fees >= tier.lowerBound && fees < tier.upperBound) {
+      return tier.upperBound - fees;
     }
   }
   return 0;
+};
+
+export const DIVERSITY_THRESHOLD = 0;
+export const getDiversityGroupFromPairIndex = (
+  pairIndex: number,
+  groupIndex: number
+): number => {
+  let groupId = 0;
+  if (groupIndex == 0 && (pairIndex == 0 || pairIndex == 1)) {
+    groupId = 0;
+  } else if (groupIndex == 0 && pairIndex > 1) {
+    groupId = 1;
+  } else if (groupIndex == 1 || groupIndex == 8 || groupIndex == 9) {
+    groupId = 2;
+  } else if (groupIndex == 6 || groupIndex == 7) {
+    groupId = 3;
+  } else {
+    groupId = 4;
+  }
+  return groupId;
+};
+export const getFeesFromDiversityTreshold = (existingFees: number) => {
+  if (existingFees < DIVERSITY_THRESHOLD) {
+    return DIVERSITY_THRESHOLD - existingFees;
+  }
+  return 0;
+};
+
+export const COLLATERALS = {
+  _ALL_: "_all_" as Collateral,
+  DAI: "dai" as Collateral,
+  ETH: "eth" as Collateral,
+  ARB: "arb" as Collateral,
 };
