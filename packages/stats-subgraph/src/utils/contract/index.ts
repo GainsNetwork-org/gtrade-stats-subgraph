@@ -6,6 +6,8 @@ import {
   getNetworkCollaterals,
 } from "../constants";
 export * from "./GNSPairsStorageV6";
+export * from "./GNSPriceAggregator";
+export * from "./GNSReferrals";
 
 export function convertDaiToDecimal(dai: BigInt): BigDecimal {
   return dai.toBigDecimal().div(DAI_DECIMALS_BD);

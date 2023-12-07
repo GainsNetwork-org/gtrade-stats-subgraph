@@ -26,6 +26,8 @@ dataSources:
           file: ./abis/GNSPriceAggregator.json
         - name: IChainlinkFeed
           file: ./abis/IChainlinkFeed.json
+        - name: GNSReferrals
+          file: ./abis/GNSReferrals.json
       eventHandlers:
         - event: MarketExecuted(indexed uint256,(address,uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256,uint256),bool,uint256,uint256,uint256,int256,uint256)
           handler: handleMarketExecuted
