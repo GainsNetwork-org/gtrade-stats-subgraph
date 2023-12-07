@@ -323,34 +323,35 @@ export function updateFeePoints(
   protocolDailyStats: EpochTradingPointsRecord,
   protocolWeeklyStats: EpochTradingPointsRecord
 ): void {
-  // If referrer, boost points
-  if (
-    isTraderReferredByWhitelistedReferral(
-      dataSource.network(),
-      Address.fromString(userDailyStats.address)
-    )
-  ) {
+  // If referee, boost points
+  const referrerDetails = isTraderReferredByWhitelistedReferral(
+    dataSource.network(),
+    Address.fromString(userDailyStats.address)
+  );
+  if (referrerDetails.whitelisted) {
     const referrerStat = stat.times(WHITELISTED_REFERRER_MULTIPLIER);
     stat = stat.plus(stat.times(WHITELISTED_REFEREE_MULTIPLIER));
 
     // Kick off adding stat x multiplier to referral entities as well
     const dailyReferralPoints = createOrLoadEpochTradingPointsRecord(
-      PROTOCOL,
+      referrerDetails.referrer,
       EPOCH_TYPE.DAY,
       userDailyStats.epochNumber,
       userDailyStats.collateral,
       false
     );
-    dailyReferralPoints.feePoints =
-      dailyReferralPoints.feePoints.plus(referrerStat);
 
     const weeklyReferralPoints = createOrLoadEpochTradingPointsRecord(
-      PROTOCOL,
+      referrerDetails.referrer,
       EPOCH_TYPE.WEEK,
       userWeeklyStats.epochNumber,
       userWeeklyStats.collateral,
       false
     );
+
+    dailyReferralPoints.feePoints =
+      dailyReferralPoints.feePoints.plus(referrerStat);
+
     weeklyReferralPoints.feePoints =
       weeklyReferralPoints.feePoints.plus(referrerStat);
 

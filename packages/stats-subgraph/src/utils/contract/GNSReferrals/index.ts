@@ -41,19 +41,23 @@ export function isTraderReferredByAggregator(
   );
 }
 
+export class WhitelisedReferralResponse {
+  whitelisted: boolean;
+  referrer: string;
+}
 export function isTraderReferredByWhitelistedReferral(
   network: string,
   trader: Address
-): [boolean, string] {
+): WhitelisedReferralResponse {
   const referrals = getReferralsContract(network);
   const referrer = referrals.try_getTraderReferrer(trader);
   if (referrer.reverted) {
-    return [false, ""];
+    return { whitelisted: false, referrer: "" };
   }
 
   const referrerString = referrer.value.toHexString().toLowerCase();
-  return [
-    !WHITELISTED_REFERRAL_ADDRESSES.includes(referrerString),
-    referrerString,
-  ];
+  return {
+    whitelisted: WHITELISTED_REFERRAL_ADDRESSES.includes(referrerString),
+    referrer: referrerString,
+  };
 }
