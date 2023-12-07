@@ -44,14 +44,16 @@ export function isTraderReferredByAggregator(
 export function isTraderReferredByWhitelistedReferral(
   network: string,
   trader: Address
-): boolean {
+): [boolean, string] {
   const referrals = getReferralsContract(network);
   const referrer = referrals.try_getTraderReferrer(trader);
   if (referrer.reverted) {
-    return false;
+    return [false, ""];
   }
 
-  return !WHITELISTED_REFERRAL_ADDRESSES.includes(
-    referrer.value.toHexString().toLowerCase()
-  );
+  const referrerString = referrer.value.toHexString().toLowerCase();
+  return [
+    !WHITELISTED_REFERRAL_ADDRESSES.includes(referrerString),
+    referrerString,
+  ];
 }

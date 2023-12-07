@@ -255,5 +255,5 @@ export const AGGREGATOR_ADDRESSES = [
 ];
 
 export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [];
-export const WHITELISTED_REFERRER_MULTIPLIER = BigDecimal.fromString("0.10");
-export const WHITELISTED_REFERRAL_MULTIPLIER = BigDecimal.fromString("0.15");
+export const WHITELISTED_REFEREE_MULTIPLIER = BigDecimal.fromString("0.10");
+export const WHITELISTED_REFERRER_MULTIPLIER = BigDecimal.fromString("0.15");

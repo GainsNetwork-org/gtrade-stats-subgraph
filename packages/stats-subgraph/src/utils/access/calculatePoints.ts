@@ -1,4 +1,4 @@
-import { BigDecimal, log } from "@graphprotocol/graph-ts";
+import { Address, BigDecimal, dataSource, log } from "@graphprotocol/graph-ts";
 import { EpochTradingPointsRecord } from "../../types/schema";
 import {
   ZERO_BD,
@@ -8,7 +8,10 @@ import {
   VOLUME_THRESHOLDS,
   ONE_BD,
   COLLATERALS,
+  WHITELISTED_REFERRER_MULTIPLIER,
+  WHITELISTED_REFEREE_MULTIPLIER,
 } from "../constants";
+import { isTraderReferredByWhitelistedReferral } from "../contract/GNSReferrals";
 
 export function updatePointsOnClose(
   address: string,
@@ -320,6 +323,41 @@ export function updateFeePoints(
   protocolDailyStats: EpochTradingPointsRecord,
   protocolWeeklyStats: EpochTradingPointsRecord
 ): void {
+  // If referrer, boost points
+  if (
+    isTraderReferredByWhitelistedReferral(
+      dataSource.network(),
+      Address.fromString(userDailyStats.address)
+    )
+  ) {
+    const referrerStat = stat.times(WHITELISTED_REFERRER_MULTIPLIER);
+    stat = stat.plus(stat.times(WHITELISTED_REFEREE_MULTIPLIER));
+
+    // Kick off adding stat x multiplier to referral entities as well
+    const dailyReferralPoints = createOrLoadEpochTradingPointsRecord(
+      PROTOCOL,
+      EPOCH_TYPE.DAY,
+      userDailyStats.epochNumber,
+      userDailyStats.collateral,
+      false
+    );
+    dailyReferralPoints.feePoints =
+      dailyReferralPoints.feePoints.plus(referrerStat);
+
+    const weeklyReferralPoints = createOrLoadEpochTradingPointsRecord(
+      PROTOCOL,
+      EPOCH_TYPE.WEEK,
+      userWeeklyStats.epochNumber,
+      userWeeklyStats.collateral,
+      false
+    );
+    weeklyReferralPoints.feePoints =
+      weeklyReferralPoints.feePoints.plus(referrerStat);
+
+    dailyReferralPoints.save();
+    weeklyReferralPoints.save();
+  }
+
   // Updating total fees
   userDailyStats.totalFeesPaid = userDailyStats.totalFeesPaid.plus(stat);
   userWeeklyStats.totalFeesPaid = userWeeklyStats.totalFeesPaid.plus(stat);
