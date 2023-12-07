@@ -191,3 +191,12 @@ export const COLLATERALS = {
   ETH: "eth" as Collateral,
   ARB: "arb" as Collateral,
 };
+
+export const AGGREGATOR_ADDRESSES = [
+  "0xf399dEe036dbBDEF37264df105B9b84F92a11fbc".toLowerCase(), // logx
+  "0x10C2CbfE29f4f5e4C24d54d36C8F283A61eB0c2f".toLowerCase(), // mux
+  "0x8c128f336b479b142429a5f351af225457a987fa".toLowerCase(), // unidex
+];
+export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [];
+export const WHITELISTED_REFEREE_MULTIPLIER = 0.1;
+export const WHITELISTED_REFERRER_MULTIPLIER = 0.15;
