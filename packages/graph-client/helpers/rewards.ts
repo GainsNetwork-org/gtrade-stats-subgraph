@@ -200,3 +200,23 @@ export const AGGREGATOR_ADDRESSES = [
 export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [];
 export const WHITELISTED_REFEREE_MULTIPLIER = 0.1;
 export const WHITELISTED_REFERRER_MULTIPLIER = 0.15;
+
+export const getTotalEpochFeeRewardDistribution = (
+  rewardConfig: RewardConfig,
+  protocolPoints: EpochTradingPointsRecord,
+  rewardToUsd: number
+): number => {
+  const epochTotalRewards = rewardConfig.totalRewards / rewardConfig.numEpochs;
+  const feeReward = epochTotalRewards * rewardConfig.rewardDistribution.fee;
+  if (!rewardConfig.capFeeRewards) {
+    return feeReward;
+  }
+
+  const feeRewardInUsd = feeReward * rewardToUsd;
+
+  if (feeRewardInUsd > protocolPoints.totalFeesPaid) {
+    return protocolPoints.totalFeesPaid / rewardToUsd;
+  }
+
+  return feeReward;
+};
