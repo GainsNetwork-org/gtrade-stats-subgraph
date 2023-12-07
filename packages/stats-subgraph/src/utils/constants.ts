@@ -51,79 +51,83 @@ export const NETWORKS: Networks = {
   ARBITRUM: "arbitrum-one",
 };
 
-class Addresses {
+class CollateralAddresses {
   gnsPairsStorageV6!: string;
   gnsTradingCallbacksV6_4_1!: string;
   gnsPriceAggregator: string;
+}
+
+class AgnosticAddresses {
   gnsReferrals: string;
 }
 
-export class CollateralAddresses {
-  DAI!: Addresses;
-  ETH!: Addresses;
-  ARB!: Addresses;
+export class NetworkAddresses {
+  _ALL_!: AgnosticAddresses;
+  DAI!: CollateralAddresses;
+  ETH!: CollateralAddresses;
+  ARB!: CollateralAddresses;
 }
 
-export const ARBITRUM_COLLATERALS: CollateralAddresses = {
+export const ARBITRUM_COLLATERALS: NetworkAddresses = {
+  _ALL_: {
+    gnsReferrals: "0xAA379DD7Ec0bae467490e89bB2055A7e01231b8f",
+  },
   DAI: {
     gnsPairsStorageV6: "0xf67Df2a4339eC1591615d94599081Dd037960d4b",
     gnsTradingCallbacksV6_4_1: "0x298a695906e16aeA0a184A2815A76eAd1a0b7522",
     gnsPriceAggregator: "0x2e44a81701A8355E59B3204B4a9Fe8FC43CbE0C3",
-    gnsReferrals: "0xAA379DD7Ec0bae467490e89bB2055A7e01231b8f",
   },
   ETH: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
-    gnsReferrals: "",
   },
   ARB: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
-    gnsReferrals: "",
   },
 };
 
-export const POLYGON_COLLATERALS: CollateralAddresses = {
+export const POLYGON_COLLATERALS: NetworkAddresses = {
+  _ALL_: {
+    gnsReferrals: "0x0F9498b1206Bf9FfDE2a2321fDB56F573A052425",
+  },
   DAI: {
     gnsPairsStorageV6: "0x6e5326e944F528c243B9Ca5d14fe5C9269a8c922",
     gnsTradingCallbacksV6_4_1: "0x82e59334da8C667797009BBe82473B55c7A6b311",
     gnsPriceAggregator: "0x126F32723c5FC8DFEB17c46b7B7dD3dCd458A816",
-    gnsReferrals: "0x0F9498b1206Bf9FfDE2a2321fDB56F573A052425",
   },
   ETH: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
-    gnsReferrals: "",
   },
   ARB: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
-    gnsReferrals: "",
   },
 };
 
-export const MUMBAI_COLLATERALS: CollateralAddresses = {
+export const MUMBAI_COLLATERALS: NetworkAddresses = {
+  _ALL_: {
+    gnsReferrals: "0x022e26d7DdAD3fc311C6472949F19c99b3CB08e6",
+  },
   DAI: {
     gnsPairsStorageV6: "0x2b497ff78bA1F803141Ecca0F98eF3c5B5B64d26",
     gnsTradingCallbacksV6_4_1: "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
     gnsPriceAggregator: "0x5a284f0f52a8Ea4A33033EfB3Ffd723db9bbe312",
-    gnsReferrals: "0x022e26d7DdAD3fc311C6472949F19c99b3CB08e6",
   },
   ETH: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
-    gnsReferrals: "",
   },
   ARB: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
-    gnsReferrals: "",
   },
 };
 
@@ -193,7 +197,7 @@ export function toDecimal(value: BigInt, decimals: i32): BigDecimal {
     .div(exponentToBigDecimal(decimals).truncate(decimals));
 }
 
-export function getNetworkCollaterals(network: string): CollateralAddresses {
+export function getNetworkCollaterals(network: string): NetworkAddresses {
   if (network == NETWORKS.ARBITRUM) {
     return ARBITRUM_COLLATERALS;
   }
@@ -210,9 +214,9 @@ export function getNetworkCollaterals(network: string): CollateralAddresses {
 }
 
 export function getNetworkCollateralAddressesFromNetwork(
-  networkCollaterals: CollateralAddresses,
+  networkCollaterals: NetworkAddresses,
   collateral: string
-): Addresses {
+): CollateralAddresses {
   if (collateral == COLLATERALS.DAI) {
     return networkCollaterals.DAI;
   }
@@ -231,7 +235,7 @@ export function getNetworkCollateralAddressesFromNetwork(
 export function getNetworkCollateralAddresses(
   network: string,
   collateral: string
-): Addresses {
+): CollateralAddresses {
   const collateralAddresses = getNetworkCollaterals(network);
   return getNetworkCollateralAddressesFromNetwork(
     collateralAddresses,
@@ -239,8 +243,17 @@ export function getNetworkCollateralAddresses(
   );
 }
 
+export function getNetworkAddresses(network: string): AgnosticAddresses {
+  const collateralAddresses = getNetworkCollaterals(network);
+  return collateralAddresses._ALL_;
+}
+
 export const AGGREGATOR_ADDRESSES = [
   "0xf399dEe036dbBDEF37264df105B9b84F92a11fbc".toLowerCase(), // logx
   "0x10C2CbfE29f4f5e4C24d54d36C8F283A61eB0c2f".toLowerCase(), // mux
   "0x8c128f336b479b142429a5f351af225457a987fa".toLowerCase(), // unidex
 ];
+
+export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [];
+export const WHITELISTED_REFERRER_MULTIPLIER = BigDecimal.fromString("0.10");
+export const WHITELISTED_REFERRAL_MULTIPLIER = BigDecimal.fromString("0.15");

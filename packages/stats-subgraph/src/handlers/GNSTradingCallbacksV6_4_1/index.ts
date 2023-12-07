@@ -63,13 +63,7 @@ export function handleMarketExecuted(event: MarketExecuted): void {
 
   log.info("[handleMarketExecuted] {}", [event.transaction.hash.toHexString()]);
 
-  if (
-    isTraderReferredByAggregator(
-      collateralDetails.network,
-      collateralDetails.collateral,
-      trade.trader
-    )
-  ) {
+  if (isTraderReferredByAggregator(collateralDetails.network, trade.trader)) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
       event.transaction.hash.toHexString(),
     ]);
@@ -113,13 +107,7 @@ export function handleLimitExecuted(event: LimitExecuted): void {
   const volume = convertDaiToDecimal(trade.positionSizeDai).times(leverage);
   log.info("[handleLimitExecuted] {}", [event.transaction.hash.toHexString()]);
 
-  if (
-    isTraderReferredByAggregator(
-      collateralDetails.network,
-      collateralDetails.collateral,
-      trade.trader
-    )
-  ) {
+  if (isTraderReferredByAggregator(collateralDetails.network, trade.trader)) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
       event.transaction.hash.toHexString(),
     ]);
@@ -163,7 +151,6 @@ export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      collateralDetails.collateral,
       Address.fromString(trader)
     )
   ) {
@@ -194,7 +181,6 @@ export function handleGovFeeCharged(event: GovFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      collateralDetails.collateral,
       Address.fromString(trader)
     )
   ) {
@@ -226,7 +212,6 @@ export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      collateralDetails.collateral,
       Address.fromString(trader)
     )
   ) {
@@ -267,7 +252,6 @@ export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      collateralDetails.collateral,
       Address.fromString(trader)
     )
   ) {
@@ -308,7 +292,6 @@ export function handleStakerFeeCharged(event: SssFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      collateralDetails.collateral,
       Address.fromString(trader)
     )
   ) {
@@ -342,7 +325,6 @@ export function handleLpFeeCharged(event: DaiVaultFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      collateralDetails.collateral,
       Address.fromString(trader)
     )
   ) {
