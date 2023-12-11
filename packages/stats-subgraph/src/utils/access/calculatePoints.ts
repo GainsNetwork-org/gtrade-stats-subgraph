@@ -328,9 +328,11 @@ export function updateFeePoints(
     dataSource.network(),
     Address.fromString(userDailyStats.address)
   );
+  let referrerPointBoost = ZERO_BD;
+  let refereePointBoost = ZERO_BD;
   if (referrerDetails.whitelisted) {
-    const referrerStat = stat.times(WHITELISTED_REFERRER_MULTIPLIER);
-    stat = stat.plus(stat.times(WHITELISTED_REFEREE_MULTIPLIER));
+    referrerPointBoost = stat.times(WHITELISTED_REFERRER_MULTIPLIER);
+    refereePointBoost = stat.times(WHITELISTED_REFEREE_MULTIPLIER);
 
     // Kick off adding stat x multiplier to referral entities as well
     const dailyReferralPoints = createOrLoadEpochTradingPointsRecord(
@@ -350,10 +352,10 @@ export function updateFeePoints(
     );
 
     dailyReferralPoints.feePoints =
-      dailyReferralPoints.feePoints.plus(referrerStat);
+      dailyReferralPoints.feePoints.plus(referrerPointBoost);
 
     weeklyReferralPoints.feePoints =
-      weeklyReferralPoints.feePoints.plus(referrerStat);
+      weeklyReferralPoints.feePoints.plus(referrerPointBoost);
 
     dailyReferralPoints.save();
     weeklyReferralPoints.save();
@@ -368,10 +370,18 @@ export function updateFeePoints(
     protocolWeeklyStats.totalFeesPaid.plus(stat);
 
   // Updating fee points
-  userDailyStats.feePoints = userDailyStats.feePoints.plus(stat);
-  userWeeklyStats.feePoints = userWeeklyStats.feePoints.plus(stat);
-  protocolDailyStats.feePoints = protocolDailyStats.feePoints.plus(stat);
-  protocolWeeklyStats.feePoints = protocolWeeklyStats.feePoints.plus(stat);
+  userDailyStats.feePoints = userDailyStats.feePoints.plus(
+    stat.plus(refereePointBoost)
+  );
+  userWeeklyStats.feePoints = userWeeklyStats.feePoints.plus(
+    stat.plus(refereePointBoost)
+  );
+  protocolDailyStats.feePoints = protocolDailyStats.feePoints.plus(
+    stat.plus(referrerPointBoost).plus(refereePointBoost)
+  );
+  protocolWeeklyStats.feePoints = protocolWeeklyStats.feePoints.plus(
+    stat.plus(referrerPointBoost).plus(refereePointBoost)
+  );
 
   // Saving all the entities
   userDailyStats.save();
