@@ -23,8 +23,8 @@ export const generateId = (
 
 // @note This must be kept in sync with the subgraph
 export const EPOCH_ZERO = {
-  DAY: 1696118400, // Oct 1 (time of contract deploy)
-  WEEK: 1696118400, // Oct 1 (start of week)
+  DAY: 1701993600, // Dec 8
+  WEEK: 1701993600, // Dec 8
 };
 
 export const EPOCH_TYPE = {
@@ -196,8 +196,11 @@ export const AGGREGATOR_ADDRESSES = [
   "0xf399dEe036dbBDEF37264df105B9b84F92a11fbc".toLowerCase(), // logx
   "0x10C2CbfE29f4f5e4C24d54d36C8F283A61eB0c2f".toLowerCase(), // mux
   "0x8c128f336b479b142429a5f351af225457a987fa".toLowerCase(), // unidex
+  "0xec9581354f7750Bc8194E3e801f8eE1D91e2a8Ac".toLowerCase(), // mumbai - test account
 ];
-export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [];
+export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
+  "0xd79f4811f2b603649c82AeDA0143719D86Ab6574".toLowerCase(), // mumbai - test account
+];
 export const WHITELISTED_REFEREE_MULTIPLIER = 0.1;
 export const WHITELISTED_REFERRER_MULTIPLIER = 0.15;
 
