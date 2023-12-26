@@ -10,7 +10,7 @@ dataSources:
     source:
       address: '0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE'
       abi: GNSTradingCallbacksV6_4_1
-      startBlock: 40700000
+      startBlock: 43290000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

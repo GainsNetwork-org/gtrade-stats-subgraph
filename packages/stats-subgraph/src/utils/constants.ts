@@ -147,8 +147,8 @@ class EpochNumbers {
   WEEK!: i32;
 }
 export const EPOCH_ZERO: EpochNumbers = {
-  DAY: 1701993600, // Dec 8
-  WEEK: 1701993600, // Dec 8
+  DAY: 1703203200, // Dec 22
+  WEEK: 1703203200, // Dec 22
 };
 
 const getEpochZero = (epochType: string): i32 => {
