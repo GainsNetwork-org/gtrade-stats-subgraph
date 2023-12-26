@@ -26,9 +26,9 @@ export const MUMBAI_STIP_REWARDS_TEST = {
   id: "mumbai-0-test",
   active: true,
   totalRewards: 3825000,
-  epochType: "day" as EpochType,
-  numEpochs: 6,
-  startingEpoch: 17,
+  epochType: "week" as EpochType,
+  numEpochs: 15,
+  startingEpoch: 0,
   rewardDistribution: {
     loyalty: 0.1,
     fee: 0.75,
