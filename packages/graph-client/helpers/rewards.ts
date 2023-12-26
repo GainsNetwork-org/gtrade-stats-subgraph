@@ -223,3 +223,10 @@ export const getTotalEpochFeeRewardDistribution = (
 
   return feeReward;
 };
+
+export const getLocalEpochNumber = (
+  rewardConfig: RewardConfig,
+  epochNumber: number
+): number => {
+  return epochNumber - rewardConfig.startingEpoch;
+};
