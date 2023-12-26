@@ -1,4 +1,4 @@
-import { BigDecimal, log } from "@graphprotocol/graph-ts";
+import { Address, BigDecimal, dataSource, log } from "@graphprotocol/graph-ts";
 import { EpochTradingPointsRecord } from "../../types/schema";
 import {
   ZERO_BD,
@@ -8,7 +8,10 @@ import {
   VOLUME_THRESHOLDS,
   ONE_BD,
   COLLATERALS,
+  WHITELISTED_REFERRER_MULTIPLIER,
+  WHITELISTED_REFEREE_MULTIPLIER,
 } from "../constants";
+import { isTraderReferredByWhitelistedReferral } from "../contract/GNSReferrals";
 
 export function updatePointsOnClose(
   address: string,
@@ -320,6 +323,44 @@ export function updateFeePoints(
   protocolDailyStats: EpochTradingPointsRecord,
   protocolWeeklyStats: EpochTradingPointsRecord
 ): void {
+  // If referee, boost points
+  const referrerDetails = isTraderReferredByWhitelistedReferral(
+    dataSource.network(),
+    Address.fromString(userDailyStats.address)
+  );
+  let referrerPointBoost = ZERO_BD;
+  let refereePointBoost = ZERO_BD;
+  if (referrerDetails.whitelisted) {
+    referrerPointBoost = stat.times(WHITELISTED_REFERRER_MULTIPLIER);
+    refereePointBoost = stat.times(WHITELISTED_REFEREE_MULTIPLIER);
+
+    // Kick off adding stat x multiplier to referral entities as well
+    const dailyReferralPoints = createOrLoadEpochTradingPointsRecord(
+      referrerDetails.referrer,
+      EPOCH_TYPE.DAY,
+      userDailyStats.epochNumber,
+      userDailyStats.collateral,
+      false
+    );
+
+    const weeklyReferralPoints = createOrLoadEpochTradingPointsRecord(
+      referrerDetails.referrer,
+      EPOCH_TYPE.WEEK,
+      userWeeklyStats.epochNumber,
+      userWeeklyStats.collateral,
+      false
+    );
+
+    dailyReferralPoints.feePoints =
+      dailyReferralPoints.feePoints.plus(referrerPointBoost);
+
+    weeklyReferralPoints.feePoints =
+      weeklyReferralPoints.feePoints.plus(referrerPointBoost);
+
+    dailyReferralPoints.save();
+    weeklyReferralPoints.save();
+  }
+
   // Updating total fees
   userDailyStats.totalFeesPaid = userDailyStats.totalFeesPaid.plus(stat);
   userWeeklyStats.totalFeesPaid = userWeeklyStats.totalFeesPaid.plus(stat);
@@ -329,10 +370,18 @@ export function updateFeePoints(
     protocolWeeklyStats.totalFeesPaid.plus(stat);
 
   // Updating fee points
-  userDailyStats.feePoints = userDailyStats.feePoints.plus(stat);
-  userWeeklyStats.feePoints = userWeeklyStats.feePoints.plus(stat);
-  protocolDailyStats.feePoints = protocolDailyStats.feePoints.plus(stat);
-  protocolWeeklyStats.feePoints = protocolWeeklyStats.feePoints.plus(stat);
+  userDailyStats.feePoints = userDailyStats.feePoints.plus(
+    stat.plus(refereePointBoost)
+  );
+  userWeeklyStats.feePoints = userWeeklyStats.feePoints.plus(
+    stat.plus(refereePointBoost)
+  );
+  protocolDailyStats.feePoints = protocolDailyStats.feePoints.plus(
+    stat.plus(referrerPointBoost).plus(refereePointBoost)
+  );
+  protocolWeeklyStats.feePoints = protocolWeeklyStats.feePoints.plus(
+    stat.plus(referrerPointBoost).plus(refereePointBoost)
+  );
 
   // Saving all the entities
   userDailyStats.save();

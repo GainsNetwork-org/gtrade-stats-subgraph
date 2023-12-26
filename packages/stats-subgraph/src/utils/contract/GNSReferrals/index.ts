@@ -2,15 +2,13 @@ import { Address } from "@graphprotocol/graph-ts";
 import { GNSReferrals } from "../../../types/GNSTradingCallbacksV6_4_1/GNSReferrals";
 import {
   AGGREGATOR_ADDRESSES,
+  WHITELISTED_REFERRAL_ADDRESSES,
   ZERO_ADDRESS,
-  getNetworkCollateralAddresses,
+  getNetworkAddresses,
 } from "../../constants";
 
-export function getReferralsContract(
-  network: string,
-  collateral: string
-): GNSReferrals {
-  const config = getNetworkCollateralAddresses(network, collateral);
+export function getReferralsContract(network: string): GNSReferrals {
+  const config = getNetworkAddresses(network);
 
   if (config == null) {
     throw new Error("Network not supported");
@@ -18,12 +16,8 @@ export function getReferralsContract(
   return GNSReferrals.bind(Address.fromString(config.gnsReferrals));
 }
 
-export function getTraderReferrer(
-  network: string,
-  collateral: string,
-  trader: Address
-): Address {
-  const referrals = getReferralsContract(network, collateral);
+export function getTraderReferrer(network: string, trader: Address): Address {
+  const referrals = getReferralsContract(network);
   const referrer = referrals.try_getTraderReferrer(trader);
   if (referrer.reverted) {
     return Address.fromString(ZERO_ADDRESS);
@@ -34,10 +28,9 @@ export function getTraderReferrer(
 
 export function isTraderReferredByAggregator(
   network: string,
-  collateral: string,
   trader: Address
 ): boolean {
-  const referrals = getReferralsContract(network, collateral);
+  const referrals = getReferralsContract(network);
   const referrer = referrals.try_getTraderReferrer(trader);
   if (referrer.reverted) {
     return false;
@@ -46,4 +39,25 @@ export function isTraderReferredByAggregator(
   return AGGREGATOR_ADDRESSES.includes(
     referrer.value.toHexString().toLowerCase()
   );
+}
+
+export class WhitelisedReferralResponse {
+  whitelisted: boolean;
+  referrer: string;
+}
+export function isTraderReferredByWhitelistedReferral(
+  network: string,
+  trader: Address
+): WhitelisedReferralResponse {
+  const referrals = getReferralsContract(network);
+  const referrer = referrals.try_getTraderReferrer(trader);
+  if (referrer.reverted) {
+    return { whitelisted: false, referrer: "" };
+  }
+
+  const referrerString = referrer.value.toHexString().toLowerCase();
+  return {
+    whitelisted: WHITELISTED_REFERRAL_ADDRESSES.includes(referrerString),
+    referrer: referrerString,
+  };
 }
