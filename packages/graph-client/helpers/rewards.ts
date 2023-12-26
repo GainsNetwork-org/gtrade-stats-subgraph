@@ -23,8 +23,8 @@ export const generateId = (
 
 // @note This must be kept in sync with the subgraph
 export const EPOCH_ZERO = {
-  DAY: 1701993600, // Dec 8
-  WEEK: 1701993600, // Dec 8
+  DAY: 1703203200, // Dec 22
+  WEEK: 1703203200, // Dec 22
 };
 
 export const EPOCH_TYPE = {

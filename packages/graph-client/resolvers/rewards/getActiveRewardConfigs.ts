@@ -9,7 +9,7 @@ export const ARBITRUM_STIP_REWARDS = {
   active: true,
   totalRewards: 3825000,
   epochType: "week" as EpochType,
-  numEpochs: 15,
+  numEpochs: 13,
   startingEpoch: 1,
   rewardDistribution: {
     loyalty: 0.1,
