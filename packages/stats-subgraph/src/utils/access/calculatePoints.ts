@@ -455,7 +455,7 @@ export function generateId(
     epochType +
     "-" +
     epochNumber.toString() +
-    (collateral ? "-" + collateral : "")
+    (collateral && collateral != COLLATERALS._ALL_ ? "-" + collateral : "")
   );
 }
 

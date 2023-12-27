@@ -21,7 +21,7 @@ export function generateAggregateTradingStatsId(
     epochType +
     "-" +
     epochNumber.toString() +
-    (collateral ? "-" + collateral : "")
+    (collateral && collateral != COLLATERALS._ALL_ ? "-" + collateral : "")
   );
 }
 

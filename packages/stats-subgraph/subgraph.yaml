@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: GNSTradingCallbacksV6_4_1
-    network: 'mumbai'
+    network: 'arbitrum-one'
     source:
-      address: '0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE'
+      address: '0x298a695906e16aeA0a184A2815A76eAd1a0b7522'
       abi: GNSTradingCallbacksV6_4_1
-      startBlock: 43290000
+      startBlock: 162235360
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
