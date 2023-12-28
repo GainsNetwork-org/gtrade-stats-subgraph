@@ -257,6 +257,8 @@ export const AGGREGATOR_ADDRESSES = [
 
 export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0xd79f4811f2b603649c82AeDA0143719D86Ab6574".toLowerCase(), // mumbai - test account
+  "0x011ba9dF834FeB01E5E14F3297412BA766b78d21".toLowerCase(), // kenji
+  "0xC5Ed611f03Fe94D7c1f28aA4037864A459857cE5".toLowerCase(), // tourou
 ];
 export const WHITELISTED_REFEREE_MULTIPLIER = BigDecimal.fromString("0.10");
 export const WHITELISTED_REFERRER_MULTIPLIER = BigDecimal.fromString("0.15");
