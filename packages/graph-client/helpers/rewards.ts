@@ -77,6 +77,11 @@ export const convertPointsToRewardsForUser = (
     absSkill: 0,
     relSkill: 0,
     diversity: 0,
+    loyaltyPoints: userPoints.loyaltyPoints,
+    feePoints: userPoints.feePoints,
+    absSkillPoints: userPoints.absSkillPoints,
+    relSkillPoints: userPoints.relSkillPoints,
+    diversityPoints: userPoints.diversityPoints,
   };
 
   const epochTotalRewards = rewards.totalRewards / rewards.numEpochs;

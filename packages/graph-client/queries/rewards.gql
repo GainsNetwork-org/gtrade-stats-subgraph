@@ -24,6 +24,11 @@ fragment BaseRewardResults on RewardResults {
   absSkill
   relSkill
   diversity
+  loyaltyPoints
+  feePoints
+  absSkillPoints
+  relSkillPoints
+  diversityPoints
 }
 
 query GetRewardConfig($id: ID!) {

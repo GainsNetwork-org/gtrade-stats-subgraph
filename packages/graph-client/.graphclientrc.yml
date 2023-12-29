@@ -45,6 +45,11 @@ additionalTypeDefs: |
     absSkill: Float!
     relSkill: Float!
     diversity: Float!
+    loyaltyPoints: Float!
+    feePoints: Float!
+    absSkillPoints: Float!
+    relSkillPoints: Float!
+    diversityPoints: Float!
   }
 
   # Query extensions
