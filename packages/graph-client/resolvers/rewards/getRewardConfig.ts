@@ -20,10 +20,7 @@ export const getRewardConfig: QueryResolvers["getRewardConfig"] = (
   if (id === ARBITRUM_STIP_REWARDS.id) {
     return ARBITRUM_STIP_REWARDS;
   }
-  if (
-    id === MUMBAI_STIP_REWARDS_TEST.id &&
-    process?.env?.NODE_ENV !== "production" // For now only allow this in dev
-  ) {
+  if (id === MUMBAI_STIP_REWARDS_TEST.id) {
     return MUMBAI_STIP_REWARDS_TEST;
   }
 };
