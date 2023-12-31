@@ -236,11 +236,11 @@ export function updateDiversityPoints(
 export function calculateSkillPoints(
   userStat: EpochTradingPointsRecord,
   protocolStat: EpochTradingPointsRecord,
-  PnL: BigDecimal,
+  pnl: BigDecimal,
   absolute: boolean
 ): BigDecimal {
-  let userOldPnl = userStat.pnl;
-  let userNewPnl = userOldPnl.plus(PnL);
+  let userOldPnl = absolute ? userStat.pnl : userStat.pnlPercentage;
+  let userNewPnl = userOldPnl.plus(pnl);
   let protocolOldPts = absolute
     ? protocolStat.absSkillPoints
     : protocolStat.relSkillPoints;
