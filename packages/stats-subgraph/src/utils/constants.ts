@@ -258,8 +258,11 @@ export const AGGREGATOR_ADDRESSES = [
 export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0xd79f4811f2b603649c82AeDA0143719D86Ab6574".toLowerCase(), // mumbai - test account
   "0x011ba9dF834FeB01E5E14F3297412BA766b78d21".toLowerCase(), // kenji
-  "0xC5Ed611f03Fe94D7c1f28aA4037864A459857cE5".toLowerCase(), // tourou
+  "0xC5Ed611f03Fe94D7c1f28aA4037864A459857cE5".toLowerCase(), // hiroba
   "0x065741Ffb08D26102E646Da3492bDD27256E864a".toLowerCase(), // dn48dme
+  "0x4c7685b92fc94778012cc716e4326874db91debb".toLowerCase(), // capitalismlab
+  "0x10846f7269cefCB99D31C163ca901688267D5859".toLowerCase(), // weilin
+  "0x9325564ADe7683706107685Cf1993678B1163261".toLowerCase(), // cryptowesearch
 ];
 export const WHITELISTED_REFEREE_MULTIPLIER = BigDecimal.fromString("0.10");
 export const WHITELISTED_REFERRER_MULTIPLIER = BigDecimal.fromString("0.15");
