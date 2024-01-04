@@ -263,6 +263,7 @@ export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x4c7685b92fc94778012cc716e4326874db91debb".toLowerCase(), // capitalismlab
   "0x10846f7269cefCB99D31C163ca901688267D5859".toLowerCase(), // weilin
   "0x9325564ADe7683706107685Cf1993678B1163261".toLowerCase(), // cryptowesearch
+  "0x1CD70057d52D98E3DBA24c2A7e461d168050C4D2".toLowerCase(), // bee
 ];
 export const WHITELISTED_REFEREE_MULTIPLIER = BigDecimal.fromString("0.10");
 export const WHITELISTED_REFERRER_MULTIPLIER = BigDecimal.fromString("0.15");
