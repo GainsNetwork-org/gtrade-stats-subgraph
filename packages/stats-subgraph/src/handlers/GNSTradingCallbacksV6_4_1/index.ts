@@ -39,6 +39,11 @@ import { getCollateralPrice } from "../../utils/contract/GNSPriceAggregator";
 import { NETWORKS } from "../../utils/constants";
 
 const startArbitrumBlock = 167165039; // Jan-05-2024 12:00:00 AM +UTC
+const eventHash = crypto
+  .keccak256(
+    ByteArray.fromUTF8("MarketOpenCanceled(uint256,address,uint256,uint8)")
+  )
+  .toHexString();
 function wasTradeOpenCanceled(receipt: ethereum.TransactionReceipt): boolean {
   // Only start checking for canceled trades at this block on Arb where there are active rewards
   if (
@@ -50,16 +55,7 @@ function wasTradeOpenCanceled(receipt: ethereum.TransactionReceipt): boolean {
   const events = receipt.logs;
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
-    if (
-      event.topics[0].toHexString() ==
-      crypto
-        .keccak256(
-          ByteArray.fromUTF8(
-            "MarketOpenCanceled(uint256,address,uint256,uint8)"
-          )
-        )
-        .toHexString()
-    ) {
+    if (event.topics[0].toHexString() == eventHash) {
       return true;
     }
   }
