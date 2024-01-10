@@ -221,22 +221,23 @@ export function handleGovFeeCharged(event: GovFeeCharged): void {
     return;
   }
 
-  // Confirm the trade was not canceled
+  log.info("[handleGovFeeCharged] {}", [event.transaction.hash.toHexString()]);
+  addGovFeeStats(trader, govFee, timestamp, collateralDetails.collateral);
+
+  // Calculate and add normalized stats
+  const govFeeUsd = govFee.times(collateralDetails.collateralToUsd);
+  addGovFeeStats(trader, govFeeUsd, timestamp, null);
+
+  // Confirm the trade was not canceled before adding points
   if (wasTradeOpenCanceled(event.receipt as ethereum.TransactionReceipt)) {
-    log.info("[handleGovFeeCharged] Trade canceled {}", [
+    log.info("[handleGovFeeCharged] Trade canceled, not adding points {}", [
       event.transaction.hash.toHexString(),
     ]);
     return;
   }
 
-  log.info("[handleGovFeeCharged] {}", [event.transaction.hash.toHexString()]);
-  addGovFeeStats(trader, govFee, timestamp, collateralDetails.collateral);
-  updateFeeBasedPoints(trader, govFee, timestamp, collateralDetails.collateral);
-
-  // Calculate and add normalized stats
-  const govFeeUsd = govFee.times(collateralDetails.collateralToUsd);
-  addGovFeeStats(trader, govFeeUsd, timestamp, null);
   updateFeeBasedPoints(trader, govFeeUsd, timestamp, null);
+  updateFeeBasedPoints(trader, govFee, timestamp, collateralDetails.collateral);
 }
 
 export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
