@@ -5,6 +5,8 @@ import {
   dataSource,
   ethereum,
   Address,
+  crypto,
+  ByteArray,
 } from "@graphprotocol/graph-ts";
 import {
   addBorrowingFeeStats,
@@ -34,6 +36,31 @@ import {
   isTraderReferredByAggregator,
 } from "../../utils/contract";
 import { getCollateralPrice } from "../../utils/contract/GNSPriceAggregator";
+import { NETWORKS } from "../../utils/constants";
+
+const startArbitrumBlock = 167165039; // Jan-05-2024 12:00:00 AM +UTC
+const eventHash = crypto
+  .keccak256(
+    ByteArray.fromUTF8("MarketOpenCanceled(uint256,address,uint256,uint8)")
+  )
+  .toHexString();
+function wasTradeOpenCanceled(receipt: ethereum.TransactionReceipt): boolean {
+  // Only start checking for canceled trades at this block on Arb where there are active rewards
+  if (
+    receipt.blockNumber.toI32() < startArbitrumBlock &&
+    dataSource.network() == NETWORKS.ARBITRUM
+  ) {
+    return false;
+  }
+  const events = receipt.logs;
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+    if (event.topics[0].toHexString() == eventHash) {
+      return true;
+    }
+  }
+  return false;
+}
 
 class CollateralDetails {
   collateral: string;
@@ -192,12 +219,21 @@ export function handleGovFeeCharged(event: GovFeeCharged): void {
 
   log.info("[handleGovFeeCharged] {}", [event.transaction.hash.toHexString()]);
   addGovFeeStats(trader, govFee, timestamp, collateralDetails.collateral);
-  updateFeeBasedPoints(trader, govFee, timestamp, collateralDetails.collateral);
 
   // Calculate and add normalized stats
   const govFeeUsd = govFee.times(collateralDetails.collateralToUsd);
   addGovFeeStats(trader, govFeeUsd, timestamp, null);
+
+  // Confirm the trade was not canceled before adding points
+  if (wasTradeOpenCanceled(event.receipt as ethereum.TransactionReceipt)) {
+    log.info("[handleGovFeeCharged] Trade canceled, not adding points {}", [
+      event.transaction.hash.toHexString(),
+    ]);
+    return;
+  }
+
   updateFeeBasedPoints(trader, govFeeUsd, timestamp, null);
+  updateFeeBasedPoints(trader, govFee, timestamp, collateralDetails.collateral);
 }
 
 export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
