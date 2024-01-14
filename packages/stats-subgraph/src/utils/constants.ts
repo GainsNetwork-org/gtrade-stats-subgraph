@@ -10,6 +10,7 @@ export const ETH_DECIMALS = 18;
 export const ETH_DECIMALS_BD = exponentToBigDecimal(ETH_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
+export const MULTI_COLLAT_BLOCK = 44546475;
 
 //DIVERSITY POINTS THRESHOLDS BY GROUP
 export const THRESHOLD_GROUP_0 = BigDecimal.fromString("100");
@@ -55,10 +56,12 @@ class CollateralAddresses {
   gnsPairsStorageV6!: string;
   gnsTradingCallbacksV6_4_1!: string;
   gnsPriceAggregator: string;
+  gnsPriceAggregator_Old!: string;
 }
 
 class AgnosticAddresses {
   gnsReferrals: string;
+  gnsDiamond: string;
 }
 
 export class NetworkAddresses {
@@ -71,63 +74,75 @@ export class NetworkAddresses {
 export const ARBITRUM_COLLATERALS: NetworkAddresses = {
   _ALL_: {
     gnsReferrals: "0xAA379DD7Ec0bae467490e89bB2055A7e01231b8f",
+    gnsDiamond: "",
   },
   DAI: {
     gnsPairsStorageV6: "0xf67Df2a4339eC1591615d94599081Dd037960d4b",
     gnsTradingCallbacksV6_4_1: "0x298a695906e16aeA0a184A2815A76eAd1a0b7522",
     gnsPriceAggregator: "0x2e44a81701A8355E59B3204B4a9Fe8FC43CbE0C3",
+    gnsPriceAggregator_Old: "",
   },
   ETH: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
+    gnsPriceAggregator_Old: "",
   },
   ARB: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
+    gnsPriceAggregator_Old: "",
   },
 };
 
 export const POLYGON_COLLATERALS: NetworkAddresses = {
   _ALL_: {
     gnsReferrals: "0x0F9498b1206Bf9FfDE2a2321fDB56F573A052425",
+    gnsDiamond: "",
   },
   DAI: {
     gnsPairsStorageV6: "0x6e5326e944F528c243B9Ca5d14fe5C9269a8c922",
     gnsTradingCallbacksV6_4_1: "0x82e59334da8C667797009BBe82473B55c7A6b311",
     gnsPriceAggregator: "0x126F32723c5FC8DFEB17c46b7B7dD3dCd458A816",
+    gnsPriceAggregator_Old: "",
   },
   ETH: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
+    gnsPriceAggregator_Old: "",
   },
   ARB: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
+    gnsPriceAggregator_Old: "",
   },
 };
 
 export const MUMBAI_COLLATERALS: NetworkAddresses = {
   _ALL_: {
     gnsReferrals: "0x022e26d7DdAD3fc311C6472949F19c99b3CB08e6",
+    gnsDiamond: "0xDee93dD1Cb54ce80D690eC07a20CB0ce9d7F741C",
   },
   DAI: {
     gnsPairsStorageV6: "0x2b497ff78bA1F803141Ecca0F98eF3c5B5B64d26",
     gnsTradingCallbacksV6_4_1: "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
-    gnsPriceAggregator: "0x5a284f0f52a8Ea4A33033EfB3Ffd723db9bbe312",
+    gnsPriceAggregator: "0x7D7b76fB3c9eaB75761F85C9221dA09450b33eD7",
+    gnsPriceAggregator_Old: "0x5a284f0f52a8Ea4A33033EfB3Ffd723db9bbe312",
   },
   ETH: {
     gnsPairsStorageV6: "",
-    gnsTradingCallbacksV6_4_1: "",
-    gnsPriceAggregator: "",
+    gnsTradingCallbacksV6_4_1: "0x9b897661E03ac0131d0f5E522eC188d9193Cb1f5",
+    gnsPriceAggregator: "0x48fE5846829E1a476Cb56b2188b4DA958406a509",
+    gnsPriceAggregator_Old: "",
   },
   ARB: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
+    gnsPriceAggregator_Old: "",
   },
 };
 
@@ -266,7 +281,7 @@ export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x1CD70057d52D98E3DBA24c2A7e461d168050C4D2".toLowerCase(), // bee
   "0x6a2664aba79A4F026c2fe34Be983B1Da96795565".toLowerCase(), // hoot
   "0xE7Da4dAAae1BD738A071500dca1d37E9d48b965D".toLowerCase(), // giba
-  "0x3161d1f5edb3f9ceebfb3e258681484b82ae3ea4".toLowerCase(), // june
+  "0x3161d1f5edb3f9ceebfb3e258681484b82ae3ea4".toLowerCase(), // june  
 ];
 export const WHITELISTED_REFEREE_MULTIPLIER = BigDecimal.fromString("0.10");
 export const WHITELISTED_REFERRER_MULTIPLIER = BigDecimal.fromString("0.15");
