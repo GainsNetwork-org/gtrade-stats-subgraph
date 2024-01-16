@@ -118,8 +118,8 @@ export function handleMarketExecuted(event: MarketExecuted): void {
       leverage,
       volume,
       event.block.timestamp.toI32(),
-      collateralSentToTrader,
-      event.block.number.toI32()      
+      event.block.number.toI32(),      
+      collateralSentToTrader
     );
   }
 }
@@ -164,8 +164,8 @@ export function handleLimitExecuted(event: LimitExecuted): void {
       leverage,
       volume,
       event.block.timestamp.toI32(),
-      collateralSentToTrader,
-      event.block.number.toI32()      
+      event.block.number.toI32(),      
+      collateralSentToTrader
     );
   }
 }
@@ -402,7 +402,7 @@ function _handleOpenTrade(
   timestamp: i32,
   blockNumber: i32
 ): void {
-  const groupIndex = getGroupIndex(network, collateral, blockNumber,pairIndex).toI32();
+  const groupIndex = getGroupIndex(network, collateral,pairIndex,blockNumber).toI32();
   // Add collateral specific stats
   addOpenTradeStats({
     collateral,
