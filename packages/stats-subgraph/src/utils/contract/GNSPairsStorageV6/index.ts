@@ -96,8 +96,7 @@ export function getGroupIndex(
 ): BigInt {
   if (blockNumber > MULTI_COLLAT_BLOCK) {
     const pairsStorageContract = getMultiCollatDiamondContract(network);
-    // return pairsStorageContract.pairs(pairIndex).groupIndex();
-    return new BigInt(0);
+    return pairsStorageContract.pairs(pairIndex).groupIndex;
   } else {
     const pairsStorageContract = getPairsStorageContract(network, collateral);
     return pairsStorageContract.pairs(pairIndex).getGroupIndex();
