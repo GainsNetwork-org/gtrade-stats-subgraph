@@ -49,9 +49,9 @@ export function getCollateralFromCallbacksAddress(
   }
 
   if (
-    collateralAddresses.ARB.gnsTradingCallbacksV6_4_1.toLowerCase() == address
+    collateralAddresses.USDC.gnsTradingCallbacksV6_4_1.toLowerCase() == address
   ) {
-    return COLLATERALS.ARB;
+    return COLLATERALS.USDC;
   }
 
   throw new Error("Callbacks address not found " + address);

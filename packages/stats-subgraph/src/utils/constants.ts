@@ -30,14 +30,14 @@ class Collaterals {
   _ALL_!: string;
   DAI!: string;
   ETH!: string;
-  ARB!: string;
+  USDC!: string;
 }
 
 export const COLLATERALS: Collaterals = {
   _ALL_: "_all_",
   DAI: "dai",
   ETH: "eth",
-  ARB: "arb",
+  USDC: "arb",
 };
 
 class Networks {
@@ -68,7 +68,7 @@ export class NetworkAddresses {
   _ALL_!: AgnosticAddresses;
   DAI!: CollateralAddresses;
   ETH!: CollateralAddresses;
-  ARB!: CollateralAddresses;
+  USDC!: CollateralAddresses;
 }
 
 export const ARBITRUM_COLLATERALS: NetworkAddresses = {
@@ -88,7 +88,7 @@ export const ARBITRUM_COLLATERALS: NetworkAddresses = {
     gnsPriceAggregator: "",
     gnsPriceAggregator_Old: "",
   },
-  ARB: {
+  USDC: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
@@ -113,7 +113,7 @@ export const POLYGON_COLLATERALS: NetworkAddresses = {
     gnsPriceAggregator: "",
     gnsPriceAggregator_Old: "",
   },
-  ARB: {
+  USDC: {
     gnsPairsStorageV6: "",
     gnsTradingCallbacksV6_4_1: "",
     gnsPriceAggregator: "",
@@ -138,10 +138,10 @@ export const MUMBAI_COLLATERALS: NetworkAddresses = {
     gnsPriceAggregator: "0x48fE5846829E1a476Cb56b2188b4DA958406a509",
     gnsPriceAggregator_Old: "",
   },
-  ARB: {
+  USDC: {
     gnsPairsStorageV6: "",
-    gnsTradingCallbacksV6_4_1: "",
-    gnsPriceAggregator: "",
+    gnsTradingCallbacksV6_4_1: "0xD9CBa2cBBBA3A2022dfb7dAb3b66c33545908Af8",
+    gnsPriceAggregator: "0x84154DE35c8F157Ce02E13C9271370732299f7EA",
     gnsPriceAggregator_Old: "",
   },
 };
@@ -240,8 +240,8 @@ export function getNetworkCollateralAddressesFromNetwork(
     return networkCollaterals.ETH;
   }
 
-  if (collateral == COLLATERALS.ARB) {
-    return networkCollaterals.ARB;
+  if (collateral == COLLATERALS.USDC) {
+    return networkCollaterals.USDC;
   }
 
   throw new Error("Collateral not supported");
