@@ -1,7 +1,7 @@
 import { Address, BigDecimal, log } from "@graphprotocol/graph-ts";
 import { GNSPriceAggregator } from "../../../types/GNSTradingCallbacksV6_4_1/GNSPriceAggregator";
 import { IChainlinkFeed } from "../../../types/GNSTradingCallbacksV6_4_1/IChainlinkFeed";
-import { getNetworkCollateralAddresses, MULTI_COLLAT_BLOCK } from "../../constants";
+import { getNetworkCollateralAddresses, getMultiCollatBlock } from "../../constants";
 
 export function getPriceAggregatorContract(
   network: string,
@@ -9,10 +9,11 @@ export function getPriceAggregatorContract(
   blockNumber: i32
 ): GNSPriceAggregator {
   const config = getNetworkCollateralAddresses(network, collateral);
+  const multiCollatBlock = getMultiCollatBlock(network)
   if (config == null) {
     throw new Error("Network not supported");
   }
-  if(blockNumber > MULTI_COLLAT_BLOCK) {
+  if(blockNumber > multiCollatBlock) {
     return GNSPriceAggregator.bind(Address.fromString(config.gnsPriceAggregator));
   }
   else {

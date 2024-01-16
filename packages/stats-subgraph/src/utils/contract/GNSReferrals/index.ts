@@ -1,4 +1,4 @@
-import { Address } from "@graphprotocol/graph-ts";
+import { Address, BigDecimal } from "@graphprotocol/graph-ts";
 import { GNSReferrals } from "../../../types/GNSTradingCallbacksV6_4_1/GNSReferrals";
 import { GNSMultiCollatDiamond } from "../../../types/GNSTradingCallbacksV6_4_1/GNSMultiCollatDiamond";
 import {
@@ -6,7 +6,7 @@ import {
   WHITELISTED_REFERRAL_ADDRESSES,
   ZERO_ADDRESS,
   getNetworkAddresses,
-  MULTI_COLLAT_BLOCK,
+  getMultiCollatBlock
 } from "../../constants";
 
 export function getReferralsContract(network: string): GNSReferrals {
@@ -44,7 +44,8 @@ export function isTraderReferredByAggregator(
   trader: Address,
   blockNumber: i32
 ): boolean {
-  if (blockNumber > MULTI_COLLAT_BLOCK) {
+  const multiCollatBlock = getMultiCollatBlock(network)
+  if (blockNumber > multiCollatBlock) {
     const diamond = getMultiCollatDiamondContract(network);
     const referrer = diamond.try_getTraderReferrer(trader);
     if (referrer.reverted) {
@@ -76,7 +77,8 @@ export function isTraderReferredByWhitelistedReferral(
   trader: Address,
   blockNumber: i32
 ): WhitelisedReferralResponse {
-  if (blockNumber > MULTI_COLLAT_BLOCK) {
+  const multiCollatBlock = getMultiCollatBlock(network)
+  if (blockNumber > multiCollatBlock) {
     const diamond = getMultiCollatDiamondContract(network);
     const referrer = diamond.try_getTraderReferrer(trader);
     if (referrer.reverted) {

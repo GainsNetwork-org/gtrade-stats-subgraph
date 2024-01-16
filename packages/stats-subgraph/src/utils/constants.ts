@@ -10,7 +10,10 @@ export const ETH_DECIMALS = 18;
 export const ETH_DECIMALS_BD = exponentToBigDecimal(ETH_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
-export const MULTI_COLLAT_BLOCK = 44546475;
+export const MULTI_COLLAT_BLOCK_ARBITRUM = 44546475;
+export const MULTI_COLLAT_BLOCK_POLYGON = 44546475;
+export const MULTI_COLLAT_BLOCK_MUMBAI = 44546475;
+
 
 //DIVERSITY POINTS THRESHOLDS BY GROUP
 export const THRESHOLD_GROUP_0 = BigDecimal.fromString("100");
@@ -223,6 +226,22 @@ export function getNetworkCollaterals(network: string): NetworkAddresses {
 
   if (network == NETWORKS.MUMBAI) {
     return MUMBAI_COLLATERALS;
+  }
+
+  throw new Error("Network not supported");
+}
+
+export function getMultiCollatBlock(network: string): i32 {
+  if (network == NETWORKS.ARBITRUM) {
+    return MULTI_COLLAT_BLOCK_ARBITRUM;
+  }
+
+  if (network == NETWORKS.POLYGON) {
+    return MULTI_COLLAT_BLOCK_POLYGON;
+  }
+
+  if (network == NETWORKS.MUMBAI) {
+    return MULTI_COLLAT_BLOCK_MUMBAI;
   }
 
   throw new Error("Network not supported");

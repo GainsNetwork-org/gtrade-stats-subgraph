@@ -2,7 +2,7 @@ import { Address, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 import {
   getNetworkAddresses,
   getNetworkCollateralAddresses,
-  MULTI_COLLAT_BLOCK
+  getMultiCollatBlock
 } from "../../constants";
 import { GNSPairsStorageV6 } from "../../../types/GNSTradingCallbacksV6_4_1/GNSPairsStorageV6";
 import { GNSMultiCollatDiamond } from "../../../types/GNSTradingCallbacksV6_4_1/GNSMultiCollatDiamond";
@@ -44,7 +44,8 @@ export function getGroupIndex(
   pairIndex: BigInt,
   blockNumber: i32
 ): BigInt {
-  if (blockNumber > MULTI_COLLAT_BLOCK) {
+  const multiCollatBlock = getMultiCollatBlock(network)
+  if (blockNumber > multiCollatBlock) {
     const pairsStorageContract = getMultiCollatDiamondContract(network);
     return pairsStorageContract.pairs(pairIndex).groupIndex;
   } else {
