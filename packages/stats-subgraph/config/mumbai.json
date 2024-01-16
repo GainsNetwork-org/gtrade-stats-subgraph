@@ -3,7 +3,7 @@
   "DAI": {
     "gnsTradingCallbacks": {
       "address": "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
-      "startBlock": 43835000
+      "startBlock": 44257302
     }
   },
   "ETH": {
