@@ -4,6 +4,7 @@ import { IChainlinkFeed } from "../../../types/GNSTradingCallbacksV6_4_1/IChainl
 import {
   getNetworkCollateralAddresses,
   getMultiCollatBlock,
+  exponentToBigDecimal,
 } from "../../constants";
 
 export function getPriceAggregatorContract(
@@ -44,5 +45,5 @@ export function getCollateralPrice(
     return BigDecimal.fromString("1");
   }
   const price = collateralPriceUsd.value;
-  return price.toBigDecimal().div(BigDecimal.fromString(1e8 + ""));
+  return price.toBigDecimal().div(exponentToBigDecimal(8));
 }
