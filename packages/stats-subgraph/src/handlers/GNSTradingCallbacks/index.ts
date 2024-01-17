@@ -20,6 +20,10 @@ import {
   updateFeeBasedPoints,
 } from "../../utils/access";
 import {
+  MarketExecuted as MarketExecutedV6_4_1,
+  LimitExecuted as LimitExecutedV6_4_1,
+} from "../../types/GNSTradingCallbacksV6_4_1/GNSTradingCallbacksV6_4_1";
+import {
   MarketExecuted,
   LimitExecuted,
   BorrowingFeeCharged,
@@ -28,7 +32,11 @@ import {
   TriggerFeeCharged,
   SssFeeCharged,
   DaiVaultFeeCharged,
-} from "../../types/GNSTradingCallbacksV6_4_1/GNSTradingCallbacksV6_4_1";
+  MarketExecutedTStruct,
+  LimitExecutedTStruct,
+} from "../../types/GNSTradingCallbacks/GNSTradingCallbacks";
+// import { LogRecord } from "../../types/schema";
+
 import {
   convertCollateralToDecimal,
   getCollateralFromCallbacksAddress,
@@ -37,6 +45,7 @@ import {
 } from "../../utils/contract";
 import { getCollateralPrice } from "../../utils/contract/GNSPriceAggregator";
 import { NETWORKS, getCollateralDecimals } from "../../utils/constants";
+import { LogRecord } from "../../types/schema";
 
 const startArbitrumBlock = 167165039; // Jan-05-2024 12:00:00 AM +UTC
 const eventHash = crypto
@@ -84,15 +93,38 @@ function getCollateralDetails(event: ethereum.Event): CollateralDetails {
 }
 
 export function handleMarketExecuted(event: MarketExecuted): void {
-  const collateralDetails = getCollateralDetails(event);
-  const trade = event.params.t;
-  const open = event.params.open;
-  const collateralSentToTrader = convertCollateralToDecimal(
+  _handleMarketExecuted(
+    event.params.t,
+    event.params.open,
     event.params.daiSentToTrader,
+    event.params.positionSizeDai,
+    event
+  );
+}
+export function handleMarketExecutedV6_4_1(event: MarketExecutedV6_4_1): void {
+  _handleMarketExecuted(
+    event.params.t,
+    event.params.open,
+    event.params.daiSentToTrader,
+    event.params.positionSizeDai,
+    event
+  );
+}
+
+function _handleMarketExecuted(
+  trade: MarketExecutedTStruct,
+  open: boolean,
+  daiSentToTrader: BigInt,
+  _positionSizeDai: BigInt,
+  event: ethereum.Event
+): void {
+  const collateralDetails = getCollateralDetails(event);
+  const collateralSentToTrader = convertCollateralToDecimal(
+    daiSentToTrader,
     collateralDetails.collateralPrecisionBd
   );
   const positionSizeDai = convertCollateralToDecimal(
-    event.params.positionSizeDai,
+    _positionSizeDai,
     collateralDetails.collateralPrecisionBd
   );
   const leverage = trade.leverage.toBigDecimal();
@@ -144,15 +176,38 @@ export function handleMarketExecuted(event: MarketExecuted): void {
 }
 
 export function handleLimitExecuted(event: LimitExecuted): void {
-  const collateralDetails = getCollateralDetails(event);
-  const trade = event.params.t;
-  const orderType = event.params.orderType;
-  const collateralSentToTrader = convertCollateralToDecimal(
+  _handleLimitExecuted(
+    event.params.t,
+    event.params.orderType,
     event.params.daiSentToTrader,
+    event.params.positionSizeDai,
+    event
+  );
+}
+export function handleLimitExecutedV6_4_1(event: LimitExecutedV6_4_1): void {
+  _handleLimitExecuted(
+    event.params.t,
+    event.params.orderType,
+    event.params.daiSentToTrader,
+    event.params.positionSizeDai,
+    event
+  );
+}
+
+function _handleLimitExecuted(
+  trade: LimitExecutedTStruct,
+  orderType: i32,
+  daiSentToTrader: BigInt,
+  _positionSizeDai: BigInt,
+  event: ethereum.Event
+): void {
+  const collateralDetails = getCollateralDetails(event);
+  const collateralSentToTrader = convertCollateralToDecimal(
+    daiSentToTrader,
     collateralDetails.collateralPrecisionBd
   );
   const positionSizeDai = convertCollateralToDecimal(
-    event.params.positionSizeDai,
+    _positionSizeDai,
     collateralDetails.collateralPrecisionBd
   ); // Pos size less fees on close
   const leverage = trade.leverage.toBigDecimal();
@@ -493,6 +548,17 @@ function _handleOpenTrade(
   timestamp: i32,
   blockNumber: i32
 ): void {
+  let logRecord = LogRecord.load(trader);
+  if (logRecord == null) {
+    logRecord = new LogRecord(trader);
+    logRecord.logs = [];
+    logRecord.log = "Yes";
+    logRecord.save();
+  }
+  logRecord.logs.push(
+    `[_handleOpenTrade] [one] ${network} ${collateral} ${collateralToUsd.toString()} ${trader} ${pairIndex.toString()} ${positionSize.toString()} ${timestamp.toString()} ${blockNumber.toString()}`
+  );
+  logRecord.save();
   const groupIndex = getGroupIndex(
     network,
     collateral,
@@ -533,6 +599,28 @@ function _handleCloseTrade(
   blockNumber: i32,
   collateralSentToTrader: BigDecimal
 ): void {
+  log.info("[_handleCloseTrade] [one] {} {} {} {} {} {} {} {} {}", [
+    network,
+    collateral,
+    collateralToUsd.toString(),
+    trader,
+    pairIndex.toString(),
+    leverage.toString(),
+    positionSize.toString(),
+    timestamp.toString(),
+    blockNumber.toString(),
+  ]);
+  let logRecord = LogRecord.load(trader);
+  if (logRecord == null) {
+    logRecord = new LogRecord(trader);
+    logRecord.logs = [];
+  }
+  logRecord.log = "No";
+  logRecord.save();
+  logRecord.logs.push(
+    `[_handleCloseTrade] [one] ${network} ${collateral} ${collateralToUsd.toString()} ${trader} ${pairIndex.toString()} ${leverage.toString()} ${positionSize.toString()} ${timestamp.toString()} ${blockNumber.toString()}`
+  );
+  logRecord.save();
   const groupIndex = getGroupIndex(
     network,
     collateral,
@@ -544,7 +632,17 @@ function _handleCloseTrade(
   const pnlPercentage = pnl
     .div(initialCollateral)
     .times(BigDecimal.fromString("100"));
-
+  log.info("[_handleCloseTrade] [two] {} {} {} {}", [
+    pnl.toString(),
+    groupIndex.toString(),
+    initialCollateral.toString(),
+    pnlPercentage.toString(),
+    collateralToUsd.toString(),
+  ]);
+  logRecord.logs.push(
+    `[_handleCloseTrade] [two] ${pnl.toString()} ${groupIndex.toString()} ${initialCollateral.toString()} ${pnlPercentage.toString()} ${collateralToUsd.toString()}`
+  );
+  logRecord.save();
   // Add collateral specific stats
   addCloseTradeStats({
     collateral,
