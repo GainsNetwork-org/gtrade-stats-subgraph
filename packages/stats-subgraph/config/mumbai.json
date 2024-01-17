@@ -8,14 +8,14 @@
   },
   "ETH": {
     "gnsTradingCallbacks": {
-      "address": "0x9b897661E03ac0131d0f5E522eC188d9193Cb1f5",
-      "startBlock": 44513440
+      "address": "0x0Bb7f01c3808Ec9B7af16E20d71eCb7a27C7ECf5",
+      "startBlock": 44875201
     }
   },
   "USDC": {
     "gnsTradingCallbacks": {
-      "address": "0xD9CBa2cBBBA3A2022dfb7dAb3b66c33545908Af8",
-      "startBlock": 44812785
+      "address": "0x0c8C70eF2744A9376195855C63B59A3360FEEbBe",
+      "startBlock": 44875685
     }
-  }  
+  }
 }
