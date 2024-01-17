@@ -14,6 +14,22 @@ export const MULTI_COLLAT_BLOCK_ARBITRUM = 44546475; // @todo
 export const MULTI_COLLAT_BLOCK_POLYGON = 44546475; // @todo
 export const MULTI_COLLAT_BLOCK_MUMBAI = 44357232;
 
+export function getCollateralDecimals(collateral: string): BigDecimal {
+  if (collateral == COLLATERALS.DAI) {
+    return DAI_DECIMALS_BD;
+  }
+
+  if (collateral == COLLATERALS.ETH) {
+    return ETH_DECIMALS_BD;
+  }
+
+  if (collateral == COLLATERALS.USDC) {
+    return USDC_DECIMALS_BD;
+  }
+
+  throw new Error("Collateral not supported");
+}
+
 //DIVERSITY POINTS THRESHOLDS BY GROUP
 export const THRESHOLD_GROUP_0 = BigDecimal.fromString("100");
 export const THRESHOLD_GROUP_1 = BigDecimal.fromString("250");
