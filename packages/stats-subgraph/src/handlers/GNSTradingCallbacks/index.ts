@@ -101,7 +101,8 @@ export function handleMarketExecuted(event: MarketExecuted): void {
     event
   );
 }
-export function handleMarketExecutedV6_4_1(event: MarketExecutedV6_4_1): void {
+// @dev Event type is intentionally inaccurate
+export function handleMarketExecutedV6_4_1(event: MarketExecuted): void {
   _handleMarketExecuted(
     event.params.t,
     event.params.open,
@@ -184,7 +185,9 @@ export function handleLimitExecuted(event: LimitExecuted): void {
     event
   );
 }
-export function handleLimitExecutedV6_4_1(event: LimitExecutedV6_4_1): void {
+
+// @dev Event type is intentionally inaccurate
+export function handleLimitExecutedV6_4_1(event: LimitExecuted): void {
   _handleLimitExecuted(
     event.params.t,
     event.params.orderType,
