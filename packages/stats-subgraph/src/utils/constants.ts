@@ -152,14 +152,14 @@ export const MUMBAI_COLLATERALS: NetworkAddresses = {
   },
   ETH: {
     gnsPairsStorageV6: "",
-    gnsTradingCallbacksV6_4_1: "0x9b897661E03ac0131d0f5E522eC188d9193Cb1f5",
-    gnsPriceAggregator: "0x48fE5846829E1a476Cb56b2188b4DA958406a509",
+    gnsTradingCallbacksV6_4_1: "0x0Bb7f01c3808Ec9B7af16E20d71eCb7a27C7ECf5",
+    gnsPriceAggregator: "0x4928e8ddCb5bae1fF7ce1631C917aEdee297C4d3",
     gnsPriceAggregator_Old: "",
   },
   USDC: {
     gnsPairsStorageV6: "",
-    gnsTradingCallbacksV6_4_1: "0xD9CBa2cBBBA3A2022dfb7dAb3b66c33545908Af8",
-    gnsPriceAggregator: "0x84154DE35c8F157Ce02E13C9271370732299f7EA",
+    gnsTradingCallbacksV6_4_1: "0x0c8C70eF2744A9376195855C63B59A3360FEEbBe",
+    gnsPriceAggregator: "0x5F977a39be5FE228B7675B65383A86195231dfCC",
     gnsPriceAggregator_Old: "",
   },
 };
