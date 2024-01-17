@@ -10,7 +10,7 @@ dataSources:
     source:
       address: '{{DAI.gnsTradingCallbacks.address}}'
       abi: GNSTradingCallbacksV6_4_1
-      startBlock: {{DAI.gnsTradingCallbacksV6_4_1.startBlock}}
+      startBlock: {{DAI.gnsTradingCallbacks.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -28,6 +28,8 @@ dataSources:
           file: ./abis/IChainlinkFeed.json
         - name: GNSReferrals
           file: ./abis/GNSReferrals.json
+        - name: GNSMultiCollatDiamond
+          file: ./abis/GNSMultiCollatDiamond.json
       eventHandlers:
         - event: MarketExecuted(indexed uint256,(address,uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256,uint256),bool,uint256,uint256,uint256,int256,uint256)
           handler: handleMarketExecuted
@@ -53,7 +55,7 @@ dataSources:
     source:
       address: '{{ETH.gnsTradingCallbacks.address}}'
       abi: GNSTradingCallbacksV6_4_1
-      startBlock: {{ETH.gnsTradingCallbacksV6_4_1.startBlock}}
+      startBlock: {{ETH.gnsTradingCallbacks.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -71,6 +73,8 @@ dataSources:
           file: ./abis/IChainlinkFeed.json
         - name: GNSReferrals
           file: ./abis/GNSReferrals.json
+        - name: GNSMultiCollatDiamond
+          file: ./abis/GNSMultiCollatDiamond.json
       eventHandlers:
         - event: MarketExecuted(indexed uint256,(address,uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256,uint256),bool,uint256,uint256,uint256,int256,uint256)
           handler: handleMarketExecuted
@@ -96,7 +100,7 @@ dataSources:
     source:
       address: '{{USDC.gnsTradingCallbacks.address}}'
       abi: GNSTradingCallbacksV6_4_1
-      startBlock: {{USDC.gnsTradingCallbacksV6_4_1.startBlock}}
+      startBlock: {{USDC.gnsTradingCallbacks.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -114,6 +118,8 @@ dataSources:
           file: ./abis/IChainlinkFeed.json
         - name: GNSReferrals
           file: ./abis/GNSReferrals.json
+        - name: GNSMultiCollatDiamond
+          file: ./abis/GNSMultiCollatDiamond.json
       eventHandlers:
         - event: MarketExecuted(indexed uint256,(address,uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256,uint256),bool,uint256,uint256,uint256,int256,uint256)
           handler: handleMarketExecuted
