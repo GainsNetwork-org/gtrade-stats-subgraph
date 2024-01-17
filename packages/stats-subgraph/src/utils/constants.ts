@@ -4,8 +4,8 @@ export const ZERO_BD = BigDecimal.fromString("0");
 export const ONE_BD = BigDecimal.fromString("1");
 export const DAI_DECIMALS = 18;
 export const DAI_DECIMALS_BD = exponentToBigDecimal(DAI_DECIMALS);
-export const ARB_DECIMALS = 18;
-export const ARB_DECIMALS_BD = exponentToBigDecimal(ARB_DECIMALS);
+export const USDC_DECIMALS = 6;
+export const USDC_DECIMALS_BD = exponentToBigDecimal(USDC_DECIMALS);
 export const ETH_DECIMALS = 18;
 export const ETH_DECIMALS_BD = exponentToBigDecimal(ETH_DECIMALS);
 export const PRECISION_DECIMALS = 10;
@@ -13,7 +13,6 @@ export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
 export const MULTI_COLLAT_BLOCK_ARBITRUM = 44546475; // @todo
 export const MULTI_COLLAT_BLOCK_POLYGON = 44546475; // @todo
 export const MULTI_COLLAT_BLOCK_MUMBAI = 44357232;
-
 
 //DIVERSITY POINTS THRESHOLDS BY GROUP
 export const THRESHOLD_GROUP_0 = BigDecimal.fromString("100");
@@ -300,7 +299,7 @@ export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x1CD70057d52D98E3DBA24c2A7e461d168050C4D2".toLowerCase(), // bee
   "0x6a2664aba79A4F026c2fe34Be983B1Da96795565".toLowerCase(), // hoot
   "0xE7Da4dAAae1BD738A071500dca1d37E9d48b965D".toLowerCase(), // giba
-  "0x3161d1f5edb3f9ceebfb3e258681484b82ae3ea4".toLowerCase(), // june  
+  "0x3161d1f5edb3f9ceebfb3e258681484b82ae3ea4".toLowerCase(), // june
 ];
 export const WHITELISTED_REFEREE_MULTIPLIER = BigDecimal.fromString("0.10");
 export const WHITELISTED_REFERRER_MULTIPLIER = BigDecimal.fromString("0.15");
