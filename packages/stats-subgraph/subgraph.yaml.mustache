@@ -5,7 +5,7 @@ schema:
   file: ./schema.gql
 dataSources:
   - kind: ethereum
-    name: GNSTradingCallbacksV6_4_1
+    name: DAI_GNSTradingCallbacksV6_4_1
     network: '{{network}}'
     source:
       address: '{{DAI.gnsTradingCallbacks.address}}'
@@ -48,7 +48,7 @@ dataSources:
           handler: handleLpFeeCharged
       file: ./src/handlers/GNSTradingCallbacksV6_4_1/index.ts
   - kind: ethereum
-    name: GNSTradingCallbacksV6_4_1
+    name: ETH_GNSTradingCallbacksV6_4_1
     network: '{{network}}'
     source:
       address: '{{ETH.gnsTradingCallbacks.address}}'
@@ -91,7 +91,7 @@ dataSources:
           handler: handleLpFeeCharged
       file: ./src/handlers/GNSTradingCallbacksV6_4_1/index.ts      
   - kind: ethereum
-    name: GNSTradingCallbacksV6_4_1
+    name: USDC_GNSTradingCallbacksV6_4_1
     network: '{{network}}'
     source:
       address: '{{USDC.gnsTradingCallbacks.address}}'
