@@ -74,9 +74,3 @@ type EpochTradingPointsRecord @entity {
   relSkillPoints: BigDecimal!
   diversityPoints: BigDecimal!
 }
-
-type LogRecord @entity {
-  id: ID!
-  logs: [String!]!
-  log: String!
-}

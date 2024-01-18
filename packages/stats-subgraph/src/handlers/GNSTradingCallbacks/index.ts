@@ -20,10 +20,6 @@ import {
   updateFeeBasedPoints,
 } from "../../utils/access";
 import {
-  MarketExecuted as MarketExecutedV6_4_1,
-  LimitExecuted as LimitExecutedV6_4_1,
-} from "../../types/GNSTradingCallbacksV6_4_1/GNSTradingCallbacksV6_4_1";
-import {
   MarketExecuted,
   LimitExecuted,
   BorrowingFeeCharged,
@@ -35,7 +31,6 @@ import {
   MarketExecutedTStruct,
   LimitExecutedTStruct,
 } from "../../types/GNSTradingCallbacks/GNSTradingCallbacks";
-// import { LogRecord } from "../../types/schema";
 
 import {
   convertCollateralToDecimal,
@@ -45,7 +40,6 @@ import {
 } from "../../utils/contract";
 import { getCollateralPrice } from "../../utils/contract/GNSPriceAggregator";
 import { NETWORKS, getCollateralDecimals } from "../../utils/constants";
-import { LogRecord } from "../../types/schema";
 
 const startArbitrumBlock = 167165039; // Jan-05-2024 12:00:00 AM +UTC
 const eventHash = crypto
@@ -551,17 +545,6 @@ function _handleOpenTrade(
   timestamp: i32,
   blockNumber: i32
 ): void {
-  let logRecord = LogRecord.load(trader);
-  if (logRecord == null) {
-    logRecord = new LogRecord(trader);
-    logRecord.logs = [];
-    logRecord.log = "Yes";
-    logRecord.save();
-  }
-  logRecord.logs.push(
-    `[_handleOpenTrade] [one] ${network} ${collateral} ${collateralToUsd.toString()} ${trader} ${pairIndex.toString()} ${positionSize.toString()} ${timestamp.toString()} ${blockNumber.toString()}`
-  );
-  logRecord.save();
   const groupIndex = getGroupIndex(
     network,
     collateral,
@@ -613,17 +596,6 @@ function _handleCloseTrade(
     timestamp.toString(),
     blockNumber.toString(),
   ]);
-  let logRecord = LogRecord.load(trader);
-  if (logRecord == null) {
-    logRecord = new LogRecord(trader);
-    logRecord.logs = [];
-  }
-  logRecord.log = "No";
-  logRecord.save();
-  logRecord.logs.push(
-    `[_handleCloseTrade] [one] ${network} ${collateral} ${collateralToUsd.toString()} ${trader} ${pairIndex.toString()} ${leverage.toString()} ${positionSize.toString()} ${timestamp.toString()} ${blockNumber.toString()}`
-  );
-  logRecord.save();
   const groupIndex = getGroupIndex(
     network,
     collateral,
@@ -642,10 +614,6 @@ function _handleCloseTrade(
     pnlPercentage.toString(),
     collateralToUsd.toString(),
   ]);
-  logRecord.logs.push(
-    `[_handleCloseTrade] [two] ${pnl.toString()} ${groupIndex.toString()} ${initialCollateral.toString()} ${pnlPercentage.toString()} ${collateralToUsd.toString()}`
-  );
-  logRecord.save();
   // Add collateral specific stats
   addCloseTradeStats({
     collateral,
