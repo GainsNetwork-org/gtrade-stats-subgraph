@@ -55,7 +55,7 @@ export const COLLATERALS: Collaterals = {
   _ALL_: "_all_",
   DAI: "dai",
   ETH: "eth",
-  USDC: "arb",
+  USDC: "usdc",
 };
 
 class Networks {
