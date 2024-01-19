@@ -96,7 +96,16 @@ export function handleMarketExecuted(event: MarketExecuted): void {
   );
 }
 // @dev Event type is intentionally inaccurate
+const migrationBlock = 44357232;
 export function handleMarketExecutedV6_4_1(event: MarketExecuted): void {
+  // Confirm block is < 44357232
+  if (
+    event.blockNumber.toI32() < migrationBlock &&
+    dataSource.network() == NETWORKS.ARBITRUM
+  ) {
+    return;
+  }
+
   _handleMarketExecuted(
     event.params.t,
     event.params.open,
