@@ -81,19 +81,6 @@ dataSources:
           handler: handleMarketExecuted
         - event: LimitExecuted(indexed uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256,uint256),indexed address,uint8,uint256,uint256,uint256,int256,uint256,uint256,bool)
           handler: handleLimitExecuted
-        - event: BorrowingFeeCharged(indexed address,uint256,uint256)
-          handler: handleBorrowingFeeCharged
-        - event: GovFeeCharged(indexed address,uint256,bool)
-          handler: handleGovFeeCharged
-          receipt: true
-        - event: ReferralFeeCharged(indexed address,uint256)
-          handler: handleReferralFeeCharged
-        - event: TriggerFeeCharged(indexed address,uint256)
-          handler: handleTriggerFeeCharged
-        - event: SssFeeCharged(indexed address,uint256)
-          handler: handleStakerFeeCharged
-        - event: DaiVaultFeeCharged(indexed address,uint256)
-          handler: handleLpFeeCharged
       file: ./src/handlers/GNSTradingCallbacks/index.ts
   - kind: ethereum
     name: ETH_GNSTradingCallbacks
