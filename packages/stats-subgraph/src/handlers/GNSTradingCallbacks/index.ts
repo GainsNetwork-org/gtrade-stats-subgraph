@@ -101,7 +101,7 @@ export function handleMarketExecutedV6_4_1(event: MarketExecuted): void {
   // Confirm block is < 44357232
   if (
     event.block.number.toI32() < migrationBlock &&
-    dataSource.network() == NETWORKS.ARBITRUM
+    dataSource.network() == NETWORKS.MUMBAI
   ) {
     return;
   }
