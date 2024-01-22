@@ -10,8 +10,8 @@ export const ETH_DECIMALS = 18;
 export const ETH_DECIMALS_BD = exponentToBigDecimal(ETH_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
-export const MULTI_COLLAT_BLOCK_ARBITRUM = 44546475; // @todo
-export const MULTI_COLLAT_BLOCK_POLYGON = 44546475; // @todo
+export const MULTI_COLLAT_BLOCK_ARBITRUM = 44546475; // @todo @crumbs - same as config
+export const MULTI_COLLAT_BLOCK_POLYGON = 44546475; // @todo @crumbs -same as config
 export const MULTI_COLLAT_BLOCK_MUMBAI = 44357232;
 
 export function getCollateralDecimals(collateral: string): BigDecimal {
@@ -92,24 +92,24 @@ export class NetworkAddresses {
 export const ARBITRUM_COLLATERALS: NetworkAddresses = {
   _ALL_: {
     gnsReferrals: "0xAA379DD7Ec0bae467490e89bB2055A7e01231b8f",
-    gnsDiamond: "",
+    gnsDiamond: "0xFF162c694eAA571f685030649814282eA457f169",
   },
   DAI: {
     gnsPairsStorageV6: "0xf67Df2a4339eC1591615d94599081Dd037960d4b",
     gnsTradingCallbacksV6_4_1: "0x298a695906e16aeA0a184A2815A76eAd1a0b7522",
-    gnsPriceAggregator: "0x2e44a81701A8355E59B3204B4a9Fe8FC43CbE0C3",
-    gnsPriceAggregator_Old: "",
+    gnsPriceAggregator: "0x6b2e73D916521FD24906586dd872af11bFd4C73D",
+    gnsPriceAggregator_Old: "0x2e44a81701A8355E59B3204B4a9Fe8FC43CbE0C3",
   },
   ETH: {
     gnsPairsStorageV6: "",
-    gnsTradingCallbacksV6_4_1: "",
-    gnsPriceAggregator: "",
+    gnsTradingCallbacksV6_4_1: "0x62a9f50c92a57C719Ff741133caa55c7A81Ce019",
+    gnsPriceAggregator: "0x5995e62169391b2d1639F77a0BeA5CBB2bdbD237",
     gnsPriceAggregator_Old: "",
   },
   USDC: {
     gnsPairsStorageV6: "",
-    gnsTradingCallbacksV6_4_1: "",
-    gnsPriceAggregator: "",
+    gnsTradingCallbacksV6_4_1: "0x4542256C583bCaD66a19a525B57203773a6485bf",
+    gnsPriceAggregator: "0x0a573C9F4e3FE76a7f127b55e757cb8f3dC335E6",
     gnsPriceAggregator_Old: "",
   },
 };
@@ -117,24 +117,24 @@ export const ARBITRUM_COLLATERALS: NetworkAddresses = {
 export const POLYGON_COLLATERALS: NetworkAddresses = {
   _ALL_: {
     gnsReferrals: "0x0F9498b1206Bf9FfDE2a2321fDB56F573A052425",
-    gnsDiamond: "",
+    gnsDiamond: "0x209A9A01980377916851af2cA075C2b170452018",
   },
   DAI: {
     gnsPairsStorageV6: "0x6e5326e944F528c243B9Ca5d14fe5C9269a8c922",
     gnsTradingCallbacksV6_4_1: "0x82e59334da8C667797009BBe82473B55c7A6b311",
-    gnsPriceAggregator: "0x126F32723c5FC8DFEB17c46b7B7dD3dCd458A816",
-    gnsPriceAggregator_Old: "",
+    gnsPriceAggregator: "0x16AC34e242EEF514aa03C5740Ee86DefAe6d9d07",
+    gnsPriceAggregator_Old: "0x126F32723c5FC8DFEB17c46b7B7dD3dCd458A816",
   },
   ETH: {
     gnsPairsStorageV6: "",
-    gnsTradingCallbacksV6_4_1: "",
-    gnsPriceAggregator: "",
+    gnsTradingCallbacksV6_4_1: "0x0bBED2EaC3237BA128643670b7cF3be475933755",
+    gnsPriceAggregator: "0x9EC317cA6E4BcAE10F178f21CE5eB30a9A95D10B",
     gnsPriceAggregator_Old: "",
   },
   USDC: {
     gnsPairsStorageV6: "",
-    gnsTradingCallbacksV6_4_1: "",
-    gnsPriceAggregator: "",
+    gnsTradingCallbacksV6_4_1: "0x2aC6749d0AffD42c8D61Ef25E433F92e375a1aEf",
+    gnsPriceAggregator: "0x5F0823FE0286EFA453f2CD9f127efcb23a731fDe",
     gnsPriceAggregator_Old: "",
   },
 };
