@@ -263,6 +263,7 @@ export function updateFeeBasedPoints(
   address: string,
   stat: BigDecimal,
   timestamp: i32,
+  blockNumber: i32,
   collateral: string | null
 ): void {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
@@ -305,7 +306,8 @@ export function updateFeeBasedPoints(
     userDailyStats,
     userWeeklyStats,
     dailyProtocolStats,
-    weeklyProtocolStats
+    weeklyProtocolStats,
+    blockNumber
   );
   updateLoyaltyPoints(
     stat,
@@ -321,12 +323,14 @@ export function updateFeePoints(
   userDailyStats: EpochTradingPointsRecord,
   userWeeklyStats: EpochTradingPointsRecord,
   protocolDailyStats: EpochTradingPointsRecord,
-  protocolWeeklyStats: EpochTradingPointsRecord
+  protocolWeeklyStats: EpochTradingPointsRecord,
+  blockNumber: i32
 ): void {
   // If referee, boost points
   const referrerDetails = isTraderReferredByWhitelistedReferral(
     dataSource.network(),
-    Address.fromString(userDailyStats.address)
+    Address.fromString(userDailyStats.address),
+    blockNumber
   );
   let referrerPointBoost = ZERO_BD;
   let refereePointBoost = ZERO_BD;

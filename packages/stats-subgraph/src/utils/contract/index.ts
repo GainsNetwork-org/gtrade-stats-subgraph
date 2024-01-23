@@ -9,8 +9,11 @@ export * from "./GNSPairsStorageV6";
 export * from "./GNSPriceAggregator";
 export * from "./GNSReferrals";
 
-export function convertDaiToDecimal(dai: BigInt): BigDecimal {
-  return dai.toBigDecimal().div(DAI_DECIMALS_BD);
+export function convertCollateralToDecimal(
+  dai: BigInt,
+  decimals: BigDecimal
+): BigDecimal {
+  return dai.toBigDecimal().div(decimals);
 }
 
 export function convertPercentage(percentage: BigInt): BigDecimal {
@@ -49,9 +52,9 @@ export function getCollateralFromCallbacksAddress(
   }
 
   if (
-    collateralAddresses.ARB.gnsTradingCallbacksV6_4_1.toLowerCase() == address
+    collateralAddresses.USDC.gnsTradingCallbacksV6_4_1.toLowerCase() == address
   ) {
-    return COLLATERALS.ARB;
+    return COLLATERALS.USDC;
   }
 
   throw new Error("Callbacks address not found " + address);

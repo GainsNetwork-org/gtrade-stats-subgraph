@@ -1,57 +1,6 @@
 [
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_linkToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IUniswapV3Pool",
-        "name": "_tokenDaiLp",
-        "type": "address"
-      },
-      {
-        "internalType": "uint32",
-        "name": "_twapInterval",
-        "type": "uint32"
-      },
-      {
-        "internalType": "contract IGNSTradingStorage",
-        "name": "_storageT",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IGNSPairsStorage",
-        "name": "_pairsStorage",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IChainlinkFeed",
-        "name": "_linkPriceFeed",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IChainlinkFeed",
-        "name": "_collateralPriceFeed",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_minAnswers",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address[]",
-        "name": "_nodes",
-        "type": "address[]"
-      },
-      {
-        "internalType": "bytes32[2]",
-        "name": "_jobIds",
-        "type": "bytes32[2]"
-      }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -161,6 +110,19 @@
       }
     ],
     "name": "CollateralPriceFeedUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
+      }
+    ],
+    "name": "Initialized",
     "type": "event"
   },
   {
@@ -448,7 +410,25 @@
   },
   {
     "inputs": [],
-    "name": "collateralPriceFeed",
+    "name": "collateralConfig",
+    "outputs": [
+      {
+        "internalType": "uint128",
+        "name": "precision",
+        "type": "uint128"
+      },
+      {
+        "internalType": "uint128",
+        "name": "precisionDelta",
+        "type": "uint128"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "collateralUsdPriceFeed",
     "outputs": [
       {
         "internalType": "contract IChainlinkFeed",
@@ -478,8 +458,14 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getCollateralDecimalDifference",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "normalizedValue",
+        "type": "uint256"
+      }
+    ],
+    "name": "getCollateralFromUsdNormalizedValue",
     "outputs": [
       {
         "internalType": "uint256",
@@ -492,7 +478,7 @@
   },
   {
     "inputs": [],
-    "name": "getCollateralPrecision",
+    "name": "getCollateralPriceUsd",
     "outputs": [
       {
         "internalType": "uint256",
@@ -534,6 +520,115 @@
         "type": "uint256"
       }
     ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTokenPriceUsd",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenPriceCollateral",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTokenPriceUsd",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "collateralValue",
+        "type": "uint256"
+      }
+    ],
+    "name": "getUsdNormalizedValue",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_linkToken",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IUniswapV3Pool",
+        "name": "_tokenDaiLp",
+        "type": "address"
+      },
+      {
+        "internalType": "uint32",
+        "name": "_twapInterval",
+        "type": "uint32"
+      },
+      {
+        "internalType": "contract IGNSTradingStorage",
+        "name": "_storageT",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IGNSMultiCollatDiamond",
+        "name": "_multiCollatDiamond",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IChainlinkFeed",
+        "name": "_linkPriceFeed",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IChainlinkFeed",
+        "name": "_collateralPriceFeed",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minAnswers",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_nodes",
+        "type": "address[]"
+      },
+      {
+        "internalType": "bytes32[2]",
+        "name": "_jobIds",
+        "type": "bytes32[2]"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -595,7 +690,7 @@
   },
   {
     "inputs": [],
-    "name": "linkPriceFeed",
+    "name": "linkUsdPriceFeed",
     "outputs": [
       {
         "internalType": "contract IChainlinkFeed",
@@ -659,6 +754,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "multiCollatDiamond",
+    "outputs": [
+      {
+        "internalType": "contract IGNSMultiCollatDiamond",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -672,25 +780,6 @@
         "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "pairIndex",
-        "type": "uint256"
-      }
-    ],
-    "name": "openFeeP",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -773,19 +862,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "pairsStorage",
-    "outputs": [
-      {
-        "internalType": "contract IGNSPairsStorage",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -948,19 +1024,6 @@
       }
     ],
     "name": "updateMinAnswers",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract IGNSPairsStorage",
-        "name": "value",
-        "type": "address"
-      }
-    ],
-    "name": "updatePairsStorage",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
