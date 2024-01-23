@@ -10,8 +10,8 @@ export const ETH_DECIMALS = 18;
 export const ETH_DECIMALS_BD = exponentToBigDecimal(ETH_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
-export const MULTI_COLLAT_BLOCK_ARBITRUM = 44546475; // @todo @crumbs - same as config
-export const MULTI_COLLAT_BLOCK_POLYGON = 44546475; // @todo @crumbs -same as config
+export const MULTI_COLLAT_BLOCK_ARBITRUM = 173285454;
+export const MULTI_COLLAT_BLOCK_POLYGON = 52650382;
 export const MULTI_COLLAT_BLOCK_MUMBAI = 44357232;
 
 export function getCollateralDecimals(collateral: string): BigDecimal {
