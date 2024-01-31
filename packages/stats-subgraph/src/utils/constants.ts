@@ -316,9 +316,29 @@ export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x6a2664aba79A4F026c2fe34Be983B1Da96795565".toLowerCase(), // hoot
   "0xE7Da4dAAae1BD738A071500dca1d37E9d48b965D".toLowerCase(), // giba
   "0x3161d1f5edb3f9ceebfb3e258681484b82ae3ea4".toLowerCase(), // june
+];
+
+// this is so the subgraph is backwards compatible
+// we don't want these addrsesses whitelisted before epoch 6
+export const EPOCH_6_WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x38a0FceA985F77e955D7526d569E695536EaA551".toLowerCase(), // talkchain 01-31-24
   "0xdD4D5538F0d7C364272c927d39216A22de0B0482".toLowerCase(), // wang 01-31-24
   "0x3Af0e0Cb6E87D67C2708debb77AE3F8ACD7493b5".toLowerCase(), // sparegas4lambro 01-31-24
 ];
+
+export function isWhitelistedReferralByEpoch(
+  referral: string,
+  epoch: i32
+): boolean {
+  if (epoch < 6) {
+    return WHITELISTED_REFERRAL_ADDRESSES.includes(referral);
+  } else {
+    return (
+      WHITELISTED_REFERRAL_ADDRESSES.includes(referral) ||
+      EPOCH_6_WHITELISTED_REFERRAL_ADDRESSES.includes(referral)
+    );
+  }
+}
+
 export const WHITELISTED_REFEREE_MULTIPLIER = BigDecimal.fromString("0.10");
 export const WHITELISTED_REFERRER_MULTIPLIER = BigDecimal.fromString("0.15");

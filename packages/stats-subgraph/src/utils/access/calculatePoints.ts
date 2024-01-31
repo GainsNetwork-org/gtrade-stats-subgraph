@@ -339,7 +339,8 @@ export function updateFeePoints(
   const referrerDetails = isTraderReferredByWhitelistedReferral(
     dataSource.network(),
     Address.fromString(userDailyStats.address),
-    blockNumber
+    blockNumber,
+    protocolWeeklyStats.epochNumber
   );
   let referrerPointBoost = ZERO_BD;
   let refereePointBoost = ZERO_BD;
