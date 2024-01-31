@@ -522,8 +522,7 @@ export function createOrLoadEpochTradingPointsRecord(
 function isTraderEligibleForRelativeSkillPoints(
   weeklyStats: EpochTradingStatsRecord
 ) {
-  // Determine if trader has closed 5 trades
-
-  // Determine if trader has traded 2 days
-  return weeklyStats.totalClosedTrades > 5 && weeklyStats.totalDaysTraded > 2;
+  return (
+    weeklyStats.totalClosedTrades >= 5 && weeklyStats.totalDaysClosedTrades >= 2
+  );
 }
