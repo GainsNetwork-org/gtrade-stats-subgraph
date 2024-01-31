@@ -172,3 +172,9 @@ dataSources:
         - event: DaiVaultFeeCharged(indexed address,uint256)
           handler: handleLpFeeCharged
       file: ./src/handlers/GNSTradingCallbacks/index.ts      
+
+features:
+  - grafting
+graft:
+  base: {{graft.baseSubgraph}}
+  block: {{graft.block}}
