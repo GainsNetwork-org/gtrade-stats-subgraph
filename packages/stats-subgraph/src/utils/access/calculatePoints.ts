@@ -1,5 +1,8 @@
 import { Address, BigDecimal, dataSource, log } from "@graphprotocol/graph-ts";
-import { EpochTradingPointsRecord } from "../../types/schema";
+import {
+  EpochTradingPointsRecord,
+  EpochTradingStatsRecord,
+} from "../../types/schema";
 import {
   ZERO_BD,
   EPOCH_TYPE,
@@ -22,7 +25,8 @@ export function updatePointsOnClose(
   pnlPercentage: BigDecimal,
   groupNumber: i32,
   pairNumber: i32,
-  volume: BigDecimal
+  volume: BigDecimal,
+  weeklyStats: EpochTradingStatsRecord
 ): void {
   // load all 4 entries: UserDaily, ProtocolDaily, UserWeekly, ProtocolWeekly
   const userDailyPoints = createOrLoadEpochTradingPointsRecord(
@@ -63,7 +67,7 @@ export function updatePointsOnClose(
   );
 
   // Determine if trader is eligible yet for relative skill points
-  if (isUserEligibleForRelativeSkillPoints(userDailyPoints, userWeeklyPoints)) {
+  if (isTraderEligibleForRelativeSkillPoints(weeklyStats)) {
     updateRelativeSkillPoints(
       userDailyPoints,
       protocolDailyPoints,
@@ -515,8 +519,11 @@ export function createOrLoadEpochTradingPointsRecord(
   return epochTradingPointsRecord as EpochTradingPointsRecord;
 }
 
-function isUserEligibleForRelativeSkillPoints(a, b) {
-  // Determine if trader has opened 5 trades
+function isTraderEligibleForRelativeSkillPoints(
+  weeklyStats: EpochTradingStatsRecord
+) {
+  // Determine if trader has closed 5 trades
+
   // Determine if trader has traded 2 days
-  return true;
+  return weeklyStats.totalClosedTrades > 5 && weeklyStats.totalDaysTraded > 2;
 }
