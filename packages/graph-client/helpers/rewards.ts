@@ -215,6 +215,10 @@ export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x6a2664aba79A4F026c2fe34Be983B1Da96795565".toLowerCase(), // hoot
   "0xE7Da4dAAae1BD738A071500dca1d37E9d48b965D".toLowerCase(), // giba
   "0x3161d1f5edb3f9ceebfb3e258681484b82ae3ea4".toLowerCase(), // june
+  "0x38a0FceA985F77e955D7526d569E695536EaA551".toLowerCase(), // talkchain epoch 6
+  "0xdD4D5538F0d7C364272c927d39216A22de0B0482".toLowerCase(), // wang epoch 6
+  "0x3Af0e0Cb6E87D67C2708debb77AE3F8ACD7493b5".toLowerCase(), // sparegas4lambro epoch 6
+  "0x8521058b9a8c48346e02d263884b7E2Bd504deC8".toLowerCase(), // reetika epoch 6
 ];
 export const WHITELISTED_REFEREE_MULTIPLIER = 0.1;
 export const WHITELISTED_REFERRER_MULTIPLIER = 0.15;
