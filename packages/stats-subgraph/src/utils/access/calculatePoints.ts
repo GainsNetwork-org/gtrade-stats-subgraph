@@ -519,9 +519,14 @@ export function createOrLoadEpochTradingPointsRecord(
   return epochTradingPointsRecord as EpochTradingPointsRecord;
 }
 
+const EPOCH_ELIGIBILITY_CHECK_START = 6;
 function isTraderEligibleForRelativeSkillPoints(
   weeklyStats: EpochTradingStatsRecord
 ) {
+  if (weeklyStats.epochNumber < EPOCH_ELIGIBILITY_CHECK_START) {
+    return true;
+  }
+
   return (
     weeklyStats.totalClosedTrades >= 5 && weeklyStats.totalDaysClosedTrades >= 2
   );
