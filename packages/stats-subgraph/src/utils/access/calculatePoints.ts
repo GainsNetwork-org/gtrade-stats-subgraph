@@ -61,13 +61,18 @@ export function updatePointsOnClose(
     protocolWeeklyPoints,
     pnl
   );
-  updateRelativeSkillPoints(
-    userDailyPoints,
-    protocolDailyPoints,
-    userWeeklyPoints,
-    protocolWeeklyPoints,
-    pnlPercentage
-  );
+
+  // Determine if trader is eligible yet for relative skill points
+  if (isUserEligibleForRelativeSkillPoints(userDailyPoints, userWeeklyPoints)) {
+    updateRelativeSkillPoints(
+      userDailyPoints,
+      protocolDailyPoints,
+      userWeeklyPoints,
+      protocolWeeklyPoints,
+      pnlPercentage
+    );
+  }
+
   updateDiversityPoints(
     userDailyPoints,
     protocolDailyPoints,
@@ -508,4 +513,10 @@ export function createOrLoadEpochTradingPointsRecord(
     }
   }
   return epochTradingPointsRecord as EpochTradingPointsRecord;
+}
+
+function isUserEligibleForRelativeSkillPoints(a, b) {
+  // Determine if trader has opened 5 trades
+  // Determine if trader has traded 2 days
+  return true;
 }

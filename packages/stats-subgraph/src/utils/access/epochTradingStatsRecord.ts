@@ -261,6 +261,8 @@ function _addOpenTradeStats(
     currentStats.pairsTraded = pairsTradedArray;
   }
 
+  currentStats.totalOpenedTrades = currentStats.totalOpenedTrades + 1;
+
   currentStats.save();
   return currentStats;
 }
@@ -305,6 +307,8 @@ function _addCloseTradeStats(
     pairsTradedArray.push(pairIndex);
     currentStats.pairsTraded = pairsTradedArray;
   }
+
+  currentStats.totalClosedTrades = currentStats.totalClosedTrades + 1;
 
   currentStats.save();
   return currentStats;
