@@ -58,13 +58,15 @@ export function updatePointsOnClose(
     false
   );
 
-  updateAbsoluteSkillPoints(
-    userDailyPoints,
-    protocolDailyPoints,
-    userWeeklyPoints,
-    protocolWeeklyPoints,
-    pnl
-  );
+  if (isTraderEligibleForAbsoluteSkillPoints(weeklyStats)) {
+    updateAbsoluteSkillPoints(
+      userDailyPoints,
+      protocolDailyPoints,
+      userWeeklyPoints,
+      protocolWeeklyPoints,
+      pnl
+    );
+  }
 
   // Determine if trader is eligible yet for relative skill points
   if (isTraderEligibleForRelativeSkillPoints(weeklyStats)) {
@@ -530,5 +532,17 @@ function isTraderEligibleForRelativeSkillPoints(
 
   return (
     weeklyStats.totalClosedTrades >= 5 && weeklyStats.totalDaysClosedTrades >= 2
+  );
+}
+
+function isTraderEligibleForAbsoluteSkillPoints(
+  weeklyStats: EpochTradingStatsRecord
+) {
+  if (weeklyStats.epochNumber < EPOCH_ELIGIBILITY_CHECK_START) {
+    return true;
+  }
+
+  return (
+    weeklyStats.totalClosedTrades >= 3 && weeklyStats.totalDaysClosedTrades >= 2
   );
 }
