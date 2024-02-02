@@ -525,7 +525,7 @@ export function createOrLoadEpochTradingPointsRecord(
 const EPOCH_ELIGIBILITY_CHECK_START = 6;
 function isTraderEligibleForRelativeSkillPoints(
   weeklyStats: EpochTradingStatsRecord
-) {
+): boolean {
   if (weeklyStats.epochNumber < EPOCH_ELIGIBILITY_CHECK_START) {
     return true;
   }
@@ -537,7 +537,7 @@ function isTraderEligibleForRelativeSkillPoints(
 
 function isTraderEligibleForAbsoluteSkillPoints(
   weeklyStats: EpochTradingStatsRecord
-) {
+): boolean {
   if (weeklyStats.epochNumber < EPOCH_ELIGIBILITY_CHECK_START) {
     return true;
   }
