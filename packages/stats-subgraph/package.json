@@ -20,9 +20,9 @@
     "prepare:arbitrum": "mustache config/arbitrum.json subgraph.yaml.mustache > subgraph.yaml",
     "prepare:polygon": "mustache config/polygon.json subgraph.yaml.mustache > subgraph.yaml",
     "prepare:mumbai": "mustache config/mumbai.json subgraph.yaml.mustache > subgraph.yaml",
-    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-arbitrum",
-    "deploy:polygon": "pnpm clean && pnpm configure:polygon && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-polygon",
-    "deploy:mumbai": "pnpm clean && pnpm configure:mumbai && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-mumbai"
+    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-arbitrum-v2",
+    "deploy:polygon": "pnpm clean && pnpm configure:polygon && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-polygon-v2",
+    "deploy:mumbai": "pnpm clean && pnpm configure:mumbai && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-mumbai-v2"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.58.0",

@@ -1,5 +1,9 @@
 {
   "network": "mumbai",
+  "graft": {
+    "base": "QmeSA1KBLp7hvr9DB195ptBReEZPianbcs8dq5Kepj76c2",
+    "block": 45370028
+  },
   "DAI": {
     "gnsTradingCallbacksV6_4_1": {
       "address": "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",

@@ -1,5 +1,9 @@
 {
   "network": "arbitrum-one",
+  "graft": {
+    "base": "QmVwR9busBFpKnVc21qXk5d5TJg2c8hs2pnvCKvdkhfzAE",
+    "block": 175926396
+  },
   "DAI": {
     "gnsTradingCallbacksV6_4_1": {
       "address": "0x298a695906e16aeA0a184A2815A76eAd1a0b7522",
