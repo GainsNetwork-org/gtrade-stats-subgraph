@@ -57,10 +57,10 @@ type EpochTradingStatsRecord @entity {
   totalLpFees: BigDecimal!
 
   "Total opened trades"
-  totalOpenedTrades: Int!
+  totalOpenedTrades: Int
 
   "Total closed trades"
-  totalClosedTrades: Int!
+  totalClosedTrades: Int
 
   "Total days a trade was closed"
   totalDaysClosedTrades: Int
