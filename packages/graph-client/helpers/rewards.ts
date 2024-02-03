@@ -249,3 +249,8 @@ export const getLocalEpochNumber = (
 ): number => {
   return epochNumber - rewardConfig.startingEpoch;
 };
+
+export const TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE = 3;
+export const TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE = 2;
+export const TOTAL_CLOSED_TRADES_THRESHOLD_RELATIVE = 5;
+export const TOTAL_CLOSED_DAYS_THRESHOLD_RELATIVE = 2;
