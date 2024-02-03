@@ -547,6 +547,8 @@ export function createOrLoadEpochTradingPointsRecord(
 }
 
 const EPOCH_ELIGIBILITY_CHECK_START = 6;
+export const TOTAL_CLOSED_TRADES_THRESHOLD_RELATIVE = 5;
+export const TOTAL_CLOSED_DAYS_THRESHOLD_RELATIVE = 2;
 function isTraderEligibleForRelativeSkillPoints(
   weeklyStats: EpochTradingStatsRecord
 ): boolean {
@@ -555,7 +557,8 @@ function isTraderEligibleForRelativeSkillPoints(
   }
 
   return (
-    weeklyStats.totalClosedTrades >= 5 && weeklyStats.totalDaysClosedTrades >= 1
+    weeklyStats.totalClosedTrades >= TOTAL_CLOSED_TRADES_THRESHOLD_RELATIVE &&
+    weeklyStats.totalDaysClosedTrades >= TOTAL_CLOSED_DAYS_THRESHOLD_RELATIVE
   );
 }
 
@@ -563,10 +566,13 @@ function didTraderJustBecomeEligibleForRelativeSkillPoints(
   weeklyStats: EpochTradingStatsRecord
 ): boolean {
   return (
-    weeklyStats.totalClosedTrades == 5 && weeklyStats.totalDaysClosedTrades == 1
+    weeklyStats.totalClosedTrades == TOTAL_CLOSED_TRADES_THRESHOLD_RELATIVE &&
+    weeklyStats.totalDaysClosedTrades == TOTAL_CLOSED_DAYS_THRESHOLD_RELATIVE
   );
 }
 
+export const TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE = 3;
+export const TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE = 2;
 function isTraderEligibleForAbsoluteSkillPoints(
   weeklyStats: EpochTradingStatsRecord
 ): boolean {
@@ -575,7 +581,8 @@ function isTraderEligibleForAbsoluteSkillPoints(
   }
 
   return (
-    weeklyStats.totalClosedTrades >= 3 && weeklyStats.totalDaysClosedTrades >= 1
+    weeklyStats.totalClosedTrades >= TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE &&
+    weeklyStats.totalDaysClosedTrades >= TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE
   );
 }
 
@@ -583,6 +590,7 @@ function didTraderJustBecomeEligibleForAbsoluteSkillPoints(
   weeklyStats: EpochTradingStatsRecord
 ): boolean {
   return (
-    weeklyStats.totalClosedTrades == 3 && weeklyStats.totalDaysClosedTrades == 1
+    weeklyStats.totalClosedTrades == TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE &&
+    weeklyStats.totalDaysClosedTrades == TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE
   );
 }
