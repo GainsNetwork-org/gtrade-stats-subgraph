@@ -58,29 +58,23 @@ export function updatePointsOnClose(
     false
   );
 
-  if (isTraderEligibleForAbsoluteSkillPoints(weeklyStats)) {
-    updateAbsoluteSkillPoints(
-      userDailyPoints,
-      protocolDailyPoints,
-      userWeeklyPoints,
-      protocolWeeklyPoints,
-      didTraderJustBecomeEligibleForAbsoluteSkillPoints(weeklyStats)
-        ? weeklyStats.totalPnl
-        : pnl
-    );
-  }
-  // Determine if trader is eligible yet for relative skill points
-  if (isTraderEligibleForRelativeSkillPoints(weeklyStats)) {
-    updateRelativeSkillPoints(
-      userDailyPoints,
-      protocolDailyPoints,
-      userWeeklyPoints,
-      protocolWeeklyPoints,
-      didTraderJustBecomeEligibleForRelativeSkillPoints(weeklyStats)
-        ? weeklyStats.totalPnlPercentage
-        : pnlPercentage
-    );
-  }
+  updateAbsoluteSkillPoints(
+    userDailyPoints,
+    protocolDailyPoints,
+    userWeeklyPoints,
+    protocolWeeklyPoints,
+    pnl,
+    weeklyStats
+  );
+
+  updateRelativeSkillPoints(
+    userDailyPoints,
+    protocolDailyPoints,
+    userWeeklyPoints,
+    protocolWeeklyPoints,
+    pnlPercentage,
+    weeklyStats
+  );
 
   updateDiversityPoints(
     userDailyPoints,
@@ -98,7 +92,8 @@ export function updateAbsoluteSkillPoints(
   protocolDailyPoints: EpochTradingPointsRecord,
   userWeeklyPoints: EpochTradingPointsRecord,
   protocolWeeklyPoints: EpochTradingPointsRecord,
-  pnl: BigDecimal
+  pnl: BigDecimal,
+  weeklyStats: EpochTradingStatsRecord
 ): void {
   let userDailySkillPoints =
     userDailyPoints.pnl.plus(pnl) > ZERO_BD
@@ -112,13 +107,15 @@ export function updateAbsoluteSkillPoints(
     userDailyPoints,
     protocolDailyPoints,
     pnl,
-    true
+    true,
+    weeklyStats
   );
   let protocolWeeklySkillPoints = calculateSkillPoints(
     userWeeklyPoints,
     protocolWeeklyPoints,
     pnl,
-    true
+    true,
+    weeklyStats
   );
 
   // update pnls
@@ -128,10 +125,12 @@ export function updateAbsoluteSkillPoints(
   protocolWeeklyPoints.pnl = protocolWeeklyPoints.pnl.plus(pnl);
 
   // update skill points
-  userDailyPoints.absSkillPoints = userDailySkillPoints;
-  protocolDailyPoints.absSkillPoints = protocolDailySkillPoints;
-  userWeeklyPoints.absSkillPoints = userWeeklySkillPoints;
-  protocolWeeklyPoints.absSkillPoints = protocolWeeklySkillPoints;
+  if (isTraderEligibleForAbsoluteSkillPoints(weeklyStats)) {
+    userDailyPoints.absSkillPoints = userDailySkillPoints;
+    protocolDailyPoints.absSkillPoints = protocolDailySkillPoints;
+    userWeeklyPoints.absSkillPoints = userWeeklySkillPoints;
+    protocolWeeklyPoints.absSkillPoints = protocolWeeklySkillPoints;
+  }
 
   // Saving all the entities
   userDailyPoints.save();
@@ -145,7 +144,8 @@ export function updateRelativeSkillPoints(
   protocolDailyPoints: EpochTradingPointsRecord,
   userWeeklyPoints: EpochTradingPointsRecord,
   protocolWeeklyPoints: EpochTradingPointsRecord,
-  pnlPercentage: BigDecimal
+  pnlPercentage: BigDecimal,
+  weeklyStats: EpochTradingStatsRecord
 ): void {
   let userDailySkillPoints =
     userDailyPoints.pnlPercentage.plus(pnlPercentage) > ZERO_BD
@@ -155,17 +155,20 @@ export function updateRelativeSkillPoints(
     userWeeklyPoints.pnlPercentage.plus(pnlPercentage) > ZERO_BD
       ? userWeeklyPoints.pnlPercentage.plus(pnlPercentage)
       : ZERO_BD;
+
   let protocolDailySkillPoints = calculateSkillPoints(
     userDailyPoints,
     protocolDailyPoints,
     pnlPercentage,
-    false
+    false,
+    weeklyStats
   );
   let protocolWeeklySkillPoints = calculateSkillPoints(
     userWeeklyPoints,
     protocolWeeklyPoints,
     pnlPercentage,
-    false
+    false,
+    weeklyStats
   );
 
   // update pnls
@@ -179,10 +182,12 @@ export function updateRelativeSkillPoints(
     protocolWeeklyPoints.pnlPercentage.plus(pnlPercentage);
 
   // update skill points
-  userDailyPoints.relSkillPoints = userDailySkillPoints;
-  protocolDailyPoints.relSkillPoints = protocolDailySkillPoints;
-  userWeeklyPoints.relSkillPoints = userWeeklySkillPoints;
-  protocolWeeklyPoints.relSkillPoints = protocolWeeklySkillPoints;
+  if (isTraderEligibleForRelativeSkillPoints(weeklyStats)) {
+    userDailyPoints.relSkillPoints = userDailySkillPoints;
+    protocolDailyPoints.relSkillPoints = protocolDailySkillPoints;
+    userWeeklyPoints.relSkillPoints = userWeeklySkillPoints;
+    protocolWeeklyPoints.relSkillPoints = protocolWeeklySkillPoints;
+  }
 
   // Saving all the entities
   userDailyPoints.save();
@@ -251,7 +256,8 @@ export function calculateSkillPoints(
   userStat: EpochTradingPointsRecord,
   protocolStat: EpochTradingPointsRecord,
   pnl: BigDecimal,
-  absolute: boolean
+  absolute: boolean,
+  weeklyStats: EpochTradingStatsRecord
 ): BigDecimal {
   let userOldPnl = absolute ? userStat.pnl : userStat.pnlPercentage;
   let userNewPnl = userOldPnl.plus(pnl);
@@ -260,14 +266,29 @@ export function calculateSkillPoints(
     : protocolStat.relSkillPoints;
   let protocolNewPts = ZERO_BD;
 
-  if (userNewPnl > ZERO_BD && userOldPnl > ZERO_BD) {
-    protocolNewPts = protocolOldPts.minus(userOldPnl).plus(userNewPnl);
-  } else if (userNewPnl > ZERO_BD && userOldPnl <= ZERO_BD) {
-    protocolNewPts = protocolOldPts.plus(userNewPnl);
-  } else if (userNewPnl < ZERO_BD && userOldPnl > ZERO_BD) {
-    protocolNewPts = protocolOldPts.minus(userOldPnl);
+  if (
+    absolute
+      ? didTraderJustBecomeEligibleForAbsoluteSkillPoints(weeklyStats)
+      : didTraderJustBecomeEligibleForRelativeSkillPoints(weeklyStats)
+  ) {
+    // Use trader weekly pnl since trader just became eligible
+    if (weeklyStats.totalPnl > ZERO_BD) {
+      protocolNewPts = protocolOldPts.plus(
+        absolute ? weeklyStats.totalPnl : weeklyStats.totalPnlPercentage
+      );
+    } else {
+      protocolNewPts = protocolOldPts;
+    }
   } else {
-    protocolNewPts = protocolOldPts;
+    if (userNewPnl > ZERO_BD && userOldPnl > ZERO_BD) {
+      protocolNewPts = protocolOldPts.minus(userOldPnl).plus(userNewPnl);
+    } else if (userNewPnl > ZERO_BD && userOldPnl <= ZERO_BD) {
+      protocolNewPts = protocolOldPts.plus(userNewPnl);
+    } else if (userNewPnl < ZERO_BD && userOldPnl > ZERO_BD) {
+      protocolNewPts = protocolOldPts.minus(userOldPnl);
+    } else {
+      protocolNewPts = protocolOldPts;
+    }
   }
 
   return protocolNewPts;
@@ -534,7 +555,7 @@ function isTraderEligibleForRelativeSkillPoints(
   }
 
   return (
-    weeklyStats.totalClosedTrades >= 5 && weeklyStats.totalDaysClosedTrades >= 2
+    weeklyStats.totalClosedTrades >= 5 && weeklyStats.totalDaysClosedTrades >= 1
   );
 }
 
@@ -542,7 +563,7 @@ function didTraderJustBecomeEligibleForRelativeSkillPoints(
   weeklyStats: EpochTradingStatsRecord
 ): boolean {
   return (
-    weeklyStats.totalClosedTrades == 5 && weeklyStats.totalDaysClosedTrades == 2
+    weeklyStats.totalClosedTrades == 5 && weeklyStats.totalDaysClosedTrades == 1
   );
 }
 
@@ -554,7 +575,7 @@ function isTraderEligibleForAbsoluteSkillPoints(
   }
 
   return (
-    weeklyStats.totalClosedTrades >= 3 && weeklyStats.totalDaysClosedTrades >= 2
+    weeklyStats.totalClosedTrades >= 3 && weeklyStats.totalDaysClosedTrades >= 1
   );
 }
 
@@ -562,6 +583,6 @@ function didTraderJustBecomeEligibleForAbsoluteSkillPoints(
   weeklyStats: EpochTradingStatsRecord
 ): boolean {
   return (
-    weeklyStats.totalClosedTrades == 3 && weeklyStats.totalDaysClosedTrades == 2
+    weeklyStats.totalClosedTrades == 3 && weeklyStats.totalDaysClosedTrades == 1
   );
 }
