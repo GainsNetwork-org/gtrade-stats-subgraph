@@ -64,9 +64,7 @@ export function updatePointsOnClose(
       protocolDailyPoints,
       userWeeklyPoints,
       protocolWeeklyPoints,
-      didTraderJustBecomeEligibleForAbsoluteSkillPoints(weeklyStats)
-        ? weeklyStats.totalPnl
-        : pnl
+      !userWeeklyPoints.isAbsSkillEligible ? weeklyStats.totalPnl : pnl // if trader just became eligible, use totalPnl
     );
   }
   // Determine if trader is eligible yet for relative skill points
@@ -76,7 +74,7 @@ export function updatePointsOnClose(
       protocolDailyPoints,
       userWeeklyPoints,
       protocolWeeklyPoints,
-      didTraderJustBecomeEligibleForRelativeSkillPoints(weeklyStats)
+      !userWeeklyPoints.isRelSkillEligible // if trader just became eligible, use totalPnlPercentage
         ? weeklyStats.totalPnlPercentage
         : pnlPercentage
     );
@@ -133,6 +131,9 @@ export function updateAbsoluteSkillPoints(
   userWeeklyPoints.absSkillPoints = userWeeklySkillPoints;
   protocolWeeklyPoints.absSkillPoints = protocolWeeklySkillPoints;
 
+  userWeeklyPoints.isAbsSkillEligible = true;
+  userDailyPoints.isAbsSkillEligible = true;
+
   // Saving all the entities
   userDailyPoints.save();
   protocolDailyPoints.save();
@@ -183,6 +184,9 @@ export function updateRelativeSkillPoints(
   protocolDailyPoints.relSkillPoints = protocolDailySkillPoints;
   userWeeklyPoints.relSkillPoints = userWeeklySkillPoints;
   protocolWeeklyPoints.relSkillPoints = protocolWeeklySkillPoints;
+
+  userWeeklyPoints.isRelSkillEligible = true;
+  userDailyPoints.isRelSkillEligible = true;
 
   // Saving all the entities
   userDailyPoints.save();
@@ -518,6 +522,8 @@ export function createOrLoadEpochTradingPointsRecord(
     epochTradingPointsRecord.absSkillPoints = BigDecimal.fromString("0");
     epochTradingPointsRecord.relSkillPoints = BigDecimal.fromString("0");
     epochTradingPointsRecord.feePoints = BigDecimal.fromString("0");
+    epochTradingPointsRecord.isAbsSkillEligible = false;
+    epochTradingPointsRecord.isRelSkillEligible = false;
     if (save) {
       epochTradingPointsRecord.save();
     }
@@ -541,15 +547,6 @@ function isTraderEligibleForRelativeSkillPoints(
   );
 }
 
-function didTraderJustBecomeEligibleForRelativeSkillPoints(
-  weeklyStats: EpochTradingStatsRecord
-): boolean {
-  return (
-    weeklyStats.totalClosedTrades == TOTAL_CLOSED_TRADES_THRESHOLD_RELATIVE &&
-    weeklyStats.totalDaysClosedTrades == TOTAL_CLOSED_DAYS_THRESHOLD_RELATIVE
-  );
-}
-
 export const TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE = 3;
 export const TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE = 2;
 function isTraderEligibleForAbsoluteSkillPoints(
@@ -562,14 +559,5 @@ function isTraderEligibleForAbsoluteSkillPoints(
   return (
     weeklyStats.totalClosedTrades >= TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE &&
     weeklyStats.totalDaysClosedTrades >= TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE
-  );
-}
-
-function didTraderJustBecomeEligibleForAbsoluteSkillPoints(
-  weeklyStats: EpochTradingStatsRecord
-): boolean {
-  return (
-    weeklyStats.totalClosedTrades == TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE &&
-    weeklyStats.totalDaysClosedTrades == TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE
   );
 }

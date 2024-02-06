@@ -85,4 +85,6 @@ type EpochTradingPointsRecord @entity {
   absSkillPoints: BigDecimal!
   relSkillPoints: BigDecimal!
   diversityPoints: BigDecimal!
+  isAbsSkillEligible: Boolean
+  isRelSkillEligible: Boolean
 }
