@@ -1,7 +1,7 @@
 {
   "network": "mumbai",
   "graft": {
-    "base": "QmeSA1KBLp7hvr9DB195ptBReEZPianbcs8dq5Kepj76c2",
+    "base": "QmfBvRkMac88tE5Q153E3o4uHwtdyo3SFtx2XvchYBs2Sh",
     "block": 45370028
   },
   "DAI": {
