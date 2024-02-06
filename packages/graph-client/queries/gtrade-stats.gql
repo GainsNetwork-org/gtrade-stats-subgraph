@@ -9,6 +9,8 @@ fragment BaseEpochTradingPointsRecord on EpochTradingPointsRecord {
   relSkillPoints
   diversityPoints
   totalFeesPaid
+  isAbsSkillEligible
+  isRelSkillEligible
 }
 
 fragment BaseEpochTradingStatsRecord on EpochTradingStatsRecord {
