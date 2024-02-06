@@ -266,13 +266,24 @@ export function calculateSkillPoints(
     : protocolStat.relSkillPoints;
   let protocolNewPts = ZERO_BD;
 
+  if (absolute && !isTraderEligibleForAbsoluteSkillPoints(weeklyStats)) {
+    return protocolOldPts;
+  }
+
+  if (!absolute && !isTraderEligibleForRelativeSkillPoints(weeklyStats)) {
+    return protocolOldPts;
+  }
+
   if (
     absolute
       ? didTraderJustBecomeEligibleForAbsoluteSkillPoints(weeklyStats)
       : didTraderJustBecomeEligibleForRelativeSkillPoints(weeklyStats)
   ) {
     // Use trader weekly pnl since trader just became eligible
-    if (weeklyStats.totalPnl > ZERO_BD) {
+    if (
+      (absolute && weeklyStats.totalPnl > ZERO_BD) ||
+      (!absolute && weeklyStats.totalPnlPercentage > ZERO_BD)
+    ) {
       protocolNewPts = protocolOldPts.plus(
         absolute ? weeklyStats.totalPnl : weeklyStats.totalPnlPercentage
       );
