@@ -64,7 +64,10 @@ export function updatePointsOnClose(
       protocolDailyPoints,
       userWeeklyPoints,
       protocolWeeklyPoints,
-      !userWeeklyPoints.isAbsSkillEligible ? weeklyStats.totalPnl : pnl // if trader just became eligible, use totalPnl
+      userWeeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
+        !userWeeklyPoints.isAbsSkillEligible
+        ? weeklyStats.totalPnl
+        : pnl // if trader just became eligible, use totalPnl
     );
   }
   // Determine if trader is eligible yet for relative skill points
@@ -74,7 +77,8 @@ export function updatePointsOnClose(
       protocolDailyPoints,
       userWeeklyPoints,
       protocolWeeklyPoints,
-      !userWeeklyPoints.isRelSkillEligible // if trader just became eligible, use totalPnlPercentage
+      userWeeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
+        !userWeeklyPoints.isRelSkillEligible // if trader just became eligible, use totalPnlPercentage
         ? weeklyStats.totalPnlPercentage
         : pnlPercentage
     );
