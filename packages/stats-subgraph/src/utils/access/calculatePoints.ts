@@ -535,7 +535,7 @@ export function createOrLoadEpochTradingPointsRecord(
   return epochTradingPointsRecord as EpochTradingPointsRecord;
 }
 
-const EPOCH_ELIGIBILITY_CHECK_START = 6;
+const EPOCH_ELIGIBILITY_CHECK_START = 7;
 export const TOTAL_CLOSED_TRADES_THRESHOLD_RELATIVE = 5;
 export const TOTAL_CLOSED_DAYS_THRESHOLD_RELATIVE = 2;
 function isTraderEligibleForRelativeSkillPoints(

@@ -320,7 +320,7 @@ export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
 
 // this is so the subgraph is backwards compatible
 // we don't want these addrsesses whitelisted before epoch 6
-export const EPOCH_6_WHITELISTED_REFERRAL_ADDRESSES: string[] = [
+export const EPOCH_7_WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x38a0FceA985F77e955D7526d569E695536EaA551".toLowerCase(), // talkchain 01-31-24
   "0xdD4D5538F0d7C364272c927d39216A22de0B0482".toLowerCase(), // wang 01-31-24
   "0x3Af0e0Cb6E87D67C2708debb77AE3F8ACD7493b5".toLowerCase(), // sparegas4lambro 01-31-24
@@ -331,12 +331,12 @@ export function isWhitelistedReferralByEpoch(
   referral: string,
   epoch: i32
 ): boolean {
-  if (epoch < 6) {
+  if (epoch < 7) {
     return WHITELISTED_REFERRAL_ADDRESSES.includes(referral);
   } else {
     return (
       WHITELISTED_REFERRAL_ADDRESSES.includes(referral) ||
-      EPOCH_6_WHITELISTED_REFERRAL_ADDRESSES.includes(referral)
+      EPOCH_7_WHITELISTED_REFERRAL_ADDRESSES.includes(referral)
     );
   }
 }
