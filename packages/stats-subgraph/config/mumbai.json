@@ -2,7 +2,7 @@
   "network": "mumbai",
   "graft": {
     "base": "QmfBvRkMac88tE5Q153E3o4uHwtdyo3SFtx2XvchYBs2Sh",
-    "block": 45370028
+    "block": 45699852
   },
   "DAI": {
     "gnsTradingCallbacksV6_4_1": {

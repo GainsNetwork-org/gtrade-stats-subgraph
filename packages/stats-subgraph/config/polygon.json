@@ -2,7 +2,7 @@
   "network": "matic",
   "graft": {
     "base": "QmVdb67zpqqUT1RkbPch622SM1ofjgxS4ELHkex2AUhour",
-    "block": 52950324
+    "block": 53282482
   },
   "DAI": {
     "gnsTradingCallbacksV6_4_1": {
