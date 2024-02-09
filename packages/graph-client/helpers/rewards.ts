@@ -11,7 +11,7 @@ export const convertPointShareToRewards = (
   points: number,
   totalPoints: number,
   totalReward: number
-) => (points / totalPoints) * totalReward;
+) => (totalPoints === 0 ? 0 : (points / totalPoints) * totalReward);
 
 export const generateId = (
   address: string,
