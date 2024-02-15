@@ -12,6 +12,17 @@ fragment BaseRewardConfig on RewardConfig {
     relSkill
     diversity
   }
+  rewardDistributionOverrides {
+    startEpoch
+    endEpoch
+    rewardDistribution {
+      loyalty
+      fee
+      absSkill
+      relSkill
+      diversity
+    }
+  }
   rewardsPairIx
   capFeeRewards
 }
