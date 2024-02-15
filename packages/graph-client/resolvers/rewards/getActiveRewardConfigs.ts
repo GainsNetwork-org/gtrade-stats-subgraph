@@ -51,8 +51,8 @@ export const MUMBAI_STIP_REWARDS_TEST = {
   },
   rewardDistributionOverrides: [
     {
-      startEpoch: 7,
-      endEpoch: 13,
+      startEpoch: 0,
+      endEpoch: 15,
       rewardDistribution: {
         loyalty: 0.1,
         fee: 0.75,
