@@ -67,6 +67,10 @@ export function createOrLoadEpochTradingStatsRecord(
     epochTradingStatsRecord.totalTriggerFees = ZERO_BD;
     epochTradingStatsRecord.totalLpFees = ZERO_BD;
     epochTradingStatsRecord.totalStakerFees = ZERO_BD;
+    epochTradingStatsRecord.totalOpenedTrades = 0;
+    epochTradingStatsRecord.totalClosedTrades = 0;
+    epochTradingStatsRecord.totalDaysOpenedTrades = 0;
+    epochTradingStatsRecord.totalDaysClosedTrades = 0;
 
     if (save) {
       epochTradingStatsRecord.save();
@@ -119,7 +123,7 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
     collateral,
     false
   );
-  _addOpenTradeStats(data, weeklyStats);
+  _addOpenTradeStats(data, weeklyStats, dailyStats.totalOpenedTrades == 1);
 
   // Daily protocol stats
   const dailyProtocolStats = createOrLoadEpochTradingStatsRecord(
@@ -139,7 +143,11 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
     collateral,
     false
   );
-  _addOpenTradeStats(data, weeklyProtocolStats);
+  _addOpenTradeStats(
+    data,
+    weeklyProtocolStats,
+    dailyProtocolStats.totalOpenedTrades == 1
+  );
 }
 
 export class addCloseTradeStatsInput {
@@ -195,7 +203,7 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
     collateral,
     false
   );
-  _addCloseTradeStats(data, weeklyStats);
+  _addCloseTradeStats(data, weeklyStats, dailyStats.totalClosedTrades == 1);
 
   // Daily protocol stats
   const dailyProtocolStats = createOrLoadEpochTradingStatsRecord(
@@ -215,7 +223,11 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
     collateral,
     false
   );
-  _addCloseTradeStats(data, weeklyProtocolStats);
+  _addCloseTradeStats(
+    data,
+    weeklyProtocolStats,
+    dailyProtocolStats.totalClosedTrades == 1
+  );
 
   updatePointsOnClose(
     address,
@@ -226,7 +238,8 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
     data.pnlPercentage,
     data.groupIndex,
     data.pairIndex,
-    data.positionSize
+    data.positionSize,
+    weeklyStats
   );
 }
 
@@ -235,7 +248,8 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
  */
 function _addOpenTradeStats(
   data: addOpenTradeStatsInput,
-  currentStats: EpochTradingStatsRecord
+  currentStats: EpochTradingStatsRecord,
+  firstOpenedTrade: boolean = false
 ): EpochTradingStatsRecord {
   const pairIndex = data.pairIndex;
   const groupIndex = data.groupIndex;
@@ -261,6 +275,12 @@ function _addOpenTradeStats(
     currentStats.pairsTraded = pairsTradedArray;
   }
 
+  currentStats.totalOpenedTrades = currentStats.totalOpenedTrades + 1;
+
+  if (firstOpenedTrade) {
+    currentStats.totalDaysOpenedTrades = currentStats.totalDaysOpenedTrades + 1;
+  }
+
   currentStats.save();
   return currentStats;
 }
@@ -270,7 +290,8 @@ function _addOpenTradeStats(
  */
 function _addCloseTradeStats(
   data: addCloseTradeStatsInput,
-  currentStats: EpochTradingStatsRecord
+  currentStats: EpochTradingStatsRecord,
+  firstClosedTrade: boolean = false
 ): EpochTradingStatsRecord {
   const pairIndex = data.pairIndex;
   const groupIndex = data.groupIndex;
@@ -304,6 +325,12 @@ function _addCloseTradeStats(
   if (!pairsTradedArray.includes(pairIndex)) {
     pairsTradedArray.push(pairIndex);
     currentStats.pairsTraded = pairsTradedArray;
+  }
+
+  currentStats.totalClosedTrades = currentStats.totalClosedTrades + 1;
+
+  if (firstClosedTrade) {
+    currentStats.totalDaysClosedTrades = currentStats.totalDaysClosedTrades + 1;
   }
 
   currentStats.save();

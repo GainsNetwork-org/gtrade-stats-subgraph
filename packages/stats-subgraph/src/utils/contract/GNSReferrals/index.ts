@@ -6,7 +6,8 @@ import {
   WHITELISTED_REFERRAL_ADDRESSES,
   ZERO_ADDRESS,
   getNetworkAddresses,
-  getMultiCollatBlock
+  getMultiCollatBlock,
+  isWhitelistedReferralByEpoch,
 } from "../../constants";
 
 export function getReferralsContract(network: string): GNSReferrals {
@@ -44,7 +45,7 @@ export function isTraderReferredByAggregator(
   trader: Address,
   blockNumber: i32
 ): boolean {
-  const multiCollatBlock = getMultiCollatBlock(network)
+  const multiCollatBlock = getMultiCollatBlock(network);
   if (blockNumber > multiCollatBlock) {
     const diamond = getMultiCollatDiamondContract(network);
     const referrer = diamond.try_getTraderReferrer(trader);
@@ -75,9 +76,10 @@ export class WhitelisedReferralResponse {
 export function isTraderReferredByWhitelistedReferral(
   network: string,
   trader: Address,
-  blockNumber: i32
+  blockNumber: i32,
+  epochNumber: i32
 ): WhitelisedReferralResponse {
-  const multiCollatBlock = getMultiCollatBlock(network)
+  const multiCollatBlock = getMultiCollatBlock(network);
   if (blockNumber > multiCollatBlock) {
     const diamond = getMultiCollatDiamondContract(network);
     const referrer = diamond.try_getTraderReferrer(trader);
@@ -86,7 +88,7 @@ export function isTraderReferredByWhitelistedReferral(
     }
     const referrerString = referrer.value.toHexString().toLowerCase();
     return {
-      whitelisted: WHITELISTED_REFERRAL_ADDRESSES.includes(referrerString),
+      whitelisted: isWhitelistedReferralByEpoch(referrerString, epochNumber),
       referrer: referrerString,
     };
   } else {
@@ -98,7 +100,7 @@ export function isTraderReferredByWhitelistedReferral(
 
     const referrerString = referrer.value.toHexString().toLowerCase();
     return {
-      whitelisted: WHITELISTED_REFERRAL_ADDRESSES.includes(referrerString),
+      whitelisted: isWhitelistedReferralByEpoch(referrerString, epochNumber),
       referrer: referrerString,
     };
   }

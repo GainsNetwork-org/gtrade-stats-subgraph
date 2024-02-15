@@ -9,6 +9,8 @@ fragment BaseEpochTradingPointsRecord on EpochTradingPointsRecord {
   relSkillPoints
   diversityPoints
   totalFeesPaid
+  isAbsSkillEligible
+  isRelSkillEligible
 }
 
 fragment BaseEpochTradingStatsRecord on EpochTradingStatsRecord {
@@ -26,6 +28,10 @@ fragment BaseEpochTradingStatsRecord on EpochTradingStatsRecord {
   totalTriggerFees
   totalStakerFees
   totalLpFees
+  totalOpenedTrades
+  totalClosedTrades
+  totalDaysOpenedTrades
+  totalDaysClosedTrades
 }
 
 query GetEpochTradingStatsRecord($id: ID!) {

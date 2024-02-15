@@ -2,7 +2,7 @@ sources:
   - name: gtrade-stats
     handler:
       graphql:
-        endpoint: https://api.thegraph.com/subgraphs/name/gainsnetwork-org/{context.graphName:gtrade-stats-mumbai}
+        endpoint: https://api.thegraph.com/subgraphs/name/gainsnetwork-org/{context.graphName:gtrade-stats-arbitrum-v2}
         retry: 3
     transforms:
       - autoPagination:
@@ -12,7 +12,7 @@ sources:
   - name: gtoken
     handler:
       graphql:
-        endpoint: https://api.thegraph.com/subgraphs/name/thebuidler/{context.graphName:gtoken-arbitrum}
+        endpoint: https://api.thegraph.com/subgraphs/name/thebuidler/{context.graphName:gtoken-arbitrum-mc1}
         retry: 3
 
 additionalTypeDefs: |

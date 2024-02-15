@@ -1,5 +1,9 @@
 {
   "network": "matic",
+  "graft": {
+    "base": "QmVdb67zpqqUT1RkbPch622SM1ofjgxS4ELHkex2AUhour",
+    "block": 53282482
+  },
   "DAI": {
     "gnsTradingCallbacksV6_4_1": {
       "address": "0x82e59334da8C667797009BBe82473B55c7A6b311",

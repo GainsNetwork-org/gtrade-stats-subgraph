@@ -55,6 +55,18 @@ type EpochTradingStatsRecord @entity {
 
   "Total lp fees"
   totalLpFees: BigDecimal!
+
+  "Total opened trades"
+  totalOpenedTrades: Int
+
+  "Total closed trades"
+  totalClosedTrades: Int
+
+  "Total days a trade was closed"
+  totalDaysClosedTrades: Int
+
+  "Total days a trade was opened"
+  totalDaysOpenedTrades: Int
 }
 
 type EpochTradingPointsRecord @entity {
@@ -73,4 +85,6 @@ type EpochTradingPointsRecord @entity {
   absSkillPoints: BigDecimal!
   relSkillPoints: BigDecimal!
   diversityPoints: BigDecimal!
+  isAbsSkillEligible: Boolean
+  isRelSkillEligible: Boolean
 }

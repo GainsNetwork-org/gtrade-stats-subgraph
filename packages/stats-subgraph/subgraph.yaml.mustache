@@ -3,7 +3,11 @@ description: >-
   gTrade point data
 schema:
   file: ./schema.gql
-
+features:
+  - grafting
+graft:
+  base: {{graft.base}}
+  block: {{graft.block}}
 dataSources:
   - kind: ethereum
     name: GNSTradingCallbacksV6_4_1
