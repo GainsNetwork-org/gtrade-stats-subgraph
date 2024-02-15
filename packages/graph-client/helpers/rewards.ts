@@ -264,13 +264,11 @@ export const getRewardDistributionForLocalEpoch = (
   rewardConfig: RewardConfig,
   localEpochNumber: number
 ) => {
-  console.error("rewardConfig", rewardConfig);
   const rewardDistribution = rewardConfig.rewardDistribution;
   const override = rewardConfig.rewardDistributionOverrides?.find(
     override =>
       localEpochNumber >= override.startEpoch &&
       localEpochNumber <= override.endEpoch
   );
-  console.error("override", override);
   return override ? override.rewardDistribution : rewardDistribution;
 };
