@@ -24,8 +24,8 @@ export const ARBITRUM_STIP_REWARDS = {
       endEpoch: 13,
       rewardDistribution: {
         loyalty: 0.1,
-        fee: 0.75,
-        absSkill: 0.15,
+        fee: 0.775,
+        absSkill: 0.125,
         relSkill: 0.0,
         diversity: 0.0,
       },
@@ -51,12 +51,12 @@ export const MUMBAI_STIP_REWARDS_TEST = {
   },
   rewardDistributionOverrides: [
     {
-      startEpoch: 0,
+      startEpoch: 6,
       endEpoch: 15,
       rewardDistribution: {
         loyalty: 0.1,
-        fee: 0.75,
-        absSkill: 0.15,
+        fee: 0.775,
+        absSkill: 0.125,
         relSkill: 0.0,
         diversity: 0.0,
       },

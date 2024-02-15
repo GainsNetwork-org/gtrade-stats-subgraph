@@ -84,7 +84,7 @@ export const convertPointsToRewardsForUser = (
     diversityPoints: userPoints.diversityPoints,
   };
 
-  const rewardDistribution = getRewardDistributionForEpoch(
+  const rewardDistribution = getRewardDistributionForLocalEpoch(
     rewards,
     userPoints.epochNumber
   );
@@ -260,16 +260,17 @@ export const TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE = 2;
 export const TOTAL_CLOSED_TRADES_THRESHOLD_RELATIVE = 5;
 export const TOTAL_CLOSED_DAYS_THRESHOLD_RELATIVE = 2;
 
-export const getRewardDistributionForEpoch = (
+export const getRewardDistributionForLocalEpoch = (
   rewardConfig: RewardConfig,
-  epochNumber: number
+  localEpochNumber: number
 ) => {
-  const localEpochNumber = getLocalEpochNumber(rewardConfig, epochNumber);
+  console.error("rewardConfig", rewardConfig);
   const rewardDistribution = rewardConfig.rewardDistribution;
   const override = rewardConfig.rewardDistributionOverrides?.find(
     override =>
       localEpochNumber >= override.startEpoch &&
       localEpochNumber <= override.endEpoch
   );
+  console.error("override", override);
   return override ? override.rewardDistribution : rewardDistribution;
 };

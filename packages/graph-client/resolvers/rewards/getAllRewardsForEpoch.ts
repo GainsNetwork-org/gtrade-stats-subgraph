@@ -11,7 +11,7 @@ import {
   COLLATERALS,
   convertPointsToRewardsForUser,
   getLocalEpochNumber,
-  getRewardDistributionForEpoch,
+  getRewardDistributionForLocalEpoch,
   transformEpochTradingPointsRecord,
 } from "../../helpers/rewards.js";
 import { STATS_SUBGRAPH } from "../../helpers/config.js";
@@ -72,10 +72,11 @@ export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
     // Cap fee rewards if necessary
     if (rewardConfig.capFeeRewards) {
       if (rewardToUsd) {
-        const currentEpochRewardDistribution = getRewardDistributionForEpoch(
-          rewardConfig,
-          getLocalEpochNumber(rewardConfig, epoch)
-        );
+        const currentEpochRewardDistribution =
+          getRewardDistributionForLocalEpoch(
+            rewardConfig,
+            getLocalEpochNumber(rewardConfig, epoch)
+          );
         const rewardsInUsd =
           currentEpochRewardDistribution.fee *
           (rewardConfig.totalRewards / rewardConfig.numEpochs) *
