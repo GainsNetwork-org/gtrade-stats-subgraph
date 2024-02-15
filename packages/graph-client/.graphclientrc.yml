@@ -25,6 +25,12 @@ additionalTypeDefs: |
     diversity: Float!
   }
 
+  type EpochRewardDistributionP {
+    startEpoch: Int!
+    endEpoch: Int!
+    rewardDistribution: RewardDistributionP!
+  }
+
   type RewardConfig {
     id: ID!
     active: Boolean!
@@ -33,6 +39,7 @@ additionalTypeDefs: |
     numEpochs: Int!
     startingEpoch: Int!
     rewardDistribution: RewardDistributionP!
+    rewardDistributionOverrides: [EpochRewardDistributionP!]!
     rewardsPairIx: Int
     capFeeRewards: Boolean
   }
