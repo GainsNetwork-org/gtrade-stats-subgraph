@@ -4,7 +4,7 @@ import {
   RewardConfig,
   RewardResults,
   Collateral,
-} from "../.graphclient";
+} from "../.graphclient/index.js";
 import { EpochTradingPoints, LoyaltyTier } from "../types/rewards";
 
 export const convertPointShareToRewards = (
@@ -84,35 +84,40 @@ export const convertPointsToRewardsForUser = (
     diversityPoints: userPoints.diversityPoints,
   };
 
+  const rewardDistribution = getRewardDistributionForLocalEpoch(
+    rewards,
+    userPoints.epochNumber
+  );
+
   const epochTotalRewards = rewards.totalRewards / rewards.numEpochs;
   rewardResults.loyalty = convertPointShareToRewards(
     userPoints.loyaltyPoints,
     protocolPoints.loyaltyPoints,
-    rewards.rewardDistribution.loyalty * epochTotalRewards
+    rewardDistribution.loyalty * epochTotalRewards
   );
 
   rewardResults.fee = convertPointShareToRewards(
     userPoints.feePoints,
     protocolPoints.feePoints,
-    rewards.rewardDistribution.fee * epochTotalRewards
+    rewardDistribution.fee * epochTotalRewards
   );
 
   rewardResults.absSkill = convertPointShareToRewards(
     userPoints.absSkillPoints,
     protocolPoints.absSkillPoints,
-    rewards.rewardDistribution.absSkill * epochTotalRewards
+    rewardDistribution.absSkill * epochTotalRewards
   );
 
   rewardResults.relSkill = convertPointShareToRewards(
     userPoints.relSkillPoints,
     protocolPoints.relSkillPoints,
-    rewards.rewardDistribution.relSkill * epochTotalRewards
+    rewardDistribution.relSkill * epochTotalRewards
   );
 
   rewardResults.diversity = convertPointShareToRewards(
     userPoints.diversityPoints,
     protocolPoints.diversityPoints,
-    rewards.rewardDistribution.diversity * epochTotalRewards
+    rewardDistribution.diversity * epochTotalRewards
   );
 
   rewardResults.total =
@@ -254,3 +259,16 @@ export const TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE = 3;
 export const TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE = 2;
 export const TOTAL_CLOSED_TRADES_THRESHOLD_RELATIVE = 5;
 export const TOTAL_CLOSED_DAYS_THRESHOLD_RELATIVE = 2;
+
+export const getRewardDistributionForLocalEpoch = (
+  rewardConfig: RewardConfig,
+  localEpochNumber: number
+) => {
+  const rewardDistribution = rewardConfig.rewardDistribution;
+  const override = rewardConfig.rewardDistributionOverrides?.find(
+    override =>
+      localEpochNumber >= override.startEpoch &&
+      localEpochNumber <= override.endEpoch
+  );
+  return override ? override.rewardDistribution : rewardDistribution;
+};
