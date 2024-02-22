@@ -87,7 +87,7 @@ export const convertPointsToRewardsForUser = (
 
   const rewardDistribution = getRewardDistributionForLocalEpoch(
     rewards,
-    userPoints.epochNumber
+    getLocalEpochNumber(rewards, userPoints.epochNumber)
   );
 
   const epochTotalRewards = rewards.totalRewards / rewards.numEpochs;
