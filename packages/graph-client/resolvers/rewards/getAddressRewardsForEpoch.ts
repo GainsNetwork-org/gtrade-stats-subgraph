@@ -7,6 +7,8 @@ import {
 import {
   convertPointsToRewardsForUser,
   generateId,
+  getLocalEpochNumber,
+  getRewardDistributionForLocalEpoch,
 } from "../../helpers/rewards.js";
 import { STATS_SUBGRAPH } from "../../helpers/config.js";
 
@@ -59,13 +61,18 @@ export const getAddressRewardsForEpoch: QueryResolvers["getAddressRewardsForEpoc
     // Cap fee rewards if necessary
     if (rewardConfig.capFeeRewards) {
       if (rewardToUsd) {
+        const currentEpochRewardDistribution =
+          getRewardDistributionForLocalEpoch(
+            rewardConfig,
+            getLocalEpochNumber(rewardConfig, epoch)
+          );
         const rewardsInUsd =
-          rewardConfig.rewardDistribution.fee *
+          currentEpochRewardDistribution.fee *
           (rewardConfig.totalRewards / rewardConfig.numEpochs) *
           rewardToUsd;
         const protocolFees = addressAndProtocolPoints.protocol.totalFeesPaid;
         if (rewardsInUsd > protocolFees) {
-          rewardConfig.rewardDistribution.fee *= protocolFees / rewardsInUsd;
+          currentEpochRewardDistribution.fee *= protocolFees / rewardsInUsd;
         }
       } else {
         console.warn(
