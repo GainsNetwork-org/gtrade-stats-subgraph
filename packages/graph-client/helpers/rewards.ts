@@ -4,6 +4,7 @@ import {
   RewardConfig,
   RewardResults,
   Collateral,
+  RewardDistributionP,
 } from "../.graphclient/index.js";
 import { EpochTradingPoints, LoyaltyTier } from "../types/rewards";
 
@@ -86,7 +87,7 @@ export const convertPointsToRewardsForUser = (
 
   const rewardDistribution = getRewardDistributionForLocalEpoch(
     rewards,
-    userPoints.epochNumber
+    getLocalEpochNumber(rewards, userPoints.epochNumber)
   );
 
   const epochTotalRewards = rewards.totalRewards / rewards.numEpochs;
@@ -234,7 +235,11 @@ export const getTotalEpochFeeRewardDistribution = (
   rewardToUsd: number
 ): number => {
   const epochTotalRewards = rewardConfig.totalRewards / rewardConfig.numEpochs;
-  const feeReward = epochTotalRewards * rewardConfig.rewardDistribution.fee;
+  const activeRewardDistribution = getRewardDistributionForLocalEpoch(
+    rewardConfig,
+    getLocalEpochNumber(rewardConfig, protocolPoints.epochNumber)
+  );
+  const feeReward = epochTotalRewards * activeRewardDistribution.fee;
   if (!rewardConfig.capFeeRewards) {
     return feeReward;
   }
@@ -263,7 +268,7 @@ export const TOTAL_CLOSED_DAYS_THRESHOLD_RELATIVE = 2;
 export const getRewardDistributionForLocalEpoch = (
   rewardConfig: RewardConfig,
   localEpochNumber: number
-) => {
+): RewardDistributionP => {
   const rewardDistribution = rewardConfig.rewardDistribution;
   const override = rewardConfig.rewardDistributionOverrides?.find(
     override =>
