@@ -13,6 +13,7 @@ import {
   COLLATERALS,
   WHITELISTED_REFERRER_MULTIPLIER,
   WHITELISTED_REFEREE_MULTIPLIER,
+  PNL_BLACKLISTED_ADDRESSES_12,
 } from "../constants";
 import { isTraderReferredByWhitelistedReferral } from "../contract/GNSReferrals";
 
@@ -558,6 +559,13 @@ function isTraderEligibleForAbsoluteSkillPoints(
 ): boolean {
   if (weeklyStats.epochNumber < EPOCH_ELIGIBILITY_CHECK_START) {
     return true;
+  }
+
+  if (
+    weeklyStats.epochNumber === 12 &&
+    PNL_BLACKLISTED_ADDRESSES_12.includes(weeklyStats.address.toLowerCase())
+  ) {
+    return false;
   }
 
   return (
