@@ -2,7 +2,7 @@ sources:
   - name: gtrade-stats
     handler:
       graphql:
-        endpoint: https://api.thegraph.com/subgraphs/name/gainsnetwork-org/{context.graphName:gtrade-stats-arbitrum-v2}
+        endpoint: https://api.thegraph.com/subgraphs/name/gainsnetwork-org/{context.graphName:gtrade-stats-arbitrum-v3}
         retry: 3
     transforms:
       - autoPagination:

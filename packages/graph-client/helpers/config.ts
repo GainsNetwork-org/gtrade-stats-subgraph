@@ -6,6 +6,6 @@ export const GTOKEN_SUBGRAPH = {
 
 export const STATS_SUBGRAPH = {
   137: "gtrade-stats-polygon-v2",
-  42161: "gtrade-stats-arbitrum-v2",
+  42161: "gtrade-stats-arbitrum-v3",
   80001: "gtrade-stats-mumbai-v2",
 };
