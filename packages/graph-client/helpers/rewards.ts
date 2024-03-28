@@ -235,11 +235,13 @@ export const getTotalEpochFeeRewardDistribution = (
   protocolPoints: EpochTradingPointsRecord,
   rewardToUsd: number
 ): number => {
-  const epochTotalRewards = rewardConfig.totalRewards / rewardConfig.numEpochs;
   const activeRewardDistribution = getRewardDistributionForLocalEpoch(
     rewardConfig,
     getLocalEpochNumber(rewardConfig, protocolPoints.epochNumber)
   );
+  const epochTotalRewards =
+    activeRewardDistribution.total ||
+    rewardConfig.totalRewards / rewardConfig.numEpochs;
   const feeReward = epochTotalRewards * activeRewardDistribution.fee;
   if (!rewardConfig.capFeeRewards) {
     return feeReward;
