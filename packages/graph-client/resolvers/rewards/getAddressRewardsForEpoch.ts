@@ -68,7 +68,8 @@ export const getAddressRewardsForEpoch: QueryResolvers["getAddressRewardsForEpoc
           );
         const rewardsInUsd =
           currentEpochRewardDistribution.fee *
-          (rewardConfig.totalRewards / rewardConfig.numEpochs) *
+          (currentEpochRewardDistribution.total ||
+            rewardConfig.totalRewards / rewardConfig.numEpochs) *
           rewardToUsd;
         const protocolFees = addressAndProtocolPoints.protocol.totalFeesPaid;
         if (rewardsInUsd > protocolFees) {

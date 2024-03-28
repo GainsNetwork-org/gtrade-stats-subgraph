@@ -61,6 +61,7 @@ export const ARBITRUM_STIP_REWARDS = {
         absSkill: 0.0,
         relSkill: 0.0,
         diversity: 0.0,
+        rewards: 312305,
       },
     },
   ],

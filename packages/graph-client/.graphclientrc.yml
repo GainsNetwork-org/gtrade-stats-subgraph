@@ -23,6 +23,7 @@ additionalTypeDefs: |
     absSkill: Float!
     relSkill: Float!
     diversity: Float!
+    total: Float
   }
 
   type EpochRewardDistributionP {

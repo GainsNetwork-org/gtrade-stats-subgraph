@@ -79,7 +79,8 @@ export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
           );
         const rewardsInUsd =
           currentEpochRewardDistribution.fee *
-          (rewardConfig.totalRewards / rewardConfig.numEpochs) *
+          (currentEpochRewardDistribution.total ||
+            rewardConfig.totalRewards / rewardConfig.numEpochs) *
           rewardToUsd;
         const protocolFees = protocolTradingPoints.totalFeesPaid;
         if (rewardsInUsd > protocolFees) {

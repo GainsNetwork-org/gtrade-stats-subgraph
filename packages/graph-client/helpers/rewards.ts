@@ -90,7 +90,8 @@ export const convertPointsToRewardsForUser = (
     getLocalEpochNumber(rewards, userPoints.epochNumber)
   );
 
-  const epochTotalRewards = rewards.totalRewards / rewards.numEpochs;
+  const epochTotalRewards =
+    rewardDistribution.total || rewards.totalRewards / rewards.numEpochs;
   rewardResults.loyalty = convertPointShareToRewards(
     userPoints.loyaltyPoints,
     protocolPoints.loyaltyPoints,
