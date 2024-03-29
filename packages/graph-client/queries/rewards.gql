@@ -11,6 +11,7 @@ fragment BaseRewardConfig on RewardConfig {
     absSkill
     relSkill
     diversity
+    total
   }
   rewardDistributionOverrides {
     startEpoch
@@ -21,6 +22,7 @@ fragment BaseRewardConfig on RewardConfig {
       absSkill
       relSkill
       diversity
+      total
     }
   }
   rewardsPairIx

@@ -90,7 +90,8 @@ export const convertPointsToRewardsForUser = (
     getLocalEpochNumber(rewards, userPoints.epochNumber)
   );
 
-  const epochTotalRewards = rewards.totalRewards / rewards.numEpochs;
+  const epochTotalRewards =
+    rewardDistribution.total || rewards.totalRewards / rewards.numEpochs;
   rewardResults.loyalty = convertPointShareToRewards(
     userPoints.loyaltyPoints,
     protocolPoints.loyaltyPoints,
@@ -234,11 +235,13 @@ export const getTotalEpochFeeRewardDistribution = (
   protocolPoints: EpochTradingPointsRecord,
   rewardToUsd: number
 ): number => {
-  const epochTotalRewards = rewardConfig.totalRewards / rewardConfig.numEpochs;
   const activeRewardDistribution = getRewardDistributionForLocalEpoch(
     rewardConfig,
     getLocalEpochNumber(rewardConfig, protocolPoints.epochNumber)
   );
+  const epochTotalRewards =
+    activeRewardDistribution.total ||
+    rewardConfig.totalRewards / rewardConfig.numEpochs;
   const feeReward = epochTotalRewards * activeRewardDistribution.fee;
   if (!rewardConfig.capFeeRewards) {
     return feeReward;
