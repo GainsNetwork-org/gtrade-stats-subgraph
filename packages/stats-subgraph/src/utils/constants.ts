@@ -30,6 +30,21 @@ export function getCollateralDecimals(collateral: string): BigDecimal {
   throw new Error("Collateral not supported");
 }
 
+export function getCollateralfromIndex(collateralIndex: i32): string {
+  if (collateralIndex == 1) {
+    return "dai";
+  }
+
+  if (collateralIndex == 2) {
+    return "dai";
+  }
+
+  if (collateralIndex == 3) {
+    return "usdc";
+  }
+
+  throw new Error("Collateral not supported");
+}
 //DIVERSITY POINTS THRESHOLDS BY GROUP
 export const THRESHOLD_GROUP_0 = BigDecimal.fromString("100");
 export const THRESHOLD_GROUP_1 = BigDecimal.fromString("250");

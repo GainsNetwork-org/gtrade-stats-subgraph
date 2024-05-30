@@ -4,26 +4,8 @@
     "base": "QmfBvRkMac88tE5Q153E3o4uHwtdyo3SFtx2XvchYBs2Sh",
     "block": 45699852
   },
-  "DAI": {
-    "gnsTradingCallbacksV6_4_1": {
-      "address": "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
-      "startBlock": 43835000
-    },
-    "gnsTradingCallbacks": {
-      "address": "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
-      "startBlock": 44357232
-    }
-  },
-  "ETH": {
-    "gnsTradingCallbacks": {
-      "address": "0x0Bb7f01c3808Ec9B7af16E20d71eCb7a27C7ECf5",
-      "startBlock": 44875201
-    }
-  },
-  "USDC": {
-    "gnsTradingCallbacks": {
-      "address": "0x0c8C70eF2744A9376195855C63B59A3360FEEbBe",
-      "startBlock": 44875685
-    }
+  "GNSMultiCollatDiamond": {
+    "address": "0xFF162c694eAA571f685030649814282eA457f169",
+    "startBlock": 190420046
   }
 }
