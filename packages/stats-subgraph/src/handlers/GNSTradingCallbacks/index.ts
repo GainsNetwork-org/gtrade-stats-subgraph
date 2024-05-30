@@ -113,7 +113,7 @@ function _handleMarketExecuted(
     _positionSizeDai,
     collateralDetails.collateralPrecisionBd
   );
-  const leverage = trade.leverage;
+  const leverage = BigDecimal.fromString(trade.leverage.toString());
   const volume = convertCollateralToDecimal(
     trade.collateralAmount,
     collateralDetails.collateralPrecisionBd
@@ -182,7 +182,7 @@ function _handleLimitExecuted(
     _positionSizeDai,
     collateralDetails.collateralPrecisionBd
   ); // Pos size less fees on close
-  const leverage = trade.leverage;
+  const leverage = BigDecimal.fromString(trade.leverage.toString());
   const volume = convertCollateralToDecimal(
     trade.collateralAmount,
     collateralDetails.collateralPrecisionBd
@@ -506,13 +506,13 @@ function _handleOpenTrade(
   positionSize: BigDecimal,
   timestamp: i32
 ): void {
-  const groupIndex = getGroupIndex(network, collateral, pairIndex).toI32();
+  const groupIndex = getGroupIndex(network, BigInt.fromI32(pairIndex));
   // Add collateral specific stats
   addOpenTradeStats({
     collateral,
     address: trader,
     pairIndex,
-    groupIndex,
+    groupIndex: groupIndex.toI32(),
     positionSize,
     timestamp,
   });
@@ -523,7 +523,7 @@ function _handleOpenTrade(
     collateral: null,
     address: trader,
     pairIndex,
-    groupIndex,
+    groupIndex: groupIndex.toI32(),
     positionSize: positionSizeUsd,
     timestamp,
   });
@@ -535,7 +535,7 @@ function _handleCloseTrade(
   collateralToUsd: BigDecimal,
   trader: string,
   pairIndex: i32,
-  leverage: i32,
+  leverage: BigDecimal,
   positionSize: BigDecimal,
   timestamp: i32,
   blockNumber: i32,
@@ -552,7 +552,7 @@ function _handleCloseTrade(
     timestamp.toString(),
     blockNumber.toString(),
   ]);
-  const groupIndex = getGroupIndex(network, collateral, pairIndex).toI32();
+  const groupIndex = getGroupIndex(network, BigInt.fromI32(pairIndex));
   const initialCollateral = positionSize.div(leverage);
   const pnl = collateralSentToTrader.minus(initialCollateral);
   const pnlPercentage = pnl
@@ -570,7 +570,7 @@ function _handleCloseTrade(
     collateral,
     address: trader,
     pairIndex,
-    groupIndex,
+    groupIndex: groupIndex.toI32(),
     positionSize,
     pnl,
     pnlPercentage,
@@ -583,8 +583,8 @@ function _handleCloseTrade(
   addCloseTradeStats({
     collateral: null,
     address: trader,
-    pairIndex: pairIndex.toI32(),
-    groupIndex,
+    pairIndex: pairIndex,
+    groupIndex: groupIndex.toI32(),
     positionSize: positionSizeUsd,
     pnl: pnlUsd,
     pnlPercentage,

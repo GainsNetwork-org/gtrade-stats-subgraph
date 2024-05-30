@@ -1,4 +1,4 @@
-import { Address, BigDecimal } from "@graphprotocol/graph-ts";
+import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { GNSMultiCollatDiamond } from "../../../types/GNSMultiCollatDiamond/GNSMultiCollatDiamond";
 import {
   AGGREGATOR_ADDRESSES,
@@ -68,11 +68,7 @@ export function getCollateralPrice(
   return price.toBigDecimal().div(exponentToBigDecimal(8));
 }
 
-export function getGroupIndex(
-  network: string,
-  collateral: string,
-  pairIndex: i32
-): i8 {
+export function getGroupIndex(network: string, pairIndex: BigInt): BigInt {
   const pairsStorageContract = getMultiCollatDiamondContract(network);
   return pairsStorageContract.pairs(pairIndex).groupIndex;
 }
