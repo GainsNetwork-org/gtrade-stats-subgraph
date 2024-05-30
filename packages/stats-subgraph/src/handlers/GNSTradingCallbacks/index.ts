@@ -39,12 +39,10 @@ import {
 } from "../../utils/contract";
 import { getCollateralPrice } from "../../utils/contract/GNSMultiCollatDiamond";
 import {
-  NETWORKS,
   getCollateralDecimals,
   getCollateralfromIndex,
 } from "../../utils/constants";
 
-const startArbitrumBlock = 167165039; // Jan-05-2024 12:00:00 AM +UTC
 const eventHash = crypto
   .keccak256(
     ByteArray.fromUTF8(
@@ -53,13 +51,6 @@ const eventHash = crypto
   )
   .toHexString();
 function wasTradeOpenCanceled(receipt: ethereum.TransactionReceipt): boolean {
-  // Only start checking for canceled trades at this block on Arb where there are active rewards
-  if (
-    receipt.blockNumber.toI32() < startArbitrumBlock &&
-    dataSource.network() == NETWORKS.ARBITRUM
-  ) {
-    return false;
-  }
   const events = receipt.logs;
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
