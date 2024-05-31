@@ -7,7 +7,7 @@ import {
   isWhitelistedReferralByEpoch,
 } from "../../constants";
 
-export class WhitelisedReferralResponse {
+export class WhitelistedReferralResponse {
   whitelisted: boolean;
   referrer: string;
 }
@@ -40,7 +40,7 @@ export function isTraderReferredByWhitelistedReferral(
   network: string,
   trader: Address,
   epochNumber: i32
-): WhitelisedReferralResponse {
+): WhitelistedReferralResponse {
   const diamond = getMultiCollatDiamondContract(network);
   const referrer = diamond.try_getTraderActiveReferrer(trader);
   if (referrer.reverted) {

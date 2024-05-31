@@ -12,7 +12,7 @@ export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
 export const MULTI_COLLAT_BLOCK_ARBITRUM = 173285454;
 export const MULTI_COLLAT_BLOCK_POLYGON = 52650382;
-export const MULTI_COLLAT_BLOCK_MUMBAI = 44357232;
+export const MULTI_COLLAT_BLOCK_SEPOLIA = 44357232;
 
 export function getCollateralDecimals(collateral: string): BigDecimal {
   if (collateral == COLLATERALS.DAI) {
@@ -36,7 +36,7 @@ export function getCollateralfromIndex(collateralIndex: i32): string {
   }
 
   if (collateralIndex == 2) {
-    return "dai";
+    return "weth";
   }
 
   if (collateralIndex == 3) {
@@ -75,13 +75,13 @@ export const COLLATERALS: Collaterals = {
 
 class Networks {
   POLYGON!: string;
-  MUMBAI!: string;
+  SEPOLIA!: string;
   ARBITRUM!: string;
 }
 
 export const NETWORKS: Networks = {
   POLYGON: "matic",
-  MUMBAI: "mumbai",
+  SEPOLIA: "arbitrum-sepolia",
   ARBITRUM: "arbitrum-one",
 };
 
@@ -154,7 +154,7 @@ export const POLYGON_COLLATERALS: NetworkAddresses = {
   },
 };
 
-export const MUMBAI_COLLATERALS: NetworkAddresses = {
+export const SEPOLIA_COLLATERALS: NetworkAddresses = {
   _ALL_: {
     gnsReferrals: "0x022e26d7DdAD3fc311C6472949F19c99b3CB08e6",
     gnsDiamond: "0xDee93dD1Cb54ce80D690eC07a20CB0ce9d7F741C",
@@ -254,8 +254,8 @@ export function getNetworkCollaterals(network: string): NetworkAddresses {
     return POLYGON_COLLATERALS;
   }
 
-  if (network == NETWORKS.MUMBAI) {
-    return MUMBAI_COLLATERALS;
+  if (network == NETWORKS.SEPOLIA) {
+    return SEPOLIA_COLLATERALS;
   }
 
   throw new Error("Network not supported");
@@ -270,8 +270,8 @@ export function getMultiCollatBlock(network: string): i32 {
     return MULTI_COLLAT_BLOCK_POLYGON;
   }
 
-  if (network == NETWORKS.MUMBAI) {
-    return MULTI_COLLAT_BLOCK_MUMBAI;
+  if (network == NETWORKS.SEPOLIA) {
+    return MULTI_COLLAT_BLOCK_SEPOLIA;
   }
 
   throw new Error("Network not supported");
