@@ -3,7 +3,7 @@ import { GNSMultiCollatDiamond } from "../../../types/GNSMultiCollatDiamond/GNSM
 import {
   AGGREGATOR_ADDRESSES,
   exponentToBigDecimal,
-  getNetworkAddresses,
+  getDiamondAddress,
   isWhitelistedReferralByEpoch,
 } from "../../constants";
 
@@ -15,11 +15,8 @@ export class WhitelistedReferralResponse {
 export function getMultiCollatDiamondContract(
   network: string
 ): GNSMultiCollatDiamond {
-  const config = getNetworkAddresses(network);
-  if (config == null) {
-    throw new Error("Network not supported");
-  }
-  return GNSMultiCollatDiamond.bind(Address.fromString(config.gnsDiamond));
+  const contractAddress = getDiamondAddress(network);
+  return GNSMultiCollatDiamond.bind(Address.fromString(contractAddress));
 }
 
 export function isTraderReferredByAggregator(
