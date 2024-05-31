@@ -42,7 +42,7 @@ export function getCollateralfromIndex(collateralIndex: i32): string {
   }
 
   if (collateralIndex == 2) {
-    return "weth";
+    return "eth";
   }
 
   if (collateralIndex == 3) {
