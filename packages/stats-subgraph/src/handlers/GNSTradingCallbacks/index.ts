@@ -22,6 +22,7 @@ import {
 import {
   MarketExecuted,
   LimitExecuted,
+  PositionSizeDecreaseExecuted,
   BorrowingFeeCharged,
   GovFeeCharged,
   ReferralFeeCharged,
@@ -581,4 +582,15 @@ function _handleCloseTrade(
     pnlPercentage,
     timestamp,
   });
+}
+
+export function handleTradeDescreased(event: LimitExecuted): void {
+  _handleLimitExecuted(
+    event.params.t,
+    event.params.orderType,
+    event.params.amountSentToTrader,
+    event.params.t.collateralAmount,
+    event.params.t.collateralIndex,
+    event
+  );
 }
