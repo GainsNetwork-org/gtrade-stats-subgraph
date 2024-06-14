@@ -104,7 +104,8 @@ function _handleMarketExecuted(
     _positionSizeDai,
     collateralDetails.collateralPrecisionBd
   );
-  const leverage = BigDecimal.fromString(trade.leverage.toString());
+  const leverage_raw = BigDecimal.fromString(trade.leverage.toString());
+  const leverage = leverage_raw.div(BigDecimal.fromString("1000"))
   const volume = convertCollateralToDecimal(
     trade.collateralAmount,
     collateralDetails.collateralPrecisionBd
@@ -173,7 +174,8 @@ function _handleLimitExecuted(
     _positionSizeDai,
     collateralDetails.collateralPrecisionBd
   ); // Pos size less fees on close
-  const leverage = BigDecimal.fromString(trade.leverage.toString());
+  const leverage_raw = BigDecimal.fromString(trade.leverage.toString());
+  const leverage = leverage_raw.div(BigDecimal.fromString("1000"))  
   const volume = convertCollateralToDecimal(
     trade.collateralAmount,
     collateralDetails.collateralPrecisionBd
