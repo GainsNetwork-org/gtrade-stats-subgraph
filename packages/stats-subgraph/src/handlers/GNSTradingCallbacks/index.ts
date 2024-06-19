@@ -81,7 +81,6 @@ export function handleMarketExecuted(event: MarketExecuted): void {
     event.params.t,
     event.params.open,
     event.params.amountSentToTrader,
-    event.params.t.collateralAmount,
     event.params.t.collateralIndex,
     event
   );
@@ -91,7 +90,6 @@ function _handleMarketExecuted(
   trade: MarketExecutedTStruct,
   open: boolean,
   daiSentToTrader: BigInt,
-  _positionSizeDai: BigInt,
   collateralIndex: i32,
   event: ethereum.Event
 ): void {
@@ -100,12 +98,8 @@ function _handleMarketExecuted(
     daiSentToTrader,
     collateralDetails.collateralPrecisionBd
   );
-  const positionSizeDai = convertCollateralToDecimal(
-    _positionSizeDai,
-    collateralDetails.collateralPrecisionBd
-  );
   const leverage_raw = BigDecimal.fromString(trade.leverage.toString());
-  const leverage = leverage_raw.div(BigDecimal.fromString("1000"))
+  const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
   const volume = convertCollateralToDecimal(
     trade.collateralAmount,
     collateralDetails.collateralPrecisionBd
@@ -151,7 +145,6 @@ export function handleLimitExecuted(event: LimitExecuted): void {
     event.params.t,
     event.params.orderType,
     event.params.amountSentToTrader,
-    event.params.t.collateralAmount,
     event.params.t.collateralIndex,
     event
   );
@@ -161,7 +154,6 @@ function _handleLimitExecuted(
   trade: LimitExecutedTStruct,
   orderType: i32,
   daiSentToTrader: BigInt,
-  _positionSizeDai: BigInt,
   collateralIndex: i32,
   event: ethereum.Event
 ): void {
@@ -170,12 +162,8 @@ function _handleLimitExecuted(
     daiSentToTrader,
     collateralDetails.collateralPrecisionBd
   );
-  const positionSizeDai = convertCollateralToDecimal(
-    _positionSizeDai,
-    collateralDetails.collateralPrecisionBd
-  ); // Pos size less fees on close
   const leverage_raw = BigDecimal.fromString(trade.leverage.toString());
-  const leverage = leverage_raw.div(BigDecimal.fromString("1000"))  
+  const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
   const volume = convertCollateralToDecimal(
     trade.collateralAmount,
     collateralDetails.collateralPrecisionBd
@@ -189,7 +177,7 @@ function _handleLimitExecuted(
     return;
   }
 
-  if (orderType == 3) {
+  if (orderType == 0 || orderType == 2 || orderType == 3) {
     _handleOpenTrade(
       collateralDetails.network,
       collateralDetails.collateral,
