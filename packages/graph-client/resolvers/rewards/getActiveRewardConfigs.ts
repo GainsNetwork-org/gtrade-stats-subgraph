@@ -123,11 +123,30 @@ export const MUMBAI_STIP_REWARDS_TEST = {
   capFeeRewards: true,
 };
 
+export const ARBITRUM_STIP_REWARDS_1 = {
+  id: "arbitrum-stip-1",
+  active: true,
+  totalRewards: 1800000,
+  epochType: "week" as EpochType,
+  numEpochs: 12,
+  startingEpoch: 25,
+  rewardDistribution: {
+    loyalty: 0.05,
+    fee: 0.85,
+    absSkill: 0.1,
+    relSkill: 0.0,
+    diversity: 0.0,
+  },
+  rewardDistributionOverrides: [],
+  rewardsPairIx: 109,
+  capFeeRewards: true,
+};
+
 export const getActiveRewardConfigs: QueryResolvers["getActiveRewardConfigs"] =
   (root, args, context): Query["getActiveRewardConfigs"] => {
     const { chainId } = context;
     if (+chainId === 42161) {
-      return [ARBITRUM_STIP_REWARDS];
+      return [ARBITRUM_STIP_REWARDS_1];
     }
 
     if (+chainId === 80001) {

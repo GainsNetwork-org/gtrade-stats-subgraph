@@ -2,8 +2,9 @@ sources:
   - name: gtrade-stats
     handler:
       graphql:
-        endpoint: https://api.thegraph.com/subgraphs/name/gainsnetwork-org/{context.graphName:gtrade-stats-arbitrum-v3}
+        endpoint: https://{context.graphGateway:gateway-arbitrum.network.thegraph}.com/api/{context.apiKey:34948ca8a5e572dddca38d54943c693c}/subgraphs/id/{context.graphName:78GSAzzZEeFVQccJU1ywYhZ4mZgZeUHExGxUXsEVtjNB}
         retry: 3
+
     transforms:
       - autoPagination:
           validateSchema: false
@@ -12,7 +13,7 @@ sources:
   - name: gtoken
     handler:
       graphql:
-        endpoint: https://api.thegraph.com/subgraphs/name/thebuidler/{context.graphName:gtoken-arbitrum-mc1}
+        endpoint: https://{context.graphGateway:gateway-arbitrum.network.thegraph}.com/api/{context.apiKey:34948ca8a5e572dddca38d54943c693c}/subgraphs/id/{context.graphName:J9WvpchpS1Sd5fQ4t7grJgMeC3nFTgHuJJe88YnkoaPF}
         retry: 3
 
 additionalTypeDefs: |
