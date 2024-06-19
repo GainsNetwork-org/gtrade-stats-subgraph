@@ -1,11 +1,7 @@
 {
   "network": "arbitrum-sepolia",
-  "graft": {
-    "base": "QmfBvRkMac88tE5Q153E3o4uHwtdyo3SFtx2XvchYBs2Sh",
-    "block": 45699852
-  },
   "GNSMultiCollatDiamond": {
-    "address": "0xFF162c694eAA571f685030649814282eA457f169",
-    "startBlock": 190420046
+    "address": "0xd659a15812064c79e189fd950a189b15c75d3186",
+    "startBlock": 55108651
   }
 }

@@ -1,11 +1,7 @@
 {
   "network": "matic",
-  "graft": {
-    "base": "QmVdb67zpqqUT1RkbPch622SM1ofjgxS4ELHkex2AUhour",
-    "block": 57037724
-  },
   "GNSMultiCollatDiamond": {
     "address": "0x209A9A01980377916851af2cA075C2b170452018",
-    "startBlock": 57037724
-  }  
+    "startBlock": 58241480
+  }
 }
