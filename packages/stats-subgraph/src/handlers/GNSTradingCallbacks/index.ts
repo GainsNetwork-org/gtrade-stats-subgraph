@@ -103,7 +103,7 @@ function _handleMarketExecuted(
     collateralDetails.collateralPrecisionBd
   );
   const leverage_raw = BigDecimal.fromString(trade.leverage.toString());
-  const leverage = leverage_raw.div(BigDecimal.fromString("1000"))
+  const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
   const volume = convertCollateralToDecimal(
     trade.collateralAmount,
     collateralDetails.collateralPrecisionBd
@@ -173,7 +173,7 @@ function _handleLimitExecuted(
     collateralDetails.collateralPrecisionBd
   ); // Pos size less fees on close
   const leverage_raw = BigDecimal.fromString(trade.leverage.toString());
-  const leverage = leverage_raw.div(BigDecimal.fromString("1000"))  
+  const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
   const volume = convertCollateralToDecimal(
     trade.collateralAmount,
     collateralDetails.collateralPrecisionBd
@@ -583,26 +583,28 @@ function _handleCloseTrade(
   });
 }
 
-export function handleTradeIncreased(event: PositionSizeIncreaseExecuted): void {
+export function handleTradeIncreased(
+  event: PositionSizeIncreaseExecuted
+): void {
   _handleTradeIncreased(
     event.params.trader,
     event.params.pairIndex,
     event.params.values.positionSizeCollateralDelta,
-    event.params.values.collateralIndex,
+    event.params.collateralIndex,
     event
   );
 }
 
 function _handleTradeIncreased(
-    trader: string,
-    pairIndex: i32,
-    _positionSizeDai: BigInt,
-    collateralIndex: i32,
-    event: ethereum.Event
-  ): void {
+  trader: Address,
+  pairIndex: i32,
+  positionSize: BigInt,
+  collateralIndex: i32,
+  event: ethereum.Event
+): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
   const volume = convertCollateralToDecimal(
-    _positionSizeDai,
+    positionSize,
     collateralDetails.collateralPrecisionBd
   );
 
@@ -618,58 +620,66 @@ function _handleTradeIncreased(
     collateralDetails.network,
     collateralDetails.collateral,
     collateralDetails.collateralToUsd,
-    trader,
+    trader.toHexString(),
     pairIndex,
     volume,
     event.block.timestamp.toI32()
   );
-
 }
 
-export function handleTradeDecreased(event: PositionSizeDecreaseExecuted): void {
+export function handleTradeDecreased(
+  event: PositionSizeDecreaseExecuted
+): void {
   _handleTradeDecreased(
     event.params.trader,
     event.params.pairIndex,
-    event.params.values.positionSizeCollateralDelta,
+    event.params.collateralDelta,
+    event.params.leverageDelta,
     event.params.values.collateralSentToTrader,
-    event.params.values.collateralIndex,
+    event.params.collateralIndex,
     event
   );
 }
 
 function _handleTradeDecreased(
-  trader: string,
+  trader: Address,
   pairIndex: i32,
-  _positionSizeDai: BigInt,
-  collateralSentToTrader:BigInt,
+  collateral: BigInt,
+  lev: BigInt,
+  collateralSentToTrader_raw: BigInt,
   collateralIndex: i32,
   event: ethereum.Event
 ): void {
-const collateralDetails = getCollateralDetails(collateralIndex);
-const volume = convertCollateralToDecimal(
-  _positionSizeDai,
-  collateralDetails.collateralPrecisionBd
-);
+  const collateralDetails = getCollateralDetails(collateralIndex);
+  const collateralSentToTrader = convertCollateralToDecimal(
+    collateralSentToTrader_raw,
+    collateralDetails.collateralPrecisionBd
+  );
+  const leverage_raw = BigDecimal.fromString(lev.toString());
+  const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
+  const volume = convertCollateralToDecimal(
+    collateral,
+    collateralDetails.collateralPrecisionBd
+  ).times(leverage);
 
-log.info("[handleTradeDecreased] {}", [event.transaction.hash.toHexString()]);
+  log.info("[handleTradeDecreased] {}", [event.transaction.hash.toHexString()]);
 
-if (isTraderReferredByAggregator(collateralDetails.network, trader)) {
-  log.info("[handleTradeDecreased] Aggregator referral {}", [
-    event.transaction.hash.toHexString(),
-  ]);
-  return;
-}
-_handleCloseTrade(
-  collateralDetails.network,
-  collateralDetails.collateral,
-  collateralDetails.collateralToUsd,
-  trader,
-  pairIndex,
-  0,
-  volume,
-  event.block.timestamp.toI32(),
-  event.block.number.toI32(),
-  collateralSentToTrader
-);
-
+  if (isTraderReferredByAggregator(collateralDetails.network, trader)) {
+    log.info("[handleTradeDecreased] Aggregator referral {}", [
+      event.transaction.hash.toHexString(),
+    ]);
+    return;
+  }
+  _handleCloseTrade(
+    collateralDetails.network,
+    collateralDetails.collateral,
+    collateralDetails.collateralToUsd,
+    trader.toHexString(),
+    pairIndex,
+    leverage,
+    volume,
+    event.block.timestamp.toI32(),
+    event.block.number.toI32(),
+    collateralSentToTrader
+  );
 }

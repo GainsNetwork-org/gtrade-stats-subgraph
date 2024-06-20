@@ -6394,6 +6394,12 @@
         },
         {
           "indexed": true,
+          "internalType": "uint8",
+          "name": "collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
           "internalType": "address",
           "name": "trader",
           "type": "address"
@@ -6419,19 +6425,41 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "newCollateralAmount",
+          "name": "collateralDelta",
           "type": "uint256"
         },
         {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "newLeverage",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "newCollateralAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "liqPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "govFeeCollateral",
+              "type": "uint256"
+            }
+          ],
           "indexed": false,
-          "internalType": "uint256",
-          "name": "newLeverage",
-          "type": "uint256"
+          "internalType": "struct IUpdateLeverage.UpdateLeverageValues",
+          "name": "values",
+          "type": "tuple"
         }
       ],
       "name": "LeverageUpdateExecuted",
       "type": "event",
-      "signature": "0x86c87db52066d430920bbeddb2de10ec29ed93483c3826636febefc305d84f28"
+      "signature": "0xd377bf540561d2182d611090b46189834f8bb72f02121dc896866c06e02e6655"
     },
     {
       "anonymous": false,
@@ -6698,6 +6726,12 @@
         },
         {
           "indexed": true,
+          "internalType": "uint8",
+          "name": "collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
           "internalType": "address",
           "name": "trader",
           "type": "address"
@@ -6718,6 +6752,18 @@
           "indexed": false,
           "internalType": "uint256",
           "name": "marketPrice",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "collateralDelta",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "leverageDelta",
           "type": "uint256"
         },
         {
@@ -6781,7 +6827,7 @@
       ],
       "name": "PositionSizeDecreaseExecuted",
       "type": "event",
-      "signature": "0xe6d409a14902c07316e6d7cb624ff481922e28f8dbe134a469d248fab20a8cc8"
+      "signature": "0xe9f51b9a8403bd4a67e0da0360dd078e3d84daf38770c85183d4ef56b2ddf9c0"
     },
     {
       "anonymous": false,
@@ -6812,6 +6858,12 @@
         },
         {
           "indexed": true,
+          "internalType": "uint8",
+          "name": "collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
           "internalType": "address",
           "name": "trader",
           "type": "address"
@@ -6832,6 +6884,18 @@
           "indexed": false,
           "internalType": "uint256",
           "name": "marketPrice",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "collateralDelta",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "leverageDelta",
           "type": "uint256"
         },
         {
@@ -6905,7 +6969,7 @@
       ],
       "name": "PositionSizeIncreaseExecuted",
       "type": "event",
-      "signature": "0x2e0445d79260b9c5cf74df6e4af6b4cd482640d478e988d7451350ffe5be3694"
+      "signature": "0x63436e10a2625186e471ce7bf020ce763b4f6f3caa2d7e33e73981aa1bf4c6b6"
     },
     {
       "anonymous": false,
