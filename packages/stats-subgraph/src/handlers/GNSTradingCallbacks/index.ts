@@ -187,7 +187,7 @@ function _handleLimitExecuted(
     return;
   }
 
-  if (orderType == 3) {
+  if (orderType == 0 || orderType == 2 || orderType == 3) {
     _handleOpenTrade(
       collateralDetails.network,
       collateralDetails.collateral,
