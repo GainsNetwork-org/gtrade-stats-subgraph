@@ -597,7 +597,7 @@ export function handleTradeIncreased(
 
 function _handleTradeIncreased(
   trader: Address,
-  pairIndex: i32,
+  pairIndex: BigInt,
   positionSize: BigInt,
   collateralIndex: i32,
   event: ethereum.Event
@@ -621,7 +621,7 @@ function _handleTradeIncreased(
     collateralDetails.collateral,
     collateralDetails.collateralToUsd,
     trader.toHexString(),
-    pairIndex,
+    pairIndex.toI32(),
     volume,
     event.block.timestamp.toI32()
   );
@@ -643,7 +643,7 @@ export function handleTradeDecreased(
 
 function _handleTradeDecreased(
   trader: Address,
-  pairIndex: i32,
+  pairIndex: BigInt,
   collateral: BigInt,
   lev: BigInt,
   collateralSentToTrader_raw: BigInt,
@@ -675,7 +675,7 @@ function _handleTradeDecreased(
     collateralDetails.collateral,
     collateralDetails.collateralToUsd,
     trader.toHexString(),
-    pairIndex,
+    pairIndex.toI32(),
     leverage,
     volume,
     event.block.timestamp.toI32(),
