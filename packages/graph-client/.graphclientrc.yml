@@ -2,7 +2,7 @@ sources:
   - name: gtrade-stats
     handler:
       graphql:
-        endpoint: https://{context.graphGateway:gateway-arbitrum.network.thegraph}.com/api/{context.apiKey:34948ca8a5e572dddca38d54943c693c}/subgraphs/id/{context.graphName:78GSAzzZEeFVQccJU1ywYhZ4mZgZeUHExGxUXsEVtjNB}
+        endpoint: https://api.studio.thegraph.com/query/79776/gtrade-stats-arbitrum-test/v0.0.1-rc2
         retry: 3
 
     transforms:
@@ -13,7 +13,7 @@ sources:
   - name: gtoken
     handler:
       graphql:
-        endpoint: https://{context.graphGateway:gateway-arbitrum.network.thegraph}.com/api/{context.apiKey:34948ca8a5e572dddca38d54943c693c}/subgraphs/id/{context.graphName:J9WvpchpS1Sd5fQ4t7grJgMeC3nFTgHuJJe88YnkoaPF}
+        endpoint: https://api.studio.thegraph.com/query/79776/gtoken-arbitrum-mc1/v0.0.1
         retry: 3
 
 additionalTypeDefs: |
