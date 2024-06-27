@@ -13,20 +13,20 @@
     "build": "npx graph build",
     "codegen": "npx graph codegen --output-dir src/types/",
     "deploy": "npx graph deploy --debug --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/",
-    "deploy:hosted": "npx graph deploy --product hosted-service --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ --access-token ${GRAPH_ACCESS_TOKEN}",
+    "deploy:hosted": "npx graph deploy --product hosted-service --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/",
+    "deploy:studio": "npx graph deploy --studio",
     "configure:arbitrum": "pnpm clean && pnpm prepare:arbitrum && pnpm codegen",
     "configure:polygon": "pnpm clean && pnpm prepare:polygon && pnpm codegen",
-    "configure:mumbai": "pnpm clean && pnpm prepare:mumbai && pnpm codegen",
-    "prepare:arbitrum": "mustache config/arbitrum.json subgraph.yaml.mustache > subgraph.yaml",
-    "prepare:polygon": "mustache config/polygon.json subgraph.yaml.mustache > subgraph.yaml",
-    "prepare:mumbai": "mustache config/mumbai.json subgraph.yaml.mustache > subgraph.yaml",
-    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-arbitrum-v3",
-    "deploy:polygon": "pnpm clean && pnpm configure:polygon && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-polygon-v2",
-    "deploy:mumbai": "pnpm clean && pnpm configure:mumbai && pnpm deploy:hosted gainsnetwork-org/gtrade-stats-mumbai-v2"
+    "configure:sepolia": "pnpm clean && pnpm prepare:sepolia && pnpm codegen",
+    "prepare:arbitrum": "mustache config/arbitrum.json no-graft.yaml.mustache > subgraph.yaml",
+    "prepare:polygon": "mustache config/polygon.json no-graft.yaml.mustache > subgraph.yaml",
+    "prepare:sepolia": "mustache config/sepolia.json no-graft.yaml.mustache > subgraph.yaml",
+    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:studio gtrade-stats-arbitrum-v3",
+    "deploy:polygon": "pnpm clean && pnpm configure:polygon && pnpm deploy:studio gtrade-stats-polygon",
+    "deploy:sepolia": "pnpm clean && pnpm configure:sepolia && pnpm deploy:studio gtrade-stats-sepolia"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.58.0",
-    "@graphprotocol/graph-ts": "^0.31.0",
+    "@graphprotocol/graph-ts": "0.31.0",
     "@graphql-tools/load-files": "^7.0.0",
     "@graphql-tools/merge": "^9.0.0",
     "graphql": "^16.8.1",
@@ -34,5 +34,8 @@
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
     "source-map-support": "^0.5.21"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "^0.74.1"
   }
 }

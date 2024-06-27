@@ -26,35 +26,31 @@ import {
   GovFeeCharged,
   ReferralFeeCharged,
   TriggerFeeCharged,
-  SssFeeCharged,
-  DaiVaultFeeCharged,
+  GnsStakingFeeCharged,
+  GTokenFeeCharged,
   MarketExecutedTStruct,
   LimitExecutedTStruct,
-} from "../../types/GNSTradingCallbacks/GNSTradingCallbacks";
+} from "../../types/GNSMultiCollatDiamond/GNSMultiCollatDiamond";
 
 import {
   convertCollateralToDecimal,
-  getCollateralFromCallbacksAddress,
   getGroupIndex,
   isTraderReferredByAggregator,
 } from "../../utils/contract";
-import { getCollateralPrice } from "../../utils/contract/GNSPriceAggregator";
-import { NETWORKS, getCollateralDecimals } from "../../utils/constants";
+import { getCollateralPrice } from "../../utils/contract/GNSMultiCollatDiamond";
+import {
+  getCollateralDecimals,
+  getCollateralfromIndex,
+} from "../../utils/constants";
 
-const startArbitrumBlock = 167165039; // Jan-05-2024 12:00:00 AM +UTC
 const eventHash = crypto
   .keccak256(
-    ByteArray.fromUTF8("MarketOpenCanceled(uint256,address,uint256,uint8)")
+    ByteArray.fromUTF8(
+      "MarketOpenCanceled((address, uint32),indexed address,indexed uint256,uint8)"
+    )
   )
   .toHexString();
 function wasTradeOpenCanceled(receipt: ethereum.TransactionReceipt): boolean {
-  // Only start checking for canceled trades at this block on Arb where there are active rewards
-  if (
-    receipt.blockNumber.toI32() < startArbitrumBlock &&
-    dataSource.network() == NETWORKS.ARBITRUM
-  ) {
-    return false;
-  }
   const events = receipt.logs;
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
@@ -71,17 +67,11 @@ class CollateralDetails {
   network: string;
   collateralPrecisionBd: BigDecimal;
 }
-function getCollateralDetails(event: ethereum.Event): CollateralDetails {
+
+function getCollateralDetails(collateralIndex: i32): CollateralDetails {
   const network = dataSource.network();
-  const collateral = getCollateralFromCallbacksAddress(
-    network,
-    event.address.toHexString()
-  );
-  const collateralToUsd = getCollateralPrice(
-    dataSource.network(),
-    collateral,
-    event.block.number.toI32()
-  );
+  const collateral = getCollateralfromIndex(collateralIndex);
+  const collateralToUsd = getCollateralPrice(network, collateralIndex);
   const collateralPrecisionBd = getCollateralDecimals(collateral);
   return { collateral, collateralToUsd, network, collateralPrecisionBd };
 }
@@ -90,18 +80,8 @@ export function handleMarketExecuted(event: MarketExecuted): void {
   _handleMarketExecuted(
     event.params.t,
     event.params.open,
-    event.params.daiSentToTrader,
-    event.params.positionSizeDai,
-    event
-  );
-}
-// @dev Event type is intentionally inaccurate
-export function handleMarketExecutedV6_4_1(event: MarketExecuted): void {
-  _handleMarketExecuted(
-    event.params.t,
-    event.params.open,
-    event.params.daiSentToTrader,
-    event.params.positionSizeDai,
+    event.params.amountSentToTrader,
+    event.params.t.collateralIndex,
     event
   );
 }
@@ -110,33 +90,24 @@ function _handleMarketExecuted(
   trade: MarketExecutedTStruct,
   open: boolean,
   daiSentToTrader: BigInt,
-  _positionSizeDai: BigInt,
+  collateralIndex: i32,
   event: ethereum.Event
 ): void {
-  const collateralDetails = getCollateralDetails(event);
+  const collateralDetails = getCollateralDetails(collateralIndex);
   const collateralSentToTrader = convertCollateralToDecimal(
     daiSentToTrader,
     collateralDetails.collateralPrecisionBd
   );
-  const positionSizeDai = convertCollateralToDecimal(
-    _positionSizeDai,
-    collateralDetails.collateralPrecisionBd
-  );
-  const leverage = trade.leverage.toBigDecimal();
+  const leverage_raw = BigDecimal.fromString(trade.leverage.toString());
+  const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
   const volume = convertCollateralToDecimal(
-    trade.positionSizeDai,
+    trade.collateralAmount,
     collateralDetails.collateralPrecisionBd
   ).times(leverage);
 
   log.info("[handleMarketExecuted] {}", [event.transaction.hash.toHexString()]);
 
-  if (
-    isTraderReferredByAggregator(
-      collateralDetails.network,
-      trade.trader,
-      event.block.number.toI32()
-    )
-  ) {
+  if (isTraderReferredByAggregator(collateralDetails.network, trade.user)) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
       event.transaction.hash.toHexString(),
     ]);
@@ -148,18 +119,17 @@ function _handleMarketExecuted(
       collateralDetails.network,
       collateralDetails.collateral,
       collateralDetails.collateralToUsd,
-      trade.trader.toHexString(),
+      trade.user.toHexString(),
       trade.pairIndex,
       volume,
-      event.block.timestamp.toI32(),
-      event.block.number.toI32()
+      event.block.timestamp.toI32()
     );
   } else {
     _handleCloseTrade(
       collateralDetails.network,
       collateralDetails.collateral,
       collateralDetails.collateralToUsd,
-      trade.trader.toHexString(),
+      trade.user.toHexString(),
       trade.pairIndex,
       leverage,
       volume,
@@ -174,19 +144,8 @@ export function handleLimitExecuted(event: LimitExecuted): void {
   _handleLimitExecuted(
     event.params.t,
     event.params.orderType,
-    event.params.daiSentToTrader,
-    event.params.positionSizeDai,
-    event
-  );
-}
-
-// @dev Event type is intentionally inaccurate
-export function handleLimitExecutedV6_4_1(event: LimitExecuted): void {
-  _handleLimitExecuted(
-    event.params.t,
-    event.params.orderType,
-    event.params.daiSentToTrader,
-    event.params.positionSizeDai,
+    event.params.amountSentToTrader,
+    event.params.t.collateralIndex,
     event
   );
 }
@@ -195,55 +154,45 @@ function _handleLimitExecuted(
   trade: LimitExecutedTStruct,
   orderType: i32,
   daiSentToTrader: BigInt,
-  _positionSizeDai: BigInt,
+  collateralIndex: i32,
   event: ethereum.Event
 ): void {
-  const collateralDetails = getCollateralDetails(event);
+  const collateralDetails = getCollateralDetails(collateralIndex);
   const collateralSentToTrader = convertCollateralToDecimal(
     daiSentToTrader,
     collateralDetails.collateralPrecisionBd
   );
-  const positionSizeDai = convertCollateralToDecimal(
-    _positionSizeDai,
-    collateralDetails.collateralPrecisionBd
-  ); // Pos size less fees on close
-  const leverage = trade.leverage.toBigDecimal();
+  const leverage_raw = BigDecimal.fromString(trade.leverage.toString());
+  const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
   const volume = convertCollateralToDecimal(
-    trade.positionSizeDai,
+    trade.collateralAmount,
     collateralDetails.collateralPrecisionBd
   ).times(leverage);
   log.info("[handleLimitExecuted] {}", [event.transaction.hash.toHexString()]);
 
-  if (
-    isTraderReferredByAggregator(
-      collateralDetails.network,
-      trade.trader,
-      event.block.number.toI32()
-    )
-  ) {
+  if (isTraderReferredByAggregator(collateralDetails.network, trade.user)) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
       event.transaction.hash.toHexString(),
     ]);
     return;
   }
 
-  if (orderType == 3) {
+  if (orderType == 0 || orderType == 2 || orderType == 3) {
     _handleOpenTrade(
       collateralDetails.network,
       collateralDetails.collateral,
       collateralDetails.collateralToUsd,
-      trade.trader.toHexString(),
+      trade.user.toHexString(),
       trade.pairIndex,
       volume,
-      event.block.timestamp.toI32(),
-      event.block.number.toI32()
+      event.block.timestamp.toI32()
     );
   } else {
     _handleCloseTrade(
       collateralDetails.network,
       collateralDetails.collateral,
       collateralDetails.collateralToUsd,
-      trade.trader.toHexString(),
+      trade.user.toHexString(),
       trade.pairIndex,
       leverage,
       volume,
@@ -255,10 +204,10 @@ function _handleLimitExecuted(
 }
 
 export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
-  const collateralDetails = getCollateralDetails(event);
+  const collateralDetails = getCollateralDetails(event.params.collateralIndex);
   const trader = event.params.trader.toHexString();
   const borrowingFee = convertCollateralToDecimal(
-    event.params.feeValueDai,
+    event.params.amountCollateral,
     collateralDetails.collateralPrecisionBd
   );
   const timestamp = event.block.timestamp.toI32();
@@ -269,8 +218,7 @@ export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      Address.fromString(trader),
-      event.block.number.toI32()
+      Address.fromString(trader)
     )
   ) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
@@ -292,10 +240,10 @@ export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
 }
 
 export function handleGovFeeCharged(event: GovFeeCharged): void {
-  const collateralDetails = getCollateralDetails(event);
+  const collateralDetails = getCollateralDetails(event.params.collateralIndex);
   const trader = event.params.trader.toHexString();
   const govFee = convertCollateralToDecimal(
-    event.params.valueDai,
+    event.params.amountCollateral,
     collateralDetails.collateralPrecisionBd
   );
   const timestamp = event.block.timestamp.toI32();
@@ -303,8 +251,7 @@ export function handleGovFeeCharged(event: GovFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      Address.fromString(trader),
-      event.block.number.toI32()
+      Address.fromString(trader)
     )
   ) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
@@ -345,10 +292,10 @@ export function handleGovFeeCharged(event: GovFeeCharged): void {
 }
 
 export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
-  const collateralDetails = getCollateralDetails(event);
+  const collateralDetails = getCollateralDetails(event.params.collateralIndex);
   const trader = event.params.trader.toHexString();
   const referralFee = convertCollateralToDecimal(
-    event.params.valueDai,
+    event.params.amountCollateral,
     collateralDetails.collateralPrecisionBd
   );
   const timestamp = event.block.timestamp.toI32();
@@ -359,8 +306,7 @@ export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      Address.fromString(trader),
-      event.block.number.toI32()
+      Address.fromString(trader)
     )
   ) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
@@ -395,10 +341,10 @@ export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
 }
 
 export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
-  const collateralDetails = getCollateralDetails(event);
+  const collateralDetails = getCollateralDetails(event.params.collateralIndex);
   const trader = event.params.trader.toHexString();
   const triggerFee = convertCollateralToDecimal(
-    event.params.valueDai,
+    event.params.amountCollateral,
     collateralDetails.collateralPrecisionBd
   );
   const timestamp = event.block.timestamp.toI32();
@@ -409,8 +355,7 @@ export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      Address.fromString(trader),
-      event.block.number.toI32()
+      Address.fromString(trader)
     )
   ) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
@@ -445,11 +390,11 @@ export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
   );
 }
 
-export function handleStakerFeeCharged(event: SssFeeCharged): void {
-  const collateralDetails = getCollateralDetails(event);
+export function handleStakerFeeCharged(event: GnsStakingFeeCharged): void {
+  const collateralDetails = getCollateralDetails(event.params.collateralIndex);
   const trader = event.params.trader.toHexString();
   const stakerFee = convertCollateralToDecimal(
-    event.params.valueDai,
+    event.params.amountCollateral,
     collateralDetails.collateralPrecisionBd
   );
   const timestamp = event.block.timestamp.toI32();
@@ -460,8 +405,7 @@ export function handleStakerFeeCharged(event: SssFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      Address.fromString(trader),
-      event.block.number.toI32()
+      Address.fromString(trader)
     )
   ) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
@@ -491,11 +435,11 @@ export function handleStakerFeeCharged(event: SssFeeCharged): void {
   );
 }
 
-export function handleLpFeeCharged(event: DaiVaultFeeCharged): void {
-  const collateralDetails = getCollateralDetails(event);
+export function handleLpFeeCharged(event: GTokenFeeCharged): void {
+  const collateralDetails = getCollateralDetails(event.params.collateralIndex);
   const trader = event.params.trader.toHexString();
   const lpFee = convertCollateralToDecimal(
-    event.params.valueDai,
+    event.params.amountCollateral,
     collateralDetails.collateralPrecisionBd
   );
   const timestamp = event.block.timestamp.toI32();
@@ -504,8 +448,7 @@ export function handleLpFeeCharged(event: DaiVaultFeeCharged): void {
   if (
     isTraderReferredByAggregator(
       collateralDetails.network,
-      Address.fromString(trader),
-      event.block.number.toI32()
+      Address.fromString(trader)
     )
   ) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
@@ -540,23 +483,17 @@ function _handleOpenTrade(
   collateral: string,
   collateralToUsd: BigDecimal,
   trader: string,
-  pairIndex: BigInt,
+  pairIndex: i32,
   positionSize: BigDecimal,
-  timestamp: i32,
-  blockNumber: i32
+  timestamp: i32
 ): void {
-  const groupIndex = getGroupIndex(
-    network,
-    collateral,
-    pairIndex,
-    blockNumber
-  ).toI32();
+  const groupIndex = getGroupIndex(network, BigInt.fromI32(pairIndex));
   // Add collateral specific stats
   addOpenTradeStats({
     collateral,
     address: trader,
-    pairIndex: pairIndex.toI32(),
-    groupIndex,
+    pairIndex,
+    groupIndex: groupIndex.toI32(),
     positionSize,
     timestamp,
   });
@@ -566,8 +503,8 @@ function _handleOpenTrade(
   addOpenTradeStats({
     collateral: null,
     address: trader,
-    pairIndex: pairIndex.toI32(),
-    groupIndex,
+    pairIndex,
+    groupIndex: groupIndex.toI32(),
     positionSize: positionSizeUsd,
     timestamp,
   });
@@ -578,7 +515,7 @@ function _handleCloseTrade(
   collateral: string,
   collateralToUsd: BigDecimal,
   trader: string,
-  pairIndex: BigInt,
+  pairIndex: i32,
   leverage: BigDecimal,
   positionSize: BigDecimal,
   timestamp: i32,
@@ -596,12 +533,7 @@ function _handleCloseTrade(
     timestamp.toString(),
     blockNumber.toString(),
   ]);
-  const groupIndex = getGroupIndex(
-    network,
-    collateral,
-    pairIndex,
-    blockNumber
-  ).toI32();
+  const groupIndex = getGroupIndex(network, BigInt.fromI32(pairIndex));
   const initialCollateral = positionSize.div(leverage);
   const pnl = collateralSentToTrader.minus(initialCollateral);
   const pnlPercentage = pnl
@@ -618,8 +550,8 @@ function _handleCloseTrade(
   addCloseTradeStats({
     collateral,
     address: trader,
-    pairIndex: pairIndex.toI32(),
-    groupIndex,
+    pairIndex,
+    groupIndex: groupIndex.toI32(),
     positionSize,
     pnl,
     pnlPercentage,
@@ -632,8 +564,8 @@ function _handleCloseTrade(
   addCloseTradeStats({
     collateral: null,
     address: trader,
-    pairIndex: pairIndex.toI32(),
-    groupIndex,
+    pairIndex: pairIndex,
+    groupIndex: groupIndex.toI32(),
     positionSize: positionSizeUsd,
     pnl: pnlUsd,
     pnlPercentage,

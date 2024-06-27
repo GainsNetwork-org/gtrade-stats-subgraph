@@ -83,8 +83,9 @@ export const getAllRewardsForEpoch: QueryResolvers["getAllRewardsForEpoch"] =
             rewardConfig.totalRewards / rewardConfig.numEpochs) *
           rewardToUsd;
         const protocolFees = protocolTradingPoints.totalFeesPaid;
-        if (rewardsInUsd > protocolFees) {
-          currentEpochRewardDistribution.fee *= protocolFees / rewardsInUsd;
+        if (rewardsInUsd > protocolFees * 0.75) {
+          currentEpochRewardDistribution.fee *=
+            (protocolFees * 0.75) / rewardsInUsd;
         }
       } else {
         console.warn(

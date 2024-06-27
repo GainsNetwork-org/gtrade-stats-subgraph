@@ -249,8 +249,8 @@ export const getTotalEpochFeeRewardDistribution = (
 
   const feeRewardInUsd = feeReward * rewardToUsd;
 
-  if (feeRewardInUsd > protocolPoints.totalFeesPaid) {
-    return protocolPoints.totalFeesPaid / rewardToUsd;
+  if (feeRewardInUsd > protocolPoints.totalFeesPaid * 0.75) {
+    return (protocolPoints.totalFeesPaid * 0.75) / rewardToUsd;
   }
 
   return feeReward;
