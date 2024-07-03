@@ -137,7 +137,8 @@ function _handleMarketExecuted(
       volume,
       event.block.timestamp.toI32(),
       event.block.number.toI32(),
-      collateralSentToTrader
+      collateralSentToTrader,
+      false
     );
   }
 }
@@ -200,7 +201,8 @@ function _handleLimitExecuted(
       volume,
       event.block.timestamp.toI32(),
       event.block.number.toI32(),
-      collateralSentToTrader
+      collateralSentToTrader,
+      false
     );
   }
 }
@@ -522,7 +524,8 @@ function _handleCloseTrade(
   positionSize: BigDecimal,
   timestamp: i32,
   blockNumber: i32,
-  collateralSentToTrader: BigDecimal
+  collateralSentToTrader: BigDecimal,
+  isDecreaseTrade: boolean
 ): void {
   log.info("[_handleCloseTrade] [one] {} {} {} {} {} {} {} {} {}", [
     network,
@@ -537,7 +540,10 @@ function _handleCloseTrade(
   ]);
   const groupIndex = getGroupIndex(network, BigInt.fromI32(pairIndex));
   const initialCollateral = positionSize.div(leverage);
-  const pnl = collateralSentToTrader.minus(initialCollateral);
+  const pnl =
+    isDecreaseTrade == false
+      ? collateralSentToTrader.minus(initialCollateral)
+      : collateralSentToTrader;
   const pnlPercentage = pnl
     .div(initialCollateral)
     .times(BigDecimal.fromString("100"));
@@ -625,15 +631,13 @@ export function handleTradeDecreased(
   _handleTradeDecreased(
     event.params.trader,
     event.params.pairIndex,
-    event.params.collateralDelta,
     event.params.leverageDelta,
-    event.params.values.collateralSentToTrader,
     event.params.collateralIndex,
-    event.params.values.newCollateralAmount,
     event.params.values.newLeverage,
-    event.params.values.vaultFeeCollateral,
-    event.params.values.gnsStakingFeeCollateral,
     event.params.values.borrowingFeeCollateral,
+    event.params.values.existingPnlCollateral,
+    event.params.values.positionSizeCollateralDelta,
+    event.params.values.existingPositionSizeCollateral,
     event
   );
 }
@@ -641,62 +645,47 @@ export function handleTradeDecreased(
 function _handleTradeDecreased(
   trader: Address,
   pairIndex: BigInt,
-  collateralDelta: BigInt,
   leverageDelta: BigInt,
-  collatToTrader: BigInt,
   collateralIndex: i32,
-  newCollateralAmount: BigInt,
   newLeverage: i32,
-  vaultFeeCollateral: BigInt,
-  stakingFeeCollateral: BigInt,
   borrowingFeeCollateral: BigInt,
+  existingPnlCollateral: BigInt,
+  positionSizeCollateralDelta: BigInt,
+  existingPositionSizeCollateral: BigInt,
   event: ethereum.Event
 ): void {
-  log.info("[_handleTradeDecrease] [one] {} {} {} {} {}", [
-    trader.toHexString(),
-    pairIndex.toString(),
-    collateralDelta.toString(),
-    leverageDelta.toString(),
-    collatToTrader.toString(),
-  ]);
-  const allFees = vaultFeeCollateral
-    .plus(stakingFeeCollateral)
-    .plus(borrowingFeeCollateral);
   const collateralDetails = getCollateralDetails(collateralIndex);
+  // pnl  = (existingPnlCollateral*positionSizeCollateralDelta/existingPositionSizeCollateral) - borrowingFee
+  const pnlWithBorrowingFee = existingPnlCollateral
+    .times(positionSizeCollateralDelta)
+    .div(existingPositionSizeCollateral);
+  const pnlWithoutBorrowingFee = pnlWithBorrowingFee.minus(
+    borrowingFeeCollateral
+  );
+  // in this case, collateralSentToTrader means pnl
   const collateralSentToTrader = convertCollateralToDecimal(
-    collatToTrader.plus(allFees),
+    pnlWithoutBorrowingFee,
     collateralDetails.collateralPrecisionBd
   );
-  const lev =
+  // If delta leverage is 0, we use existing leverage, otherwise delta leverage
+  const levDelta =
     leverageDelta != BigInt.fromI32(0)
       ? leverageDelta
       : BigInt.fromI32(newLeverage);
-  const leverage_raw = BigDecimal.fromString(lev.toString());
+  const leverage_raw = BigDecimal.fromString(levDelta.toString());
   const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
-  const collateral =
-    collateralDelta != BigInt.fromI32(0)
-      ? collateralDelta
-      : newCollateralAmount.plus(allFees);
   const volume = convertCollateralToDecimal(
-    collateral,
+    positionSizeCollateralDelta,
     collateralDetails.collateralPrecisionBd
-  ).times(leverage);
-  log.info("[_handleTradeDecrease] [two] {} {} {} {} {}", [
-    trader.toHexString(),
-    collateralSentToTrader.toString(),
-    leverage_raw.toString(),
-    leverage.toString(),
-    volume.toString(),
-  ]);
-
+  );
   log.info("[handleTradeDecreased] {}", [event.transaction.hash.toHexString()]);
-
   if (isTraderReferredByAggregator(collateralDetails.network, trader)) {
     log.info("[handleTradeDecreased] Aggregator referral {}", [
       event.transaction.hash.toHexString(),
     ]);
     return;
   }
+
   _handleCloseTrade(
     collateralDetails.network,
     collateralDetails.collateral,
@@ -707,6 +696,7 @@ function _handleTradeDecreased(
     volume,
     event.block.timestamp.toI32(),
     event.block.number.toI32(),
-    collateralSentToTrader
+    collateralSentToTrader,
+    true
   );
 }
