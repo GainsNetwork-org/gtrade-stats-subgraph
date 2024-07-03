@@ -83,7 +83,6 @@ export function handleMarketExecuted(event: MarketExecuted): void {
     event.params.t,
     event.params.open,
     event.params.amountSentToTrader,
-    event.params.t.collateralAmount,
     event.params.t.collateralIndex,
     event
   );
@@ -93,7 +92,6 @@ function _handleMarketExecuted(
   trade: MarketExecutedTStruct,
   open: boolean,
   daiSentToTrader: BigInt,
-  _positionSizeDai: BigInt,
   collateralIndex: i32,
   event: ethereum.Event
 ): void {
@@ -149,7 +147,6 @@ export function handleLimitExecuted(event: LimitExecuted): void {
     event.params.t,
     event.params.orderType,
     event.params.amountSentToTrader,
-    event.params.t.collateralAmount,
     event.params.t.collateralIndex,
     event
   );
@@ -159,7 +156,6 @@ function _handleLimitExecuted(
   trade: LimitExecutedTStruct,
   orderType: i32,
   daiSentToTrader: BigInt,
-  _positionSizeDai: BigInt,
   collateralIndex: i32,
   event: ethereum.Event
 ): void {
@@ -168,10 +164,6 @@ function _handleLimitExecuted(
     daiSentToTrader,
     collateralDetails.collateralPrecisionBd
   );
-  const positionSizeDai = convertCollateralToDecimal(
-    _positionSizeDai,
-    collateralDetails.collateralPrecisionBd
-  ); // Pos size less fees on close
   const leverage_raw = BigDecimal.fromString(trade.leverage.toString());
   const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
   const volume = convertCollateralToDecimal(
@@ -637,6 +629,11 @@ export function handleTradeDecreased(
     event.params.leverageDelta,
     event.params.values.collateralSentToTrader,
     event.params.collateralIndex,
+    event.params.values.newCollateralAmount,
+    event.params.values.newLeverage,
+    event.params.values.vaultFeeCollateral,
+    event.params.values.gnsStakingFeeCollateral,
+    event.params.values.borrowingFeeCollateral,
     event
   );
 }
@@ -644,23 +641,53 @@ export function handleTradeDecreased(
 function _handleTradeDecreased(
   trader: Address,
   pairIndex: BigInt,
-  collateral: BigInt,
-  lev: BigInt,
-  collateralSentToTrader_raw: BigInt,
+  collateralDelta: BigInt,
+  leverageDelta: BigInt,
+  collatToTrader: BigInt,
   collateralIndex: i32,
+  newCollateralAmount: BigInt,
+  newLeverage: i32,
+  vaultFeeCollateral: BigInt,
+  stakingFeeCollateral: BigInt,
+  borrowingFeeCollateral: BigInt,
   event: ethereum.Event
 ): void {
+  log.info("[_handleTradeDecrease] [one] {} {} {} {} {}", [
+    trader.toHexString(),
+    pairIndex.toString(),
+    collateralDelta.toString(),
+    leverageDelta.toString(),
+    collatToTrader.toString(),
+  ]);
+  const allFees = vaultFeeCollateral
+    .plus(stakingFeeCollateral)
+    .plus(borrowingFeeCollateral);
   const collateralDetails = getCollateralDetails(collateralIndex);
   const collateralSentToTrader = convertCollateralToDecimal(
-    collateralSentToTrader_raw,
+    collatToTrader.plus(allFees),
     collateralDetails.collateralPrecisionBd
   );
+  const lev =
+    leverageDelta != BigInt.fromI32(0)
+      ? leverageDelta
+      : BigInt.fromI32(newLeverage);
   const leverage_raw = BigDecimal.fromString(lev.toString());
   const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
+  const collateral =
+    collateralDelta != BigInt.fromI32(0)
+      ? collateralDelta
+      : newCollateralAmount.plus(allFees);
   const volume = convertCollateralToDecimal(
     collateral,
     collateralDetails.collateralPrecisionBd
   ).times(leverage);
+  log.info("[_handleTradeDecrease] [two] {} {} {} {} {}", [
+    trader.toHexString(),
+    collateralSentToTrader.toString(),
+    leverage_raw.toString(),
+    leverage.toString(),
+    volume.toString(),
+  ]);
 
   log.info("[handleTradeDecreased] {}", [event.transaction.hash.toHexString()]);
 

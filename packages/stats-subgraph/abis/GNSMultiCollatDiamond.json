@@ -2945,6 +2945,16 @@
         {
           "components": [
             {
+              "internalType": "address",
+              "name": "trader",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            },
+            {
               "internalType": "uint48",
               "name": "windowsDuration",
               "type": "uint48"
@@ -2974,17 +2984,33 @@
           "internalType": "struct IPriceImpact.OiWindowUpdate",
           "name": "oiWindowUpdate",
           "type": "tuple"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "isPartial",
+          "type": "bool"
         }
       ],
       "name": "PriceImpactOpenInterestAdded",
       "type": "event",
-      "signature": "0xb8b5cf1c4a93075d32b38049f7ad65e6608d90f232123dd65d55a5ed06988cb5"
+      "signature": "0x4ad96f03f62012d64f1a3676413b5a73b13a99eebe005158b124403e3c3ab70d"
     },
     {
       "anonymous": false,
       "inputs": [
         {
           "components": [
+            {
+              "internalType": "address",
+              "name": "trader",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            },
             {
               "internalType": "uint48",
               "name": "windowsDuration",
@@ -3025,7 +3051,7 @@
       ],
       "name": "PriceImpactOpenInterestRemoved",
       "type": "event",
-      "signature": "0xde1fe3df38229b603f1a7a96f1ac6159116b2a48dada12998a226039786f7ca6"
+      "signature": "0x02c87303d6313dfe4cd344c2850cf9b343c7b2baa78546cec5892065611b0181"
     },
     {
       "anonymous": false,
@@ -3058,26 +3084,26 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "_openInterestUsd",
-          "type": "uint256"
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        },
+        {
+          "internalType": "uint32",
+          "name": "_index",
+          "type": "uint32"
         },
         {
           "internalType": "uint256",
-          "name": "_pairIndex",
+          "name": "_oiDeltaCollateral",
           "type": "uint256"
-        },
-        {
-          "internalType": "bool",
-          "name": "_long",
-          "type": "bool"
         }
       ],
       "name": "addPriceImpactOpenInterest",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x96839490"
+      "signature": "0x4c8a7602"
     },
     {
       "inputs": [
@@ -3286,6 +3312,31 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        },
+        {
+          "internalType": "uint32",
+          "name": "_index",
+          "type": "uint32"
+        }
+      ],
+      "name": "getTradeLastWindowOiUsd",
+      "outputs": [
+        {
+          "internalType": "uint128",
+          "name": "",
+          "type": "uint128"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x273064f2"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "_openPrice",
           "type": "uint256"
@@ -3326,6 +3377,43 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        },
+        {
+          "internalType": "uint32",
+          "name": "_index",
+          "type": "uint32"
+        }
+      ],
+      "name": "getTradePriceImpactInfo",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint128",
+              "name": "lastWindowOiUsd",
+              "type": "uint128"
+            },
+            {
+              "internalType": "uint128",
+              "name": "__placeholder",
+              "type": "uint128"
+            }
+          ],
+          "internalType": "struct IPriceImpact.TradePriceImpactInfo",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xc3248367"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint48",
           "name": "_windowsDuration",
           "type": "uint48"
@@ -3345,31 +3433,26 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "_openInterestUsd",
-          "type": "uint256"
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        },
+        {
+          "internalType": "uint32",
+          "name": "_index",
+          "type": "uint32"
         },
         {
           "internalType": "uint256",
-          "name": "_pairIndex",
+          "name": "_oiDeltaCollateral",
           "type": "uint256"
-        },
-        {
-          "internalType": "bool",
-          "name": "_long",
-          "type": "bool"
-        },
-        {
-          "internalType": "uint48",
-          "name": "_addTs",
-          "type": "uint48"
         }
       ],
       "name": "removePriceImpactOpenInterest",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xd01c9202"
+      "signature": "0x2f29a9e8"
     },
     {
       "inputs": [
@@ -6805,6 +6888,11 @@
             },
             {
               "internalType": "int256",
+              "name": "availableCollateralInDiamond",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
               "name": "collateralSentToTrader",
               "type": "int256"
             },
@@ -6827,7 +6915,7 @@
       ],
       "name": "PositionSizeDecreaseExecuted",
       "type": "event",
-      "signature": "0xe9f51b9a8403bd4a67e0da0360dd078e3d84daf38770c85183d4ef56b2ddf9c0"
+      "signature": "0x55eb5f89c70aca28886aa8ef325c490fcde181e2644a29be3ee8e99f0ada207c"
     },
     {
       "anonymous": false,
@@ -10297,6 +10385,11 @@
     },
     {
       "inputs": [],
+      "name": "InvalidPoolType",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "OracleAlreadyListed",
       "type": "error"
     },
@@ -10365,7 +10458,7 @@
         {
           "components": [
             {
-              "internalType": "contract IUniswapV3Pool",
+              "internalType": "contract ILiquidityPool",
               "name": "pool",
               "type": "address"
             },
@@ -10375,20 +10468,25 @@
               "type": "bool"
             },
             {
-              "internalType": "uint88",
+              "internalType": "enum IPriceAggregator.PoolType",
+              "name": "poolType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint80",
               "name": "__placeholder",
-              "type": "uint88"
+              "type": "uint80"
             }
           ],
           "indexed": false,
-          "internalType": "struct IPriceAggregator.UniV3PoolInfo",
+          "internalType": "struct IPriceAggregator.LiquidityPoolInfo",
           "name": "newValue",
           "type": "tuple"
         }
       ],
-      "name": "CollateralGnsUniV3PoolUpdated",
+      "name": "CollateralGnsLiquidityPoolUpdated",
       "type": "event",
-      "signature": "0x1edbae8d78eb52b7442e21be32c837a2c2521fd9d806d1f469f2c9e8f469ab75"
+      "signature": "0x99c41cee576e40e5483818b59dcfd6e36841e5f9a9557e09779e0b4541f9de0e"
     },
     {
       "anonymous": false,
@@ -10887,12 +10985,12 @@
           "type": "uint8"
         }
       ],
-      "name": "getCollateralGnsUniV3Pool",
+      "name": "getCollateralGnsLiquidityPool",
       "outputs": [
         {
           "components": [
             {
-              "internalType": "contract IUniswapV3Pool",
+              "internalType": "contract ILiquidityPool",
               "name": "pool",
               "type": "address"
             },
@@ -10902,19 +11000,24 @@
               "type": "bool"
             },
             {
-              "internalType": "uint88",
+              "internalType": "enum IPriceAggregator.PoolType",
+              "name": "poolType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint80",
               "name": "__placeholder",
-              "type": "uint88"
+              "type": "uint80"
             }
           ],
-          "internalType": "struct IPriceAggregator.UniV3PoolInfo",
+          "internalType": "struct IPriceAggregator.LiquidityPoolInfo",
           "name": "",
           "type": "tuple"
         }
       ],
       "stateMutability": "view",
       "type": "function",
-      "signature": "0xd1d80eb8"
+      "signature": "0x6a43c9ad"
     },
     {
       "inputs": [
@@ -11429,9 +11532,21 @@
           "type": "uint8[]"
         },
         {
-          "internalType": "contract IUniswapV3Pool[]",
-          "name": "_gnsCollateralUniV3Pools",
-          "type": "address[]"
+          "components": [
+            {
+              "internalType": "contract ILiquidityPool",
+              "name": "pool",
+              "type": "address"
+            },
+            {
+              "internalType": "enum IPriceAggregator.PoolType",
+              "name": "poolType",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.LiquidityPoolInput[]",
+          "name": "_gnsCollateralLiquidityPools",
+          "type": "tuple[]"
         },
         {
           "internalType": "contract IChainlinkFeed[]",
@@ -11443,7 +11558,7 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x488b411a"
+      "signature": "0xf1dd8b66"
     },
     {
       "inputs": [
@@ -11514,16 +11629,28 @@
           "type": "uint8"
         },
         {
-          "internalType": "contract IUniswapV3Pool",
-          "name": "_uniV3Pool",
-          "type": "address"
+          "components": [
+            {
+              "internalType": "contract ILiquidityPool",
+              "name": "pool",
+              "type": "address"
+            },
+            {
+              "internalType": "enum IPriceAggregator.PoolType",
+              "name": "poolType",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.LiquidityPoolInput",
+          "name": "_liquidityPoolInput",
+          "type": "tuple"
         }
       ],
-      "name": "updateCollateralGnsUniV3Pool",
+      "name": "updateCollateralGnsLiquidityPool",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xea06d1bd"
+      "signature": "0x2caa6f8a"
     },
     {
       "inputs": [
