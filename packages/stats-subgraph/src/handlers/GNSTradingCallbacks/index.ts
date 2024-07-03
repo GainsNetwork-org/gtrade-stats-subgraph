@@ -137,7 +137,8 @@ function _handleMarketExecuted(
       volume,
       event.block.timestamp.toI32(),
       event.block.number.toI32(),
-      collateralSentToTrader
+      collateralSentToTrader,
+      false
     );
   }
 }
@@ -200,7 +201,8 @@ function _handleLimitExecuted(
       volume,
       event.block.timestamp.toI32(),
       event.block.number.toI32(),
-      collateralSentToTrader
+      collateralSentToTrader,
+      false
     );
   }
 }
@@ -522,7 +524,8 @@ function _handleCloseTrade(
   positionSize: BigDecimal,
   timestamp: i32,
   blockNumber: i32,
-  collateralSentToTrader: BigDecimal
+  collateralSentToTrader: BigDecimal,
+  isDeltaCollateralZero: boolean
 ): void {
   log.info("[_handleCloseTrade] [one] {} {} {} {} {} {} {} {} {}", [
     network,
@@ -537,11 +540,15 @@ function _handleCloseTrade(
   ]);
   const groupIndex = getGroupIndex(network, BigInt.fromI32(pairIndex));
   const initialCollateral = positionSize.div(leverage);
-  const pnl = collateralSentToTrader.minus(initialCollateral);
+  const pnl =
+    isDeltaCollateralZero == false
+      ? collateralSentToTrader.minus(initialCollateral)
+      : collateralSentToTrader;
   const pnlPercentage = pnl
     .div(initialCollateral)
     .times(BigDecimal.fromString("100"));
-  log.info("[_handleCloseTrade] [two] {} {} {} {}", [
+  log.info("[_handleCloseTrade] [two] {} {} {} {} {}", [
+    trader,
     pnl.toString(),
     groupIndex.toString(),
     initialCollateral.toString(),
@@ -634,6 +641,7 @@ export function handleTradeDecreased(
     event.params.values.vaultFeeCollateral,
     event.params.values.gnsStakingFeeCollateral,
     event.params.values.borrowingFeeCollateral,
+    event.params.values.existingPnlCollateral,
     event
   );
 }
@@ -650,6 +658,7 @@ function _handleTradeDecreased(
   vaultFeeCollateral: BigInt,
   stakingFeeCollateral: BigInt,
   borrowingFeeCollateral: BigInt,
+  existingPnlCollateral: BigInt,
   event: ethereum.Event
 ): void {
   log.info("[_handleTradeDecrease] [one] {} {} {} {} {}", [
@@ -661,7 +670,8 @@ function _handleTradeDecreased(
   ]);
   const allFees = vaultFeeCollateral
     .plus(stakingFeeCollateral)
-    .plus(borrowingFeeCollateral);
+    .plus(borrowingFeeCollateral)
+    .minus(existingPnlCollateral);
   const collateralDetails = getCollateralDetails(collateralIndex);
   const collateralSentToTrader = convertCollateralToDecimal(
     collatToTrader.plus(allFees),
@@ -697,6 +707,9 @@ function _handleTradeDecreased(
     ]);
     return;
   }
+  const deltaCollateralZero =
+    collateralDelta == BigInt.fromI32(0) ? true : false;
+
   _handleCloseTrade(
     collateralDetails.network,
     collateralDetails.collateral,
@@ -707,6 +720,7 @@ function _handleTradeDecreased(
     volume,
     event.block.timestamp.toI32(),
     event.block.number.toI32(),
-    collateralSentToTrader
+    collateralSentToTrader,
+    deltaCollateralZero
   );
 }
