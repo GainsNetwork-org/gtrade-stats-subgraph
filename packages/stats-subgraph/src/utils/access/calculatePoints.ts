@@ -15,7 +15,7 @@ import {
   WHITELISTED_REFEREE_MULTIPLIER,
   PNL_BLACKLISTED_ADDRESSES_12,
 } from "../constants";
-import { isTraderReferredByWhitelistedReferral } from "../contract/GNSReferrals";
+import { isTraderReferredByWhitelistedReferral } from "../contract/GNSMultiCollatDiamond";
 
 export function updatePointsOnClose(
   address: string,
@@ -353,7 +353,6 @@ export function updateFeePoints(
   const referrerDetails = isTraderReferredByWhitelistedReferral(
     dataSource.network(),
     Address.fromString(userDailyStats.address),
-    blockNumber,
     protocolWeeklyStats.epochNumber
   );
   let referrerPointBoost = ZERO_BD;

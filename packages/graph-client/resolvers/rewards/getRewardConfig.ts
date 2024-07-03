@@ -7,6 +7,7 @@ import {
 import {
   ARBITRUM_STIP_REWARDS,
   MUMBAI_STIP_REWARDS_TEST,
+  ARBITRUM_STIP_REWARDS_1,
 } from "./getActiveRewardConfigs";
 
 // @ts-ignore
@@ -22,5 +23,8 @@ export const getRewardConfig: QueryResolvers["getRewardConfig"] = (
   }
   if (id === MUMBAI_STIP_REWARDS_TEST.id) {
     return MUMBAI_STIP_REWARDS_TEST;
+  }
+  if (id === ARBITRUM_STIP_REWARDS_1.id) {
+    return ARBITRUM_STIP_REWARDS_1;
   }
 };
