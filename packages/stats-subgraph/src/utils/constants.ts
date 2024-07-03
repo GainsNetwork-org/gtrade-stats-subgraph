@@ -18,7 +18,7 @@ export const DIAMOND_ADDRESS_ARBITRUM =
 export const DIAMOND_ADDRESS_POLYGON =
   "0xFF162c694eAA571f685030649814282eA457f169";
 export const DIAMOND_ADDRESS_SEPOLIA =
-  "0xFF162c694eAA571f685030649814282eA457f169";
+  "0xd659a15812064C79E189fd950A189b15c75d3186";
 
 export function getCollateralDecimals(collateral: string): BigDecimal {
   if (collateral == COLLATERALS.DAI) {
