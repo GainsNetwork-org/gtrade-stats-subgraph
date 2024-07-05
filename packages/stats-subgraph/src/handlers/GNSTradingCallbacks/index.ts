@@ -635,6 +635,8 @@ export function handleTradeDecreased(
     event.params.collateralIndex,
     event.params.values.newLeverage,
     event.params.values.borrowingFeeCollateral,
+    event.params.values.gnsStakingFeeCollateral,
+    event.params.values.vaultFeeCollateral,
     event.params.values.existingPnlCollateral,
     event.params.values.positionSizeCollateralDelta,
     event.params.values.existingPositionSizeCollateral,
@@ -649,22 +651,25 @@ function _handleTradeDecreased(
   collateralIndex: i32,
   newLeverage: i32,
   borrowingFeeCollateral: BigInt,
+  gnsStakingFeeCollateral: BigInt,
+  vaultFeeCollateral: BigInt,
   existingPnlCollateral: BigInt,
   positionSizeCollateralDelta: BigInt,
   existingPositionSizeCollateral: BigInt,
   event: ethereum.Event
 ): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
+  const totalFees = gnsStakingFeeCollateral
+    .plus(vaultFeeCollateral)
+    .plus(borrowingFeeCollateral);
   // pnl  = (existingPnlCollateral*positionSizeCollateralDelta/existingPositionSizeCollateral) - borrowingFee
-  const pnlWithBorrowingFee = existingPnlCollateral
+  const pnlWithFees = existingPnlCollateral
     .times(positionSizeCollateralDelta)
     .div(existingPositionSizeCollateral);
-  const pnlWithoutBorrowingFee = pnlWithBorrowingFee.minus(
-    borrowingFeeCollateral
-  );
+  const pnlWithoutFees = pnlWithFees.minus(totalFees);
   // in this case, collateralSentToTrader means pnl
   const collateralSentToTrader = convertCollateralToDecimal(
-    pnlWithoutBorrowingFee,
+    pnlWithoutFees,
     collateralDetails.collateralPrecisionBd
   );
   // If delta leverage is 0, we use existing leverage, otherwise delta leverage
