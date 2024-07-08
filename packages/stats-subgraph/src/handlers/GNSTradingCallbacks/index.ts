@@ -584,13 +584,15 @@ function _handleCloseTrade(
 export function handleTradeIncreased(
   event: PositionSizeIncreaseExecuted
 ): void {
-  _handleTradeIncreased(
-    event.params.trader,
-    event.params.pairIndex,
-    event.params.values.positionSizeCollateralDelta,
-    event.params.collateralIndex,
-    event
-  );
+  if (event.params.cancelReason == 0) {
+    _handleTradeIncreased(
+      event.params.trader,
+      event.params.pairIndex,
+      event.params.values.positionSizeCollateralDelta,
+      event.params.collateralIndex,
+      event
+    );
+  }
 }
 
 function _handleTradeIncreased(
@@ -628,20 +630,22 @@ function _handleTradeIncreased(
 export function handleTradeDecreased(
   event: PositionSizeDecreaseExecuted
 ): void {
-  _handleTradeDecreased(
-    event.params.trader,
-    event.params.pairIndex,
-    event.params.leverageDelta,
-    event.params.collateralIndex,
-    event.params.values.newLeverage,
-    event.params.values.borrowingFeeCollateral,
-    event.params.values.gnsStakingFeeCollateral,
-    event.params.values.vaultFeeCollateral,
-    event.params.values.existingPnlCollateral,
-    event.params.values.positionSizeCollateralDelta,
-    event.params.values.existingPositionSizeCollateral,
-    event
-  );
+  if (event.params.cancelReason == 0) {
+    _handleTradeDecreased(
+      event.params.trader,
+      event.params.pairIndex,
+      event.params.leverageDelta,
+      event.params.collateralIndex,
+      event.params.values.newLeverage,
+      event.params.values.borrowingFeeCollateral,
+      event.params.values.gnsStakingFeeCollateral,
+      event.params.values.vaultFeeCollateral,
+      event.params.values.existingPnlCollateral,
+      event.params.values.positionSizeCollateralDelta,
+      event.params.values.existingPositionSizeCollateral,
+      event
+    );
+  }
 }
 
 function _handleTradeDecreased(
