@@ -2,6 +2,6 @@
   "network": "arbitrum-sepolia",
   "GNSMultiCollatDiamond": {
     "address": "0xd659a15812064c79e189fd950a189b15c75d3186",
-    "startBlock": 55108651
+    "startBlock": 60828568
   }
 }
