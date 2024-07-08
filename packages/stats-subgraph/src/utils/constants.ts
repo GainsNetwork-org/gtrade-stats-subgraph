@@ -216,7 +216,8 @@ export const EPOCH_7_WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   // "0x38a0FceA985F77e955D7526d569E695536EaA551".toLowerCase(), // talkchain 01-31-24
   "0xdD4D5538F0d7C364272c927d39216A22de0B0482".toLowerCase(), // wang 01-31-24
   "0x3Af0e0Cb6E87D67C2708debb77AE3F8ACD7493b5".toLowerCase(), // sparegas4lambro 01-31-24
-  // "0x8521058b9a8c48346e02d263884b7E2Bd504deC8".toLowerCase(), // reetika 01-31-24
+  // "0x8521058b9a8c48346e02d263884b7E2Bd504deC8".toLowerCase(), // reetika 01-31-24,
+  "0x8Ff333b98337f39e5FBD0DFE8F65d6dBDFB9fAa9".toLowerCase(), // TDG 07-08-24
 ];
 
 export function isWhitelistedReferralByEpoch(

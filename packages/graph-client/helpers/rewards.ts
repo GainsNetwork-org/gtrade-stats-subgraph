@@ -215,17 +215,18 @@ export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x011ba9dF834FeB01E5E14F3297412BA766b78d21".toLowerCase(), // kenji
   "0xC5Ed611f03Fe94D7c1f28aA4037864A459857cE5".toLowerCase(), // hiroba
   "0x065741Ffb08D26102E646Da3492bDD27256E864a".toLowerCase(), // dn48dme
-  "0x4c7685b92fc94778012cc716e4326874db91debb".toLowerCase(), // capitalismlab
-  "0x10846f7269cefCB99D31C163ca901688267D5859".toLowerCase(), // weilin
+  // "0x4c7685b92fc94778012cc716e4326874db91debb".toLowerCase(), // capitalismlab
+  // "0x10846f7269cefCB99D31C163ca901688267D5859".toLowerCase(), // weilin
   "0x9325564ADe7683706107685Cf1993678B1163261".toLowerCase(), // cryptowesearch
   "0x1CD70057d52D98E3DBA24c2A7e461d168050C4D2".toLowerCase(), // bee
   "0x6a2664aba79A4F026c2fe34Be983B1Da96795565".toLowerCase(), // hoot
   "0xE7Da4dAAae1BD738A071500dca1d37E9d48b965D".toLowerCase(), // giba
   "0x3161d1f5edb3f9ceebfb3e258681484b82ae3ea4".toLowerCase(), // june
-  "0x38a0FceA985F77e955D7526d569E695536EaA551".toLowerCase(), // talkchain epoch 6
-  "0xdD4D5538F0d7C364272c927d39216A22de0B0482".toLowerCase(), // wang epoch 6
+  // "0x38a0FceA985F77e955D7526d569E695536EaA551".toLowerCase(), // talkchain epoch 6
+  // "0xdD4D5538F0d7C364272c927d39216A22de0B0482".toLowerCase(), // wang epoch 6
   "0x3Af0e0Cb6E87D67C2708debb77AE3F8ACD7493b5".toLowerCase(), // sparegas4lambro epoch 6
-  "0x8521058b9a8c48346e02d263884b7E2Bd504deC8".toLowerCase(), // reetika epoch 6
+  // "0x8521058b9a8c48346e02d263884b7E2Bd504deC8".toLowerCase(), // reetika epoch 6,
+  "0x8Ff333b98337f39e5FBD0DFE8F65d6dBDFB9fAa9".toLowerCase(), // TDG 07-08-24 epoch 27
 ];
 export const WHITELISTED_REFEREE_MULTIPLIER = 0.1;
 export const WHITELISTED_REFERRER_MULTIPLIER = 0.15;
