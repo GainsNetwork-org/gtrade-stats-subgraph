@@ -137,7 +137,19 @@ export const ARBITRUM_STIP_REWARDS_1 = {
     relSkill: 0.0,
     diversity: 0.0,
   },
-  rewardDistributionOverrides: [],
+  rewardDistributionOverrides: [
+    {
+      startEpoch: 4,
+      endEpoch: 7,
+      rewardDistribution: {
+        loyalty: 0.0,
+        fee: 1,
+        absSkill: 0.0,
+        relSkill: 0.0,
+        diversity: 0.0,
+      },
+    },
+  ],
   rewardsPairIx: 109,
   capFeeRewards: true,
 };
