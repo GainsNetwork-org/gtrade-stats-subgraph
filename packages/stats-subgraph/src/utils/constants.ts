@@ -223,6 +223,10 @@ export const EPOCH_27_WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x8Ff333b98337f39e5FBD0DFE8F65d6dBDFB9fAa9".toLowerCase(), // TDG 07-08-24
 ];
 
+export const EPOCH_33_WHITELISTED_REFERRAL_ADDRESSES: string[] = [
+  "0x1E9a79b222093149592FBE97DBdB8A576B33b66A".toLowerCase(), // Spindl 2
+];
+
 export function isWhitelistedReferralByEpoch(
   referral: string,
   epoch: i32
@@ -234,11 +238,18 @@ export function isWhitelistedReferralByEpoch(
       WHITELISTED_REFERRAL_ADDRESSES.includes(referral) ||
       EPOCH_7_WHITELISTED_REFERRAL_ADDRESSES.includes(referral)
     );
-  } else {
+  } else if (epoch < 33) {
     return (
       WHITELISTED_REFERRAL_ADDRESSES.includes(referral) ||
       EPOCH_7_WHITELISTED_REFERRAL_ADDRESSES.includes(referral) ||
       EPOCH_27_WHITELISTED_REFERRAL_ADDRESSES.includes(referral)
+    );
+  } else {
+    return (
+      WHITELISTED_REFERRAL_ADDRESSES.includes(referral) ||
+      EPOCH_7_WHITELISTED_REFERRAL_ADDRESSES.includes(referral) ||
+      EPOCH_27_WHITELISTED_REFERRAL_ADDRESSES.includes(referral) ||
+      EPOCH_33_WHITELISTED_REFERRAL_ADDRESSES.includes(referral)
     );
   }
 }
