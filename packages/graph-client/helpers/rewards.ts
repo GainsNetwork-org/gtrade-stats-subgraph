@@ -227,6 +227,7 @@ export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x3Af0e0Cb6E87D67C2708debb77AE3F8ACD7493b5".toLowerCase(), // sparegas4lambro epoch 6
   // "0x8521058b9a8c48346e02d263884b7E2Bd504deC8".toLowerCase(), // reetika epoch 6,
   "0x8Ff333b98337f39e5FBD0DFE8F65d6dBDFB9fAa9".toLowerCase(), // TDG 07-08-24 epoch 27
+  "0x1E9a79b222093149592FBE97DBdB8A576B33b66A".toLowerCase(), // Spindl2 08-08-24 epoch 33
 ];
 
 export const WHITELISTED_REFEREE_MULTIPLIER = 0.1;
