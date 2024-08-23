@@ -196,6 +196,9 @@ export const AGGREGATOR_ADDRESSES = [
   "0xec9581354f7750Bc8194E3e801f8eE1D91e2a8Ac".toLowerCase(), // mumbai - test account
 ];
 
+// NOTE: Originally whitelisted addresses were specified at epoch level
+// Now, subgraphs are grafting on to the existing subgraph, so it's no longer necessary
+// One list of whitelisted addresses is sufficient
 export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0xd79f4811f2b603649c82AeDA0143719D86Ab6574".toLowerCase(), // mumbai - test account
   "0x011ba9dF834FeB01E5E14F3297412BA766b78d21".toLowerCase(), // kenji
@@ -208,6 +211,8 @@ export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x6a2664aba79A4F026c2fe34Be983B1Da96795565".toLowerCase(), // hoot
   "0xE7Da4dAAae1BD738A071500dca1d37E9d48b965D".toLowerCase(), // giba
   "0x3161d1f5edb3f9ceebfb3e258681484b82ae3ea4".toLowerCase(), // june
+  "0x60d1994b91cb8566de1b2200bdf8d94e9e76b267".toLowerCase(), // exodus (epoch 34)
+  "0x1E9a79b222093149592FBE97DBdB8A576B33b66A".toLowerCase(), // spindl (epoch 34)
 ];
 
 // this is so the subgraph is backwards compatible
@@ -346,4 +351,8 @@ export const PNL_BLACKLISTED_ADDRESSES_12: string[] = [
   "0x910fb1ad7e0451eccbc514c17ddc51062289f131",
   "0xf915da10e5136352ba049acb0545deb119054256",
   "0xffe1591037e5f0ff460a8ca19353c735570395b0",
+];
+
+export const BLACKLIST: string[] = [
+  "0x4415af1941df328b5ada8f93a7141abaec8296df",
 ];
