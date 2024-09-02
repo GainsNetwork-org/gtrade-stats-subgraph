@@ -140,7 +140,7 @@ export const ARBITRUM_STIP_REWARDS_1 = {
   rewardDistributionOverrides: [
     {
       startEpoch: 4,
-      endEpoch: 8,
+      endEpoch: 9,
       rewardDistribution: {
         loyalty: 0.0,
         fee: 1,
