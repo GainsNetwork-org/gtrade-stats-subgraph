@@ -7,7 +7,7 @@ export const GTOKEN_SUBGRAPH = {
 
 export const STATS_SUBGRAPH = {
   137: "",
-  42161: "2DojWYiz95VaenV4aaYnGGHywZuNgHAjsYjVZGPk3gHV",
+  42161: "HSP3yDXzM5pWeBfFAADPLYu6RFYwo9vg5zdpMMmQeVpe",
   80001: "",
   421614: "",
 };

@@ -43,8 +43,8 @@ dataSources:
           handler: handleStakerFeeCharged
         - event: GTokenFeeCharged(indexed address,indexed uint8,uint256)
           handler: handleLpFeeCharged
-        - event: PositionSizeDecreaseExecuted((address,uint32),uint8,indexed uint8,indexed address,indexed uint256,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,int256,uint256,uint256,uint256,int256,int256,uint120,uint24))
+        - event: PositionSizeDecreaseExecuted((address,uint32),uint8,indexed uint8,indexed address,indexed uint256,uint256,bool,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256,int256,int256,uint120,uint24))
           handler: handleTradeDecreased
-        - event: PositionSizeIncreaseExecuted((address,uint32),uint8,indexed uint8,indexed address,indexed uint256,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256,uint256,uint256))
-          handler: handleTradeIncreased             
+        - event: PositionSizeIncreaseExecuted((address,uint32),uint8,indexed uint8,indexed address,indexed uint256,uint256,bool,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256,uint256,uint256))
+          handler: handleTradeIncreased                
       file: ./src/handlers/GNSTradingCallbacks/index.ts      
