@@ -358,7 +358,7 @@ export const BLACKLIST: string[] = [
   "0x4415af1941df328b5ada8f93a7141abaec8296df",
 ];
 
-export function isAltcoin(network: string, pairId: number): boolean {
+export function isAltcoin(network: string, pairId: i32): boolean {
   const groupIndex = getGroupIndex(network, BigInt.fromI32(pairId));
 
   if (

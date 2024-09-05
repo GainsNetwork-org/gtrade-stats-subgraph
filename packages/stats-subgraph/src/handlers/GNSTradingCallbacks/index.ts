@@ -76,7 +76,7 @@ function getPairIndex(
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     if (event.topics[0].toHexString() == eventHash2) {
-      const pairIx1 = parseInt(event.topics[1].toHexString(), 16);
+      const pairIx1 = BigInt.fromUnsignedBytes(event.topics[1]).toI32();
       if (isAltcoin(network, pairIx1)) {
         return true;
       }
@@ -703,7 +703,7 @@ function _handleTradeIncreased(
   event: ethereum.Event
 ): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
-  if (!isAltcoin(collateralDetails.network, parseInt(pairIndex.toString()))) {
+  if (!isAltcoin(collateralDetails.network, pairIndex.toI32())) {
     log.debug("[handleTradeIncreased] Not altcoin, skipping {}", [
       event.transaction.hash.toHexString(),
     ]);
@@ -769,7 +769,7 @@ function _handleTradeDecreased(
   event: ethereum.Event
 ): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
-  if (!isAltcoin(collateralDetails.network, parseInt(pairIndex.toString()))) {
+  if (!isAltcoin(collateralDetails.network, pairIndex.toI32())) {
     log.debug("[handleTradeDecreased] Not altcoin, skipping {}", [
       event.transaction.hash.toHexString(),
     ]);

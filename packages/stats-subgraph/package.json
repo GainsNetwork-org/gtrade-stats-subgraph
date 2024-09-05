@@ -21,7 +21,7 @@
     "prepare:arbitrum": "mustache config/arbitrum.json subgraph.yaml.mustache > subgraph.yaml",
     "prepare:polygon": "mustache config/polygon.json no-graft.yaml.mustache > subgraph.yaml",
     "prepare:sepolia": "mustache config/sepolia.json no-graft.yaml.mustache > subgraph.yaml",
-    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:studio gtrade-stats-arbitrum-v6",
+    "deploy:arbitrum": "pnpm clean && pnpm configure:arbitrum && pnpm deploy:studio gtrade-stats-arbitrum-test",
     "deploy:polygon": "pnpm clean && pnpm configure:polygon && pnpm deploy:studio gtrade-stats-polygon",
     "deploy:sepolia": "pnpm clean && pnpm configure:sepolia && pnpm deploy:studio gtrade-stats-sepolia"
   },
