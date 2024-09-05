@@ -1,7 +1,7 @@
 {
   "network": "arbitrum-one",
   "graft": {
-    "base": "QmYwzYEe1bvm54iNAtsQoRqpyWtCE39bvjye5FTEDFhzp5",
+    "base": "2DojWYiz95VaenV4aaYnGGHywZuNgHAjsYjVZGPk3gHV",
     "block": 248331882
   },
   "GNSMultiCollatDiamond": {

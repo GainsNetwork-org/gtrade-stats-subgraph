@@ -5,6 +5,7 @@ import {
   exponentToBigDecimal,
   getDiamondAddress,
   isWhitelistedReferralByEpoch,
+  BLACKLIST,
 } from "../../constants";
 
 export class WhitelistedReferralResponse {
@@ -28,9 +29,14 @@ export function isTraderReferredByAggregator(
   if (referrer.reverted) {
     return false;
   }
-  return AGGREGATOR_ADDRESSES.includes(
+  const isTraderBlacklisted = BLACKLIST.includes(
+    trader.toHexString().toLowerCase()
+  );
+  const isTradeReferredByAggregator = AGGREGATOR_ADDRESSES.includes(
     referrer.value.toHexString().toLowerCase()
   );
+
+  return isTraderBlacklisted || isTradeReferredByAggregator;
 }
 
 export function isTraderReferredByWhitelistedReferral(
