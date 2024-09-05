@@ -1,4 +1,5 @@
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { getGroupIndex } from "./contract";
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const ZERO_BD = BigDecimal.fromString("0");
 export const ONE_BD = BigDecimal.fromString("1");
@@ -357,23 +358,13 @@ export const BLACKLIST: string[] = [
   "0x4415af1941df328b5ada8f93a7141abaec8296df",
 ];
 
-export const ALTCOINS: number[] = [
-  2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 31, 32,
-  33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
-  52, 53, 54, 55, 56, 57, 102, 103, 104, 105, 106, 107, 108, 109, 128, 129, 130,
-  131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
-  146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160,
-  161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175,
-  176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 191, 192, 193, 194,
-  195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
-  210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224,
-  225, 226, 227, 228, 230, 231, 232, 233, 234, 235, 236, 237, 238, 240, 241,
-  242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 255, 256, 257,
-  258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268,
-];
+export function isAltcoin(network: string, pairId: number): boolean {
+  const groupIndex = getGroupIndex(network, BigInt.fromI32(pairId));
 
-export function isAltcoin(pairId: number): boolean {
-  if (ALTCOINS.includes(pairId)) {
+  if (
+    groupIndex.toI32() == 10 ||
+    (groupIndex.toI32() == 0 && pairId != 0 && pairId != 1)
+  ) {
     return true;
   }
   return false;
