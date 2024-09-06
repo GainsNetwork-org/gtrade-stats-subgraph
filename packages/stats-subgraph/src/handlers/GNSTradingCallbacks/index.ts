@@ -43,6 +43,7 @@ import { getCollateralPrice } from "../../utils/contract/GNSMultiCollatDiamond";
 import {
   getCollateralDecimals,
   getCollateralfromIndex,
+  hexToI32,
   isAltcoin,
 } from "../../utils/constants";
 
@@ -76,7 +77,12 @@ function getPairIndex(
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     if (event.topics[0].toHexString() == eventHash2) {
-      const pairIx1 = BigInt.fromUnsignedBytes(event.topics[1]).toI32();
+      const pairIx1 = hexToI32(event.topics[1].toHex());
+      log.debug("[getPairIndex] hex: {} , pairIx1: {}", [
+        event.topics[1].toHex(),
+        pairIx1.toString(),
+      ]);
+
       if (isAltcoin(network, pairIx1)) {
         return true;
       }

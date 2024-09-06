@@ -369,3 +369,27 @@ export function isAltcoin(network: string, pairId: i32): boolean {
   }
   return false;
 }
+
+export function hexToI32(hexString: string): i32 {
+  if (hexString.startsWith("0x")) {
+    hexString = hexString.slice(2);
+  }
+
+  hexString = hexString.slice(-8).padStart(8, "0");
+
+  let result: i32 = 0;
+  for (let i = 0; i < 8; i++) {
+    let digit: i32 = 0;
+    let char = hexString.charAt(i);
+    if (char >= "0" && char <= "9") {
+      digit = char.charCodeAt(0) - "0".charCodeAt(0);
+    } else if (char >= "a" && char <= "f") {
+      digit = char.charCodeAt(0) - "a".charCodeAt(0) + 10;
+    } else if (char >= "A" && char <= "F") {
+      digit = char.charCodeAt(0) - "A".charCodeAt(0) + 10;
+    }
+    result = (result << 4) | digit;
+  }
+
+  return result;
+}
