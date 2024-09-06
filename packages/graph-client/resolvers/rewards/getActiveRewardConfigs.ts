@@ -128,7 +128,7 @@ export const ARBITRUM_STIP_REWARDS_1 = {
   active: true,
   totalRewards: 1800000,
   epochType: "week" as EpochType,
-  numEpochs: 11,
+  numEpochs: 12,
   startingEpoch: 27,
   rewardDistribution: {
     loyalty: 0.05,
@@ -139,6 +139,18 @@ export const ARBITRUM_STIP_REWARDS_1 = {
   },
   rewardDistributionOverrides: [
     {
+      startEpoch: 0,
+      endEpoch: 3,
+      rewardDistribution: {
+        loyalty: 0.05,
+        fee: 0.85,
+        absSkill: 0.1,
+        relSkill: 0.0,
+        diversity: 0.0,
+        total: 1800000 / 11,
+      },
+    },
+    {
       startEpoch: 4,
       endEpoch: 9,
       rewardDistribution: {
@@ -147,6 +159,19 @@ export const ARBITRUM_STIP_REWARDS_1 = {
         absSkill: 0.0,
         relSkill: 0.0,
         diversity: 0.0,
+        total: 1800000 / 11,
+      },
+    },
+    {
+      startEpoch: 10,
+      endEpoch: 11,
+      rewardDistribution: {
+        loyalty: 0.1,
+        fee: 0.7,
+        absSkill: 0.2,
+        relSkill: 0.0,
+        diversity: 0.0,
+        total: 1800000 / 11 / 2,
       },
     },
   ],
