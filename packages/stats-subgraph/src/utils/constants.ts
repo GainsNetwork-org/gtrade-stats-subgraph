@@ -1,4 +1,5 @@
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { getGroupIndex } from "./contract";
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const ZERO_BD = BigDecimal.fromString("0");
 export const ONE_BD = BigDecimal.fromString("1");
@@ -356,3 +357,39 @@ export const PNL_BLACKLISTED_ADDRESSES_12: string[] = [
 export const BLACKLIST: string[] = [
   "0x4415af1941df328b5ada8f93a7141abaec8296df",
 ];
+
+export function isAltcoin(network: string, pairId: i32): boolean {
+  const groupIndex = getGroupIndex(network, BigInt.fromI32(pairId));
+
+  if (
+    groupIndex.toI32() == 10 ||
+    (groupIndex.toI32() == 0 && pairId != 0 && pairId != 1)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+export function hexToI32(hexString: string): i32 {
+  if (hexString.startsWith("0x")) {
+    hexString = hexString.slice(2);
+  }
+
+  hexString = hexString.slice(-8).padStart(8, "0");
+
+  let result: i32 = 0;
+  for (let i = 0; i < 8; i++) {
+    let digit: i32 = 0;
+    let char = hexString.charAt(i);
+    if (char >= "0" && char <= "9") {
+      digit = char.charCodeAt(0) - "0".charCodeAt(0);
+    } else if (char >= "a" && char <= "f") {
+      digit = char.charCodeAt(0) - "a".charCodeAt(0) + 10;
+    } else if (char >= "A" && char <= "F") {
+      digit = char.charCodeAt(0) - "A".charCodeAt(0) + 10;
+    }
+    result = (result << 4) | digit;
+  }
+
+  return result;
+}
