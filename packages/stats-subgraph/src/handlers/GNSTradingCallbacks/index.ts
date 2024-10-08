@@ -53,9 +53,6 @@ const eventHash = crypto
   )
   .toHexString();
 
-const eventHash2 =
-  "0x1d01fcc0e82c93f463da710266800aff752bf7da2435090b30616276602eb75a";
-
 function wasTradeOpenCanceled(receipt: ethereum.TransactionReceipt): boolean {
   const events = receipt.logs;
   for (let i = 0; i < events.length; i++) {
