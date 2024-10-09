@@ -185,7 +185,7 @@ export const BASE_STIP_REWARDS_0 = {
   totalRewards: 25000,
   epochType: "week" as EpochType,
   numEpochs: 4,
-  startingEpoch: 42,
+  startingEpoch: 41,
   rewardDistribution: {
     loyalty: 0.05,
     fee: 0.85,
