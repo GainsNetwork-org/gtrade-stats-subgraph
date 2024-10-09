@@ -179,8 +179,8 @@ export const ARBITRUM_STIP_REWARDS_1 = {
   capFeeRewards: true,
 };
 
-export const BASE_STIP_REWARDS_0 = {
-  id: "base-stip-0",
+export const BASE_GNS_REWARDS_0 = {
+  id: "base-gns-0",
   active: true,
   totalRewards: 25000,
   epochType: "week" as EpochType,
@@ -210,7 +210,7 @@ export const getActiveRewardConfigs: QueryResolvers["getActiveRewardConfigs"] =
     }
 
     if (+chainId === 8453) {
-      return [BASE_STIP_REWARDS_0];
+      return [BASE_GNS_REWARDS_0];
     }
 
     return [];
