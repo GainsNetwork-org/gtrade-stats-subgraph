@@ -1,6 +1,6 @@
 {
   "name": "@gainsnetwork/graph-client",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Client library for Gains Network GraphQL API",
   "main": ".graphclient/index.js",
   "types": ".graphclient/index.d.ts",
