@@ -202,11 +202,11 @@ export const getActiveRewardConfigs: QueryResolvers["getActiveRewardConfigs"] =
   (root, args, context): Query["getActiveRewardConfigs"] => {
     const { chainId } = context;
     if (+chainId === 42161) {
-      return [ARBITRUM_STIP_REWARDS_1];
+      return [];
     }
 
     if (+chainId === 80001) {
-      return [MUMBAI_STIP_REWARDS_TEST];
+      return [];
     }
 
     if (+chainId === 8453) {
