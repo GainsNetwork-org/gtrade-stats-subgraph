@@ -28,7 +28,7 @@ import {
   GovFeeCharged,
   ReferralFeeCharged,
   TriggerFeeCharged,
-  GnsStakingFeeCharged,
+  GnsOtcFeeCharged,
   GTokenFeeCharged,
   MarketExecutedTStruct,
   LimitExecutedTStruct,
@@ -43,8 +43,6 @@ import { getCollateralPrice } from "../../utils/contract/GNSMultiCollatDiamond";
 import {
   getCollateralDecimals,
   getCollateralfromIndex,
-  hexToI32,
-  isAltcoin,
 } from "../../utils/constants";
 
 const eventHash = crypto
@@ -55,37 +53,12 @@ const eventHash = crypto
   )
   .toHexString();
 
-const eventHash2 =
-  "0x1d01fcc0e82c93f463da710266800aff752bf7da2435090b30616276602eb75a";
-
 function wasTradeOpenCanceled(receipt: ethereum.TransactionReceipt): boolean {
   const events = receipt.logs;
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     if (event.topics[0].toHexString() == eventHash) {
       return true;
-    }
-  }
-  return false;
-}
-
-function getPairIndex(
-  receipt: ethereum.TransactionReceipt,
-  network: string
-): boolean {
-  const events = receipt.logs;
-  for (let i = 0; i < events.length; i++) {
-    const event = events[i];
-    if (event.topics[0].toHexString() == eventHash2) {
-      const pairIx1 = hexToI32(event.topics[1].toHex());
-      log.debug("[getPairIndex] hex: {} , pairIx1: {}", [
-        event.topics[1].toHex(),
-        pairIx1.toString(),
-      ]);
-
-      if (isAltcoin(network, pairIx1)) {
-        return true;
-      }
     }
   }
   return false;
@@ -124,12 +97,6 @@ function _handleMarketExecuted(
   event: ethereum.Event
 ): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
-  if (!isAltcoin(collateralDetails.network, trade.pairIndex)) {
-    log.debug("[handleMarketExecuted] Not altcoin, skipping {}", [
-      event.transaction.hash.toHexString(),
-    ]);
-    return;
-  }
   const collateralSentToTrader = convertCollateralToDecimal(
     daiSentToTrader,
     collateralDetails.collateralPrecisionBd
@@ -195,12 +162,6 @@ function _handleLimitExecuted(
   event: ethereum.Event
 ): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
-  if (!isAltcoin(collateralDetails.network, trade.pairIndex)) {
-    log.debug("[handleLimitExecuted] Not altcoin, skipping {}", [
-      event.transaction.hash.toHexString(),
-    ]);
-    return;
-  }
   const collateralSentToTrader = convertCollateralToDecimal(
     daiSentToTrader,
     collateralDetails.collateralPrecisionBd
@@ -249,17 +210,6 @@ function _handleLimitExecuted(
 
 export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
   const collateralDetails = getCollateralDetails(event.params.collateralIndex);
-  if (
-    !getPairIndex(
-      event.receipt as ethereum.TransactionReceipt,
-      collateralDetails.network
-    )
-  ) {
-    log.debug("[handleBorrowingFeeCharged] Not altcoin, skipping {}", [
-      event.transaction.hash.toHexString(),
-    ]);
-    return;
-  }
   const trader = event.params.trader.toHexString();
   const borrowingFee = convertCollateralToDecimal(
     event.params.amountCollateral,
@@ -296,17 +246,6 @@ export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
 
 export function handleGovFeeCharged(event: GovFeeCharged): void {
   const collateralDetails = getCollateralDetails(event.params.collateralIndex);
-  if (
-    !getPairIndex(
-      event.receipt as ethereum.TransactionReceipt,
-      collateralDetails.network
-    )
-  ) {
-    log.debug("[handleGovFeeCharged] Not altcoin, skipping {}", [
-      event.transaction.hash.toHexString(),
-    ]);
-    return;
-  }
   const trader = event.params.trader.toHexString();
   const govFee = convertCollateralToDecimal(
     event.params.amountCollateral,
@@ -359,17 +298,6 @@ export function handleGovFeeCharged(event: GovFeeCharged): void {
 
 export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
   const collateralDetails = getCollateralDetails(event.params.collateralIndex);
-  if (
-    !getPairIndex(
-      event.receipt as ethereum.TransactionReceipt,
-      collateralDetails.network
-    )
-  ) {
-    log.debug("[handleReferralFeeCharged] Not altcoin, skipping {}", [
-      event.transaction.hash.toHexString(),
-    ]);
-    return;
-  }
   const trader = event.params.trader.toHexString();
   const referralFee = convertCollateralToDecimal(
     event.params.amountCollateral,
@@ -419,17 +347,6 @@ export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
 
 export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
   const collateralDetails = getCollateralDetails(event.params.collateralIndex);
-  if (
-    !getPairIndex(
-      event.receipt as ethereum.TransactionReceipt,
-      collateralDetails.network
-    )
-  ) {
-    log.debug("[handleTriggerFeeCharged] Not altcoin, skipping {}", [
-      event.transaction.hash.toHexString(),
-    ]);
-    return;
-  }
   const trader = event.params.trader.toHexString();
   const triggerFee = convertCollateralToDecimal(
     event.params.amountCollateral,
@@ -478,19 +395,8 @@ export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
   );
 }
 
-export function handleStakerFeeCharged(event: GnsStakingFeeCharged): void {
+export function handleStakerFeeCharged(event: GnsOtcFeeCharged): void {
   const collateralDetails = getCollateralDetails(event.params.collateralIndex);
-  if (
-    !getPairIndex(
-      event.receipt as ethereum.TransactionReceipt,
-      collateralDetails.network
-    )
-  ) {
-    log.debug("[handleStakerFeeCharged] Not altcoin, skipping {}", [
-      event.transaction.hash.toHexString(),
-    ]);
-    return;
-  }
   const trader = event.params.trader.toHexString();
   const stakerFee = convertCollateralToDecimal(
     event.params.amountCollateral,
@@ -536,17 +442,6 @@ export function handleStakerFeeCharged(event: GnsStakingFeeCharged): void {
 
 export function handleLpFeeCharged(event: GTokenFeeCharged): void {
   const collateralDetails = getCollateralDetails(event.params.collateralIndex);
-  if (
-    !getPairIndex(
-      event.receipt as ethereum.TransactionReceipt,
-      collateralDetails.network
-    )
-  ) {
-    log.debug("[handleLpFeeCharged] Not altcoin, skipping {}", [
-      event.transaction.hash.toHexString(),
-    ]);
-    return;
-  }
   const trader = event.params.trader.toHexString();
   const lpFee = convertCollateralToDecimal(
     event.params.amountCollateral,
@@ -709,12 +604,6 @@ function _handleTradeIncreased(
   event: ethereum.Event
 ): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
-  if (!isAltcoin(collateralDetails.network, pairIndex.toI32())) {
-    log.debug("[handleTradeIncreased] Not altcoin, skipping {}", [
-      event.transaction.hash.toHexString(),
-    ]);
-    return;
-  }
   const volume = convertCollateralToDecimal(
     positionSize,
     collateralDetails.collateralPrecisionBd
@@ -750,8 +639,7 @@ export function handleTradeDecreased(
       event.params.collateralIndex,
       event.params.values.newLeverage,
       event.params.values.borrowingFeeCollateral,
-      event.params.values.gnsStakingFeeCollateral,
-      event.params.values.vaultFeeCollateral,
+      event.params.values.closingFeeCollateral,
       event.params.values.existingPnlCollateral,
       event.params.values.positionSizeCollateralDelta,
       event.params.values.existingPositionSizeCollateral,
@@ -767,23 +655,14 @@ function _handleTradeDecreased(
   collateralIndex: i32,
   newLeverage: i32,
   borrowingFeeCollateral: BigInt,
-  gnsStakingFeeCollateral: BigInt,
-  vaultFeeCollateral: BigInt,
+  closingFeeCollateral: BigInt,
   existingPnlCollateral: BigInt,
   positionSizeCollateralDelta: BigInt,
   existingPositionSizeCollateral: BigInt,
   event: ethereum.Event
 ): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
-  if (!isAltcoin(collateralDetails.network, pairIndex.toI32())) {
-    log.debug("[handleTradeDecreased] Not altcoin, skipping {}", [
-      event.transaction.hash.toHexString(),
-    ]);
-    return;
-  }
-  const totalFees = gnsStakingFeeCollateral
-    .plus(vaultFeeCollateral)
-    .plus(borrowingFeeCollateral);
+  const totalFees = closingFeeCollateral.plus(borrowingFeeCollateral);
   // pnl  = (existingPnlCollateral*positionSizeCollateralDelta/existingPositionSizeCollateral) - borrowingFee
   const pnlWithFees = existingPnlCollateral
     .times(positionSizeCollateralDelta)
