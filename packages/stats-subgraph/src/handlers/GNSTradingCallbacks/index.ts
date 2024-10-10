@@ -28,7 +28,7 @@ import {
   GovFeeCharged,
   ReferralFeeCharged,
   TriggerFeeCharged,
-  GnsStakingFeeCharged,
+  GnsOtcFeeCharged,
   GTokenFeeCharged,
   MarketExecutedTStruct,
   LimitExecutedTStruct,
@@ -395,7 +395,7 @@ export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
   );
 }
 
-export function handleStakerFeeCharged(event: GnsStakingFeeCharged): void {
+export function handleStakerFeeCharged(event: GnsOtcFeeCharged): void {
   const collateralDetails = getCollateralDetails(event.params.collateralIndex);
   const trader = event.params.trader.toHexString();
   const stakerFee = convertCollateralToDecimal(
@@ -639,8 +639,7 @@ export function handleTradeDecreased(
       event.params.collateralIndex,
       event.params.values.newLeverage,
       event.params.values.borrowingFeeCollateral,
-      event.params.values.gnsStakingFeeCollateral,
-      event.params.values.vaultFeeCollateral,
+      event.params.values.closingFeeCollateral,
       event.params.values.existingPnlCollateral,
       event.params.values.positionSizeCollateralDelta,
       event.params.values.existingPositionSizeCollateral,
@@ -656,17 +655,14 @@ function _handleTradeDecreased(
   collateralIndex: i32,
   newLeverage: i32,
   borrowingFeeCollateral: BigInt,
-  gnsStakingFeeCollateral: BigInt,
-  vaultFeeCollateral: BigInt,
+  closingFeeCollateral: BigInt,
   existingPnlCollateral: BigInt,
   positionSizeCollateralDelta: BigInt,
   existingPositionSizeCollateral: BigInt,
   event: ethereum.Event
 ): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
-  const totalFees = gnsStakingFeeCollateral
-    .plus(vaultFeeCollateral)
-    .plus(borrowingFeeCollateral);
+  const totalFees = closingFeeCollateral.plus(borrowingFeeCollateral);
   // pnl  = (existingPnlCollateral*positionSizeCollateralDelta/existingPositionSizeCollateral) - borrowingFee
   const pnlWithFees = existingPnlCollateral
     .times(positionSizeCollateralDelta)
