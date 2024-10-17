@@ -182,7 +182,7 @@ export const ARBITRUM_STIP_REWARDS_1 = {
 export const BASE_GNS_REWARDS_0 = {
   id: "base-gns-0",
   active: true,
-  totalRewards: 25000,
+  totalRewards: 20000,
   epochType: "week" as EpochType,
   numEpochs: 4,
   startingEpoch: 42,
