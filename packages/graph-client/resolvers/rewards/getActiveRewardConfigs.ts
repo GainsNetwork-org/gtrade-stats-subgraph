@@ -6,7 +6,7 @@ import {
 
 export const ARBITRUM_STIP_REWARDS = {
   id: "arbitrum-stip-0",
-  active: true,
+  active: false,
   totalRewards: 3825000,
   epochType: "week" as EpochType,
   numEpochs: 13,
@@ -71,7 +71,7 @@ export const ARBITRUM_STIP_REWARDS = {
 
 export const MUMBAI_STIP_REWARDS_TEST = {
   id: "mumbai-0-test",
-  active: true,
+  active: false,
   totalRewards: 3825000,
   epochType: "week" as EpochType,
   numEpochs: 15,
@@ -125,7 +125,7 @@ export const MUMBAI_STIP_REWARDS_TEST = {
 
 export const ARBITRUM_STIP_REWARDS_1 = {
   id: "arbitrum-stip-1",
-  active: true,
+  active: false,
   totalRewards: 1800000,
   epochType: "week" as EpochType,
   numEpochs: 12,
@@ -179,15 +179,38 @@ export const ARBITRUM_STIP_REWARDS_1 = {
   capFeeRewards: true,
 };
 
+export const BASE_GNS_REWARDS_0 = {
+  id: "base-gns-0",
+  active: true,
+  totalRewards: 25000,
+  epochType: "week" as EpochType,
+  numEpochs: 4,
+  startingEpoch: 42,
+  rewardDistribution: {
+    loyalty: 0.1,
+    fee: 0.55,
+    absSkill: 0.35,
+    relSkill: 0.0,
+    diversity: 0.0,
+  },
+  rewardDistributionOverrides: [],
+  rewardsPairIx: -1, // GNS
+  capFeeRewards: true,
+};
+
 export const getActiveRewardConfigs: QueryResolvers["getActiveRewardConfigs"] =
   (root, args, context): Query["getActiveRewardConfigs"] => {
     const { chainId } = context;
     if (+chainId === 42161) {
-      return [ARBITRUM_STIP_REWARDS_1];
+      return [];
     }
 
     if (+chainId === 80001) {
-      return [MUMBAI_STIP_REWARDS_TEST];
+      return [];
+    }
+
+    if (+chainId === 8453) {
+      return [BASE_GNS_REWARDS_0];
     }
 
     return [];

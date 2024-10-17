@@ -14,12 +14,15 @@ export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
 export const MULTI_COLLAT_BLOCK_ARBITRUM = 173285454;
 export const MULTI_COLLAT_BLOCK_POLYGON = 52650382;
 export const MULTI_COLLAT_BLOCK_SEPOLIA = 44357232;
+export const MULTI_COLLAT_BLOCK_BASE = 20318895;
 export const DIAMOND_ADDRESS_ARBITRUM =
   "0xFF162c694eAA571f685030649814282eA457f169";
 export const DIAMOND_ADDRESS_POLYGON =
   "0xFF162c694eAA571f685030649814282eA457f169";
 export const DIAMOND_ADDRESS_SEPOLIA =
   "0xd659a15812064C79E189fd950A189b15c75d3186";
+export const DIAMOND_ADDRESS_BASE =
+  "0x6cD5aC19a07518A8092eEFfDA4f1174C72704eeb";
 
 export function getCollateralDecimals(collateral: string): BigDecimal {
   if (collateral == COLLATERALS.DAI) {
@@ -39,17 +42,8 @@ export function getCollateralDecimals(collateral: string): BigDecimal {
 
 export function getCollateralfromIndex(collateralIndex: i32): string {
   if (collateralIndex == 1) {
-    return "dai";
-  }
-
-  if (collateralIndex == 2) {
-    return "eth";
-  }
-
-  if (collateralIndex == 3) {
     return "usdc";
   }
-
   throw new Error("Collateral not supported");
 }
 //DIVERSITY POINTS THRESHOLDS BY GROUP
@@ -84,12 +78,14 @@ class Networks {
   POLYGON!: string;
   SEPOLIA!: string;
   ARBITRUM!: string;
+  BASE!: string;
 }
 
 export const NETWORKS: Networks = {
   POLYGON: "matic",
   SEPOLIA: "arbitrum-sepolia",
   ARBITRUM: "arbitrum-one",
+  BASE: "base",
 };
 
 class EpochTypes {
@@ -171,6 +167,10 @@ export function getMultiCollatBlock(network: string): i32 {
     return MULTI_COLLAT_BLOCK_SEPOLIA;
   }
 
+  if (network == NETWORKS.BASE) {
+    return MULTI_COLLAT_BLOCK_BASE;
+  }
+
   throw new Error("Network not supported");
 }
 
@@ -185,6 +185,10 @@ export function getDiamondAddress(network: string): string {
 
   if (network == NETWORKS.SEPOLIA) {
     return DIAMOND_ADDRESS_SEPOLIA;
+  }
+
+  if (network == NETWORKS.BASE) {
+    return DIAMOND_ADDRESS_BASE;
   }
 
   throw new Error("Network not supported");
@@ -357,39 +361,3 @@ export const PNL_BLACKLISTED_ADDRESSES_12: string[] = [
 export const BLACKLIST: string[] = [
   "0x4415af1941df328b5ada8f93a7141abaec8296df",
 ];
-
-export function isAltcoin(network: string, pairId: i32): boolean {
-  const groupIndex = getGroupIndex(network, BigInt.fromI32(pairId));
-
-  if (
-    groupIndex.toI32() == 10 ||
-    (groupIndex.toI32() == 0 && pairId != 0 && pairId != 1)
-  ) {
-    return true;
-  }
-  return false;
-}
-
-export function hexToI32(hexString: string): i32 {
-  if (hexString.startsWith("0x")) {
-    hexString = hexString.slice(2);
-  }
-
-  hexString = hexString.slice(-8).padStart(8, "0");
-
-  let result: i32 = 0;
-  for (let i = 0; i < 8; i++) {
-    let digit: i32 = 0;
-    let char = hexString.charAt(i);
-    if (char >= "0" && char <= "9") {
-      digit = char.charCodeAt(0) - "0".charCodeAt(0);
-    } else if (char >= "a" && char <= "f") {
-      digit = char.charCodeAt(0) - "a".charCodeAt(0) + 10;
-    } else if (char >= "A" && char <= "F") {
-      digit = char.charCodeAt(0) - "A".charCodeAt(0) + 10;
-    }
-    result = (result << 4) | digit;
-  }
-
-  return result;
-}
