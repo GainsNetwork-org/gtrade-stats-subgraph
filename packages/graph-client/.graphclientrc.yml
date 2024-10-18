@@ -2,7 +2,7 @@ sources:
   - name: gtrade-stats
     handler:
       graphql:
-        endpoint: https://gateway-arbitrum.network.thegraph.com/api/{context.apiKey:34948ca8a5e572dddca38d54943c693c}/subgraphs/id/{context.graphName:6S1MZukteu9DbiYYcKnNuw3tYqZD2br3E26ywnwgW2FL}
+        endpoint: https://gateway-arbitrum.network.thegraph.com/api/{context.apiKey:34948ca8a5e572dddca38d54943c693c}/deployments/id/{context.graphName:Qmc2hgE7f9otZvD2xp1SuzatKwXKFgrr9rRp8zW85EoFGM}
         retry: 3
 
     transforms:

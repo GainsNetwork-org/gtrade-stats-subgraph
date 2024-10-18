@@ -8,8 +8,8 @@ export const GTOKEN_SUBGRAPH = {
 
 export const STATS_SUBGRAPH = {
   137: "",
-  42161: "HSP3yDXzM5pWeBfFAADPLYu6RFYwo9vg5zdpMMmQeVpe",
+  42161: "Qmc2hgE7f9otZvD2xp1SuzatKwXKFgrr9rRp8zW85EoFGM",
   80001: "",
   421614: "",
-  8453: "EJeTLXXHku65Xa1UFtHNFdQfiEPKAcrc9qGCruEU4WMr",
+  8453: "QmPTy2XPi3VJKjtnWTbFHwk4mzzPkRN9wGpPpztveMBFsM",
 };
