@@ -12,7 +12,7 @@ export const STATS_SUBGRAPH = {
   42161: "Qmc2hgE7f9otZvD2xp1SuzatKwXKFgrr9rRp8zW85EoFGM",
   80001: "",
   421614: "",
-  8453: "QmPTy2XPi3VJKjtnWTbFHwk4mzzPkRN9wGpPpztveMBFsM",
+  8453: "the-buidler---mm--534985/gtrade-stats-base",
   33139: "the-buidler---mm--534985/gtrade-stats-base",
 };
 
@@ -26,7 +26,7 @@ export const CHAIN_SUBGRAPH_PROVIDER = {
   42161: ProviderType.THEGRAPH,
   80001: ProviderType.THEGRAPH,
   421614: ProviderType.THEGRAPH,
-  8453: ProviderType.THEGRAPH,
+  8453: ProviderType.ALCHEMY,
   33139: ProviderType.ALCHEMY,
 };
 
