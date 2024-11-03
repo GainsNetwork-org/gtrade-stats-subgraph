@@ -31,10 +31,11 @@ export const CHAIN_SUBGRAPH_PROVIDER = {
 };
 
 export const buildSubgraphEndpoint = (
-  provider: ProviderType,
+  chainId: number,
   apiKey: string,
   graphName: string
 ) => {
+  const provider = CHAIN_SUBGRAPH_PROVIDER[chainId];
   switch (provider) {
     case ProviderType.THEGRAPH:
       return `https://gateway-arbitrum.network.thegraph.com/api/${apiKey}/deployments/id/${graphName}`;
