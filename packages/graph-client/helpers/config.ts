@@ -12,7 +12,7 @@ export const STATS_SUBGRAPH = {
   42161: "Qmc2hgE7f9otZvD2xp1SuzatKwXKFgrr9rRp8zW85EoFGM",
   80001: "",
   421614: "",
-  8453: "the-buidler---mm--534985/gtrade-stats-base",
+  8453: "EJeTLXXHku65Xa1UFtHNFdQfiEPKAcrc9qGCruEU4WMr",
   33139: "the-buidler---mm--534985/gtrade-stats-base",
 };
 
@@ -32,14 +32,14 @@ export const CHAIN_SUBGRAPH_PROVIDER = {
 
 export const buildSubgraphEndpoint = (
   chainId: number,
-  apiKey: string,
-  graphName: string
+  graphName: string,
+  apiKeys: { [ProviderType.THEGRAPH]: string; [ProviderType.ALCHEMY]: string }
 ) => {
   const provider = CHAIN_SUBGRAPH_PROVIDER[chainId];
   switch (provider) {
     case ProviderType.THEGRAPH:
-      return `https://gateway-arbitrum.network.thegraph.com/api/${apiKey}/deployments/id/${graphName}`;
+      return `gateway-arbitrum.network.thegraph.com/api/${apiKeys[ProviderType.THEGRAPH]}/deployments/id/${graphName}`;
     case ProviderType.ALCHEMY:
-      return `https://subgraph.satsuma-prod.com/${apiKey}/${graphName}/api`;
+      return `subgraph.satsuma-prod.com/${apiKeys[ProviderType.ALCHEMY]}/${graphName}/api`;
   }
 };

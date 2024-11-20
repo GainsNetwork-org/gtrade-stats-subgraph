@@ -2,7 +2,7 @@ sources:
   - name: gtrade-stats
     handler:
       graphql:
-        endpoint: ${context.subgraphEndpoint:https://gateway-arbitrum.network.thegraph.com/api/34948ca8a5e572dddca38d54943c693c/deployments/id/Qmc2hgE7f9otZvD2xp1SuzatKwXKFgrr9rRp8zW85EoFGM}
+        endpoint: https://{context.subgraphEndpoint:gateway-arbitrum.network.thegraph.com/api/34948ca8a5e572dddca38d54943c693c/deployments/id/Qmc2hgE7f9otZvD2xp1SuzatKwXKFgrr9rRp8zW85EoFGM}
         retry: 3
 
     transforms:
@@ -77,4 +77,4 @@ documents:
   - ./queries/*.gql
 
 codegen:
-  contextType: "MeshContext & { chainId: string; graphName: string; }"
+  contextType: "MeshContext & { chainId: string; graphName: string; apiKey: string; subgraphEndpoint: string; }"
