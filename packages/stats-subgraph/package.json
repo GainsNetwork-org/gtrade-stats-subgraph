@@ -13,7 +13,7 @@
     "build": "npx graph build",
     "codegen": "npx graph codegen --output-dir src/types/",
     "deploy": "npx graph deploy --debug --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/",
-    "deploy:alchemy": "npx graph deploy --node https://subgraphs.alchemy.com/api/subgraphs/deploy --deploy-key sWXXbAx5gGF9W --ipfs https://ipfs.satsuma.xyz",
+    "deploy:alchemy": "npx graph deploy --node https://subgraphs.alchemy.com/api/subgraphs/deploy --deploy-key ${ALCHEMY_DEPLOY_KEY} --ipfs https://ipfs.satsuma.xyz",
     "deploy:hosted": "npx graph deploy --product hosted-service --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/",
     "deploy:studio": "npx graph deploy --studio",
     "configure:arbitrum": "pnpm clean && pnpm prepare:arbitrum && pnpm codegen",
@@ -30,7 +30,7 @@
     "deploy:base": "pnpm clean && pnpm configure:base && pnpm deploy:studio gtrade-stats-base",
     "deploy:apechain": "pnpm clean && pnpm configure:apechain && pnpm deploy:alchemy gtrade-stats-apechain",
     "deploy:polygon": "pnpm clean && pnpm configure:polygon && pnpm deploy:studio gtrade-stats-polygon",
-    "deploy:sepolia": "pnpm clean && pnpm configure:sepolia && pnpm deploy:alchemy gtrade-stats-sepolia"
+    "deploy:sepolia": "pnpm clean && pnpm configure:sepolia && pnpm deploy:studio gtrade-stats-sepolia"
   },
   "devDependencies": {
     "@graphprotocol/graph-ts": "0.31.0",
