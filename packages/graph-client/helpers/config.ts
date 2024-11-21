@@ -26,7 +26,7 @@ export const CHAIN_SUBGRAPH_PROVIDER = {
   42161: ProviderType.THEGRAPH,
   80001: ProviderType.THEGRAPH,
   421614: ProviderType.THEGRAPH,
-  8453: ProviderType.ALCHEMY,
+  8453: ProviderType.THEGRAPH,
   33139: ProviderType.ALCHEMY,
 };
 
