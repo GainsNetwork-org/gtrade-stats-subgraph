@@ -308,6 +308,7 @@ export function isWhitelistedReferralByEpoch(
 }
 
 export const WHITELISTED_REFEREE_MULTIPLIER = BigDecimal.fromString("0.10");
+
 export const WHITELISTED_REFERRER_MULTIPLIER = BigDecimal.fromString("0.15");
 
 export const PNL_BLACKLISTED_ADDRESSES_12: string[] = [
@@ -427,3 +428,5 @@ export const MARKET_EXECUTED_ABI_SIGNATURE =
 
 export const LIMIT_EXECUTED_ABI_SIGNATURE =
   "(tuple(address,uint32),tuple(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,uint192),address,uint8,uint256,uint256,uint256,uint256,int256,uint256,uint256,bool)";
+
+export const MIN_LEVERAGE = 20;

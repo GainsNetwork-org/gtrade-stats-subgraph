@@ -48,6 +48,7 @@ import {
   LIMIT_EXECUTED_HASH,
   MARKET_EXECUTED_ABI_SIGNATURE,
   LIMIT_EXECUTED_ABI_SIGNATURE,
+  MIN_LEVERAGE,
 } from "../../utils/constants";
 
 const eventHash = crypto
@@ -92,7 +93,7 @@ function getLeverage(receipt: ethereum.TransactionReceipt): boolean {
       ]);
     }
 
-    if (leverage >= 20) {
+    if (leverage >= MIN_LEVERAGE) {
       return true;
     }
   }
@@ -172,7 +173,7 @@ function _handleMarketExecuted(
     return;
   }
 
-  if (leverage.lt(BigDecimal.fromString("20"))) {
+  if (leverage.lt(BigDecimal.fromString(MIN_LEVERAGE.toString()))) {
     log.info(
       "[handleMarketExecuted] Leverage less than 20, skipping . Transaction: {}, Leverage: {}",
       [event.transaction.hash.toHexString(), leverage.toString()]
@@ -244,7 +245,7 @@ function _handleLimitExecuted(
     return;
   }
 
-  if (leverage.lt(BigDecimal.fromString("20"))) {
+  if (leverage.lt(BigDecimal.fromString(MIN_LEVERAGE.toString()))) {
     log.info(
       "[handleLimitExecuted] Leverage less than 20, skipping . Transaction: {}, Leverage: {}",
       [event.transaction.hash.toHexString(), leverage.toString()]
@@ -706,6 +707,7 @@ export function handleTradeIncreased(
       event.params.pairIndex,
       event.params.values.positionSizeCollateralDelta,
       event.params.collateralIndex,
+      event.params.values.newLeverage,
       event
     );
   }
@@ -716,6 +718,7 @@ function _handleTradeIncreased(
   pairIndex: BigInt,
   positionSize: BigInt,
   collateralIndex: i32,
+  newLeverage: BigInt,
   event: ethereum.Event
 ): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
@@ -723,6 +726,8 @@ function _handleTradeIncreased(
     positionSize,
     collateralDetails.collateralPrecisionBd
   );
+  const leverage_raw = BigDecimal.fromString(newLeverage.toString());
+  const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
 
   log.info("[handleTradeIncreased] {}", [event.transaction.hash.toHexString()]);
 
@@ -732,6 +737,15 @@ function _handleTradeIncreased(
     ]);
     return;
   }
+
+  if (leverage.lt(BigDecimal.fromString(MIN_LEVERAGE.toString()))) {
+    log.info(
+      "[handleTradeIncreased] Leverage less than 20, skipping . Transaction: {}, Leverage: {}",
+      [event.transaction.hash.toHexString(), leverage.toString()]
+    );
+    return;
+  }
+
   _handleOpenTrade(
     collateralDetails.network,
     collateralDetails.collateral,
@@ -800,10 +814,20 @@ function _handleTradeDecreased(
     collateralDetails.collateralPrecisionBd
   );
   log.info("[handleTradeDecreased] {}", [event.transaction.hash.toHexString()]);
+
   if (isTraderReferredByAggregator(collateralDetails.network, trader)) {
     log.info("[handleTradeDecreased] Aggregator referral {}", [
       event.transaction.hash.toHexString(),
     ]);
+    return;
+  }
+  const new_leverage_raw = BigDecimal.fromString(newLeverage.toString());
+  const new_leverage = new_leverage_raw.div(BigDecimal.fromString("1000"));
+  if (new_leverage.lt(BigDecimal.fromString(MIN_LEVERAGE.toString()))) {
+    log.info(
+      "[handleTradeDecreased] Leverage less than 20, skipping . Transaction: {}, Leverage: {}",
+      [event.transaction.hash.toHexString(), leverage.toString()]
+    );
     return;
   }
 
