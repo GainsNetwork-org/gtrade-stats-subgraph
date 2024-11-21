@@ -415,3 +415,15 @@ export const PNL_BLACKLISTED_ADDRESSES_12: string[] = [
 export const BLACKLIST: string[] = [
   "0x4415af1941df328b5ada8f93a7141abaec8296df",
 ];
+
+export const MARKET_EXECUTED_HASH =
+  "0x26d428c63a1c5161a75dbe15e1e65bc7bf932acb203db2a47df55b16a60d35b1";
+
+export const LIMIT_EXECUTED_HASH =
+  "0x33b71dccfeb2f3e0f4ed2a9f7c05255d8c5aa57936b542245a5e63c938301597";
+
+export const MARKET_EXECUTED_ABI_SIGNATURE =
+  "(tuple(address,uint32),tuple(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,uint192),bool,uint256,uint256,uint256,uint256,int256,uint256,uint256)";
+
+export const LIMIT_EXECUTED_ABI_SIGNATURE =
+  "(tuple(address,uint32),tuple(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,uint192),address,uint8,uint256,uint256,uint256,uint256,int256,uint256,uint256,bool)";
