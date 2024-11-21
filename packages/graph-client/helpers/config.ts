@@ -13,7 +13,7 @@ export const STATS_SUBGRAPH = {
   80001: "",
   421614: "",
   8453: "EJeTLXXHku65Xa1UFtHNFdQfiEPKAcrc9qGCruEU4WMr",
-  33139: "the-buidler---mm--534985/gtrade-stats-base",
+  33139: "the-buidler---mm--534985/gtrade-stats-apechain",
 };
 
 export enum ProviderType {
