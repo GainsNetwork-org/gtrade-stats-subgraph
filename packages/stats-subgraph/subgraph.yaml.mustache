@@ -47,6 +47,6 @@ dataSources:
           receipt: true
         - event: PositionSizeDecreaseExecuted((address,uint32),uint8,indexed uint8,indexed address,uint256,indexed uint256,bool,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint256,int256,uint256,uint256,int256,int256,uint120,uint24))
           handler: handleTradeDecreased
-        - event: PositionSizeIncreaseExecuted((address,uint32),uint8,indexed uint8,indexed address,uint256,indexed uint256,bool,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256,uint256,uint256))
+        - event: PositionSizeIncreaseExecuted((address,uint32),uint8,indexed uint8,indexed address,uint256,indexed uint256,bool,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256,uint256,uint256,uint256))
           handler: handleTradeIncreased             
       file: ./src/handlers/GNSTradingCallbacks/index.ts      

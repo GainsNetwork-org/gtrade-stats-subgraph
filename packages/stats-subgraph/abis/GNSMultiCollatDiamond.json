@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "GNSMultiCollatDiamond",
-  "sourceName": "contracts/global/GNSMultiCollatDiamond.sol",
+  "sourceName": "contracts/core/diamonds/GNSMergedDiamond.sol",
+  "contractName": "GNSMergedDiamond",
   "abi": [
     {
       "inputs": [],
@@ -57,6 +57,11 @@
     {
       "inputs": [],
       "name": "InsufficientBalance",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidAddress",
       "type": "error"
     },
     {
@@ -7906,6 +7911,11 @@
     },
     {
       "inputs": [],
+      "name": "ReentrancyGuardReentrantCall",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "WaitTimeout",
       "type": "error"
     },
@@ -8609,6 +8619,11 @@
             },
             {
               "internalType": "uint256",
+              "name": "oldPosSizePlusPnlCollateral",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
               "name": "newOpenPrice",
               "type": "uint256"
             },
@@ -8641,7 +8656,7 @@
       ],
       "name": "PositionSizeIncreaseExecuted",
       "type": "event",
-      "signature": "0xf09a9c949c4bd4cbe75b424bea11c683c3ae55e7cdb8321c3ec37e01af72c8d5"
+      "signature": "0x4627b6cfd38b837edb1d42b0c6c92e6ba06fded47652e32ce388fcaf3d513477"
     },
     {
       "anonymous": false,
@@ -8955,6 +8970,40 @@
     {
       "inputs": [
         {
+          "internalType": "uint32",
+          "name": "_index",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint120",
+          "name": "_collateralDelta",
+          "type": "uint120"
+        },
+        {
+          "internalType": "uint24",
+          "name": "_leverageDelta",
+          "type": "uint24"
+        },
+        {
+          "internalType": "uint64",
+          "name": "_expectedPrice",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint16",
+          "name": "_maxSlippageP",
+          "type": "uint16"
+        }
+      ],
+      "name": "increasePositionSizeNative",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function",
+      "signature": "0x731104ba"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint16",
           "name": "_marketOrdersTimeoutBlocks",
           "type": "uint16"
@@ -9246,6 +9295,25 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x0bce9aaa"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint32",
+          "name": "_index",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint24",
+          "name": "_newLeverage",
+          "type": "uint24"
+        }
+      ],
+      "name": "updateLeverageNative",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function",
+      "signature": "0x0065efc8"
     },
     {
       "inputs": [
@@ -11287,6 +11355,184 @@
       "name": "TradeBorrowingCallbackHandled",
       "type": "event",
       "signature": "0x1d4556af371eac83495a853ba4f1af8a2d4e0c76ab08719dbd24b372cfc0acc3"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "_collateralIndex",
+          "type": "uint8"
+        }
+      ],
+      "name": "getAllBorrowingPairs",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "feePerBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint64",
+              "name": "accFeeLong",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "accFeeShort",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint48",
+              "name": "accLastUpdatedBlock",
+              "type": "uint48"
+            },
+            {
+              "internalType": "uint48",
+              "name": "feeExponent",
+              "type": "uint48"
+            }
+          ],
+          "internalType": "struct IBorrowingFees.BorrowingData[]",
+          "name": "",
+          "type": "tuple[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint72",
+              "name": "long",
+              "type": "uint72"
+            },
+            {
+              "internalType": "uint72",
+              "name": "short",
+              "type": "uint72"
+            },
+            {
+              "internalType": "uint72",
+              "name": "max",
+              "type": "uint72"
+            },
+            {
+              "internalType": "uint40",
+              "name": "__placeholder",
+              "type": "uint40"
+            }
+          ],
+          "internalType": "struct IBorrowingFees.OpenInterest[]",
+          "name": "",
+          "type": "tuple[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint16",
+              "name": "groupIndex",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint48",
+              "name": "block",
+              "type": "uint48"
+            },
+            {
+              "internalType": "uint64",
+              "name": "initialAccFeeLong",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "initialAccFeeShort",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "prevGroupAccFeeLong",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "prevGroupAccFeeShort",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "pairAccFeeLong",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "pairAccFeeShort",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "__placeholder",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct IBorrowingFees.BorrowingPairGroup[][]",
+          "name": "",
+          "type": "tuple[][]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x48da5b38"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "_collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint16",
+          "name": "_groupIndex",
+          "type": "uint16"
+        }
+      ],
+      "name": "getBorrowingGroup",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "feePerBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint64",
+              "name": "accFeeLong",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "accFeeShort",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint48",
+              "name": "accLastUpdatedBlock",
+              "type": "uint48"
+            },
+            {
+              "internalType": "uint48",
+              "name": "feeExponent",
+              "type": "uint48"
+            }
+          ],
+          "internalType": "struct IBorrowingFees.BorrowingData",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xfff24740"
     },
     {
       "inputs": [
@@ -13942,6 +14188,123 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0xac9650d8"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "enabled",
+          "type": "bool"
+        }
+      ],
+      "name": "NativeTransferEnabledUpdated",
+      "type": "event",
+      "signature": "0x2cc920a9e8bbfc19b048a3db4be815c4211e93faa33e0b1e97def344aac8aaa3"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint16",
+          "name": "newLimit",
+          "type": "uint16"
+        }
+      ],
+      "name": "NativeTransferGasLimitUpdated",
+      "type": "event",
+      "signature": "0xfbfcf05095de3956a64c56736502dd8e0280a6050ab0de536ce23c8725b61408"
+    },
+    {
+      "inputs": [],
+      "name": "getNativeTransferEnabled",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x3bfab75c"
+    },
+    {
+      "inputs": [],
+      "name": "getNativeTransferGasLimit",
+      "outputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x7a5c9d1e"
+    },
+    {
+      "inputs": [],
+      "name": "getReentrancyLock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x40ee2847"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "_nativeTransferGasLimit",
+          "type": "uint16"
+        },
+        {
+          "internalType": "bool",
+          "name": "_nativeTransferEnabled",
+          "type": "bool"
+        }
+      ],
+      "name": "initializeChainConfig",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x885af326"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "_nativeTransferEnabled",
+          "type": "bool"
+        }
+      ],
+      "name": "updateNativeTransferEnabled",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x7644f242"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "_nativeTransferGasLimit",
+          "type": "uint16"
+        }
+      ],
+      "name": "updateNativeTransferGasLimit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xe085d2a7"
     }
   ],
   "deployedBytecode": "",
