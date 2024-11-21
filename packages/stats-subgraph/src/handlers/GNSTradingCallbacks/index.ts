@@ -96,11 +96,10 @@ function getLeverage(receipt: ethereum.TransactionReceipt): boolean {
       return true;
     }
   }
-  return false; // Return false if no event had leverage >= 20
+  return false;
 }
 
 function extractLeverage(data: Bytes, abiSignature: string): i32 {
-  // Decode the `data` structure based on the provided ABI signature
   let decoded = ethereum.decode(abiSignature, data);
 
   if (decoded) {
