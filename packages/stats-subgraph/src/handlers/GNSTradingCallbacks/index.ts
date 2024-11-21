@@ -73,7 +73,7 @@ class CollateralDetails {
 
 function getCollateralDetails(collateralIndex: i32): CollateralDetails {
   const network = dataSource.network();
-  const collateral = getCollateralfromIndex(collateralIndex);
+  const collateral = getCollateralfromIndex(network, collateralIndex);
   const collateralToUsd = getCollateralPrice(network, collateralIndex);
   const collateralPrecisionBd = getCollateralDecimals(collateral);
   return { collateral, collateralToUsd, network, collateralPrecisionBd };
