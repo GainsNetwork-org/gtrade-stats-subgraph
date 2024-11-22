@@ -2,7 +2,7 @@ sources:
   - name: gtrade-stats
     handler:
       graphql:
-        endpoint: https://{context.subgraphEndpoint:gateway-arbitrum.network.thegraph.com/api/34948ca8a5e572dddca38d54943c693c/deployments/id/Qmc2hgE7f9otZvD2xp1SuzatKwXKFgrr9rRp8zW85EoFGM}
+        endpoint: https://{context.subgraphEndpoint:gateway-arbitrum.network.thegraph.com/api/34948ca8a5e572dddca38d54943c693c/subgraphs/id/HSP3yDXzM5pWeBfFAADPLYu6RFYwo9vg5zdpMMmQeVpe}
         retry: 3
 
     transforms:
@@ -13,7 +13,7 @@ sources:
   - name: gtoken
     handler:
       graphql:
-        endpoint: https://gateway-arbitrum.network.thegraph.com/api/{context.apiKey:34948ca8a5e572dddca38d54943c693c}/subgraphs/id/{context.graphName:J9WvpchpS1Sd5fQ4t7grJgMeC3nFTgHuJJe88YnkoaPF}
+        endpoint: https://{context.subgraphEndpoint:gateway-arbitrum.network.thegraph.com/api/34948ca8a5e572dddca38d54943c693c/subgraphs/id/J9WvpchpS1Sd5fQ4t7grJgMeC3nFTgHuJJe88YnkoaPF}
         retry: 3
 
 additionalTypeDefs: |
