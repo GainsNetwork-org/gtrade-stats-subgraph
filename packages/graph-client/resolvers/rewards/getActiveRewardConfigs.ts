@@ -201,7 +201,7 @@ export const BASE_GNS_REWARDS_0 = {
 export const APECHAIN_APE_REWARDS_0 = {
   id: "apechain-ape-0",
   active: true,
-  totalRewards: 90909,
+  totalRewards: 86956,
   epochType: "week" as EpochType,
   numEpochs: 4,
   startingEpoch: 48,
