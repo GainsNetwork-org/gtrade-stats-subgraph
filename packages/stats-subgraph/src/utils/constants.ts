@@ -9,12 +9,15 @@ export const USDC_DECIMALS = 6;
 export const USDC_DECIMALS_BD = exponentToBigDecimal(USDC_DECIMALS);
 export const ETH_DECIMALS = 18;
 export const ETH_DECIMALS_BD = exponentToBigDecimal(ETH_DECIMALS);
+export const APE_DECIMALS = 18;
+export const APE_DECIMALS_BD = exponentToBigDecimal(APE_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
 export const MULTI_COLLAT_BLOCK_ARBITRUM = 173285454;
 export const MULTI_COLLAT_BLOCK_POLYGON = 52650382;
 export const MULTI_COLLAT_BLOCK_SEPOLIA = 44357232;
 export const MULTI_COLLAT_BLOCK_BASE = 20318895;
+export const MULTI_COLLAT_BLOCK_APECHAIN = 4603247;
 export const DIAMOND_ADDRESS_ARBITRUM =
   "0xFF162c694eAA571f685030649814282eA457f169";
 export const DIAMOND_ADDRESS_POLYGON =
@@ -23,6 +26,8 @@ export const DIAMOND_ADDRESS_SEPOLIA =
   "0xd659a15812064C79E189fd950A189b15c75d3186";
 export const DIAMOND_ADDRESS_BASE =
   "0x6cD5aC19a07518A8092eEFfDA4f1174C72704eeb";
+export const DIAMOND_ADDRESS_APECHAIN =
+  "0x2BE5D7058AdBa14Bc38E4A83E94A81f7491b0163";
 
 export function getCollateralDecimals(collateral: string): BigDecimal {
   if (collateral == COLLATERALS.DAI) {
@@ -37,15 +42,13 @@ export function getCollateralDecimals(collateral: string): BigDecimal {
     return USDC_DECIMALS_BD;
   }
 
+  if (collateral == COLLATERALS.APE) {
+    return APE_DECIMALS_BD;
+  }
+
   throw new Error("Collateral not supported");
 }
 
-export function getCollateralfromIndex(collateralIndex: i32): string {
-  if (collateralIndex == 1) {
-    return "usdc";
-  }
-  throw new Error("Collateral not supported");
-}
 //DIVERSITY POINTS THRESHOLDS BY GROUP
 export const THRESHOLD_GROUP_0 = BigDecimal.fromString("100");
 export const THRESHOLD_GROUP_1 = BigDecimal.fromString("250");
@@ -65,6 +68,7 @@ class Collaterals {
   DAI!: string;
   ETH!: string;
   USDC!: string;
+  APE!: string;
 }
 
 export const COLLATERALS: Collaterals = {
@@ -72,6 +76,7 @@ export const COLLATERALS: Collaterals = {
   DAI: "dai",
   ETH: "eth",
   USDC: "usdc",
+  APE: "ape",
 };
 
 class Networks {
@@ -79,6 +84,7 @@ class Networks {
   SEPOLIA!: string;
   ARBITRUM!: string;
   BASE!: string;
+  APECHAIN!: string;
 }
 
 export const NETWORKS: Networks = {
@@ -86,7 +92,47 @@ export const NETWORKS: Networks = {
   SEPOLIA: "arbitrum-sepolia",
   ARBITRUM: "arbitrum-one",
   BASE: "base",
+  APECHAIN: "apechain-mainnet",
 };
+
+export function getCollateralfromIndex(
+  network: string,
+  collateralIndex: i32
+): string {
+  if (network == NETWORKS.ARBITRUM) {
+    if (collateralIndex == 1) {
+      return "dai";
+    } else if (collateralIndex == 2) {
+      return "eth";
+    } else if (collateralIndex == 3) {
+      return "usdc";
+    }
+  }
+
+  if (network == NETWORKS.POLYGON) {
+    if (collateralIndex == 1) {
+      return "dai";
+    } else if (collateralIndex == 2) {
+      return "eth";
+    } else if (collateralIndex == 3) {
+      return "usdc";
+    }
+  }
+
+  if (network == NETWORKS.BASE) {
+    if (collateralIndex == 1) {
+      return "usdc";
+    }
+  }
+
+  if (network == NETWORKS.APECHAIN) {
+    if (collateralIndex == 1) {
+      return "ape";
+    }
+  }
+
+  throw new Error("Collateral not supported");
+}
 
 class EpochTypes {
   DAY!: string;
@@ -171,6 +217,10 @@ export function getMultiCollatBlock(network: string): i32 {
     return MULTI_COLLAT_BLOCK_BASE;
   }
 
+  if (network == NETWORKS.APECHAIN) {
+    return MULTI_COLLAT_BLOCK_APECHAIN;
+  }
+
   throw new Error("Network not supported");
 }
 
@@ -189,6 +239,10 @@ export function getDiamondAddress(network: string): string {
 
   if (network == NETWORKS.BASE) {
     return DIAMOND_ADDRESS_BASE;
+  }
+
+  if (network == NETWORKS.APECHAIN) {
+    return DIAMOND_ADDRESS_APECHAIN;
   }
 
   throw new Error("Network not supported");
@@ -254,6 +308,7 @@ export function isWhitelistedReferralByEpoch(
 }
 
 export const WHITELISTED_REFEREE_MULTIPLIER = BigDecimal.fromString("0.10");
+
 export const WHITELISTED_REFERRER_MULTIPLIER = BigDecimal.fromString("0.15");
 
 export const PNL_BLACKLISTED_ADDRESSES_12: string[] = [
@@ -361,3 +416,17 @@ export const PNL_BLACKLISTED_ADDRESSES_12: string[] = [
 export const BLACKLIST: string[] = [
   "0x4415af1941df328b5ada8f93a7141abaec8296df",
 ];
+
+export const MARKET_EXECUTED_HASH =
+  "0x26d428c63a1c5161a75dbe15e1e65bc7bf932acb203db2a47df55b16a60d35b1";
+
+export const LIMIT_EXECUTED_HASH =
+  "0x33b71dccfeb2f3e0f4ed2a9f7c05255d8c5aa57936b542245a5e63c938301597";
+
+export const MARKET_EXECUTED_ABI_SIGNATURE =
+  "(tuple(address,uint32),tuple(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,uint192),bool,uint256,uint256,uint256,uint256,int256,uint256,uint256)";
+
+export const LIMIT_EXECUTED_ABI_SIGNATURE =
+  "(tuple(address,uint32),tuple(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,uint192),address,uint8,uint256,uint256,uint256,uint256,int256,uint256,uint256,bool)";
+
+export const MIN_LEVERAGE = 20;

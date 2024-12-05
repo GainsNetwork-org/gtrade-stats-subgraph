@@ -7,6 +7,7 @@ import {
   Address,
   crypto,
   ByteArray,
+  Bytes,
 } from "@graphprotocol/graph-ts";
 import {
   addBorrowingFeeStats,
@@ -43,6 +44,11 @@ import { getCollateralPrice } from "../../utils/contract/GNSMultiCollatDiamond";
 import {
   getCollateralDecimals,
   getCollateralfromIndex,
+  MARKET_EXECUTED_HASH,
+  LIMIT_EXECUTED_HASH,
+  MARKET_EXECUTED_ABI_SIGNATURE,
+  LIMIT_EXECUTED_ABI_SIGNATURE,
+  MIN_LEVERAGE,
 } from "../../utils/constants";
 
 const eventHash = crypto
@@ -64,6 +70,56 @@ function wasTradeOpenCanceled(receipt: ethereum.TransactionReceipt): boolean {
   return false;
 }
 
+function getLeverage(receipt: ethereum.TransactionReceipt): boolean {
+  const events = receipt.logs;
+
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+    let leverage: i32 = 0;
+
+    if (event.topics[0].toHexString() == MARKET_EXECUTED_HASH) {
+      leverage = extractLeverage(event.data, MARKET_EXECUTED_ABI_SIGNATURE);
+
+      log.info("[leverageFromMarketExecuted] Transaction: {}, Leverage: {}", [
+        event.transactionHash.toHexString(),
+        leverage.toString(),
+      ]);
+    } else if (event.topics[0].toHexString() == LIMIT_EXECUTED_HASH) {
+      leverage = extractLeverage(event.data, LIMIT_EXECUTED_ABI_SIGNATURE);
+
+      log.info("[leverageFromLimitExecuted] Transaction: {}, Leverage: {}", [
+        event.transactionHash.toHexString(),
+        leverage.toString(),
+      ]);
+    }
+
+    if (leverage >= MIN_LEVERAGE) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function extractLeverage(data: Bytes, abiSignature: string): i32 {
+  let decoded = ethereum.decode(abiSignature, data);
+
+  if (decoded) {
+    let result = decoded.toTuple();
+    let tradeTuple = result[1].toTuple();
+    let leverage = tradeTuple[3].toI32();
+    let normalizedLeverage = leverage / 1000;
+
+    log.info("Decoded and normalized leverage: {}", [
+      normalizedLeverage.toString(),
+    ]);
+
+    return normalizedLeverage;
+  } else {
+    log.error("Failed to decode event data", []);
+    return 0;
+  }
+}
+
 class CollateralDetails {
   collateral: string;
   collateralToUsd: BigDecimal;
@@ -73,7 +129,7 @@ class CollateralDetails {
 
 function getCollateralDetails(collateralIndex: i32): CollateralDetails {
   const network = dataSource.network();
-  const collateral = getCollateralfromIndex(collateralIndex);
+  const collateral = getCollateralfromIndex(network, collateralIndex);
   const collateralToUsd = getCollateralPrice(network, collateralIndex);
   const collateralPrecisionBd = getCollateralDecimals(collateral);
   return { collateral, collateralToUsd, network, collateralPrecisionBd };
@@ -114,6 +170,14 @@ function _handleMarketExecuted(
     log.info("[handleMarketExecuted] Aggregator referral {}", [
       event.transaction.hash.toHexString(),
     ]);
+    return;
+  }
+
+  if (leverage.lt(BigDecimal.fromString(MIN_LEVERAGE.toString()))) {
+    log.info(
+      "[handleMarketExecuted] Leverage less than 20, skipping . Transaction: {}, Leverage: {}",
+      [event.transaction.hash.toHexString(), leverage.toString()]
+    );
     return;
   }
 
@@ -181,6 +245,14 @@ function _handleLimitExecuted(
     return;
   }
 
+  if (leverage.lt(BigDecimal.fromString(MIN_LEVERAGE.toString()))) {
+    log.info(
+      "[handleLimitExecuted] Leverage less than 20, skipping . Transaction: {}, Leverage: {}",
+      [event.transaction.hash.toHexString(), leverage.toString()]
+    );
+    return;
+  }
+
   if (orderType == 0 || orderType == 2 || orderType == 3) {
     _handleOpenTrade(
       collateralDetails.network,
@@ -232,6 +304,14 @@ export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
     return;
   }
 
+  if (!getLeverage(event.receipt as ethereum.TransactionReceipt)) {
+    log.debug(
+      "[handleBorrowingFeeCharged] Leverage less than 20, skipping {}",
+      [event.transaction.hash.toHexString()]
+    );
+    return;
+  }
+
   addBorrowingFeeStats(
     trader,
     borrowingFee,
@@ -260,6 +340,13 @@ export function handleGovFeeCharged(event: GovFeeCharged): void {
     )
   ) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
+      event.transaction.hash.toHexString(),
+    ]);
+    return;
+  }
+
+  if (!getLeverage(event.receipt as ethereum.TransactionReceipt)) {
+    log.debug("[handleGovFeeCharged] Leverage less than 20, skipping {}", [
       event.transaction.hash.toHexString(),
     ]);
     return;
@@ -319,6 +406,14 @@ export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
     ]);
     return;
   }
+
+  if (!getLeverage(event.receipt as ethereum.TransactionReceipt)) {
+    log.debug("[handleReferralFeeCharged] Leverage less than 20, skipping {}", [
+      event.transaction.hash.toHexString(),
+    ]);
+    return;
+  }
+
   addReferralFeeStats(
     trader,
     referralFee,
@@ -364,6 +459,13 @@ export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
     )
   ) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
+      event.transaction.hash.toHexString(),
+    ]);
+    return;
+  }
+
+  if (!getLeverage(event.receipt as ethereum.TransactionReceipt)) {
+    log.debug("[handleTriggerFeeCharged] Leverage less than 20, skipping {}", [
       event.transaction.hash.toHexString(),
     ]);
     return;
@@ -419,6 +521,13 @@ export function handleStakerFeeCharged(event: GnsOtcFeeCharged): void {
     return;
   }
 
+  if (!getLeverage(event.receipt as ethereum.TransactionReceipt)) {
+    log.debug("[handleStakerFeeCharged] Leverage less than 20, skipping {}", [
+      event.transaction.hash.toHexString(),
+    ]);
+    return;
+  }
+
   addStakerFeeStats(trader, stakerFee, timestamp, collateralDetails.collateral);
   updateFeeBasedPoints(
     trader,
@@ -457,6 +566,13 @@ export function handleLpFeeCharged(event: GTokenFeeCharged): void {
     )
   ) {
     log.info("[handleMarketExecuted] Aggregator referral {}", [
+      event.transaction.hash.toHexString(),
+    ]);
+    return;
+  }
+
+  if (!getLeverage(event.receipt as ethereum.TransactionReceipt)) {
+    log.debug("[handleLpFeeCharged] Leverage less than 20, skipping {}", [
       event.transaction.hash.toHexString(),
     ]);
     return;
@@ -591,6 +707,7 @@ export function handleTradeIncreased(
       event.params.pairIndex,
       event.params.values.positionSizeCollateralDelta,
       event.params.collateralIndex,
+      event.params.values.newLeverage,
       event
     );
   }
@@ -601,6 +718,7 @@ function _handleTradeIncreased(
   pairIndex: BigInt,
   positionSize: BigInt,
   collateralIndex: i32,
+  newLeverage: BigInt,
   event: ethereum.Event
 ): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
@@ -608,6 +726,8 @@ function _handleTradeIncreased(
     positionSize,
     collateralDetails.collateralPrecisionBd
   );
+  const leverage_raw = BigDecimal.fromString(newLeverage.toString());
+  const leverage = leverage_raw.div(BigDecimal.fromString("1000"));
 
   log.info("[handleTradeIncreased] {}", [event.transaction.hash.toHexString()]);
 
@@ -617,6 +737,15 @@ function _handleTradeIncreased(
     ]);
     return;
   }
+
+  if (leverage.lt(BigDecimal.fromString(MIN_LEVERAGE.toString()))) {
+    log.info(
+      "[handleTradeIncreased] Leverage less than 20, skipping . Transaction: {}, Leverage: {}",
+      [event.transaction.hash.toHexString(), leverage.toString()]
+    );
+    return;
+  }
+
   _handleOpenTrade(
     collateralDetails.network,
     collateralDetails.collateral,
@@ -685,10 +814,20 @@ function _handleTradeDecreased(
     collateralDetails.collateralPrecisionBd
   );
   log.info("[handleTradeDecreased] {}", [event.transaction.hash.toHexString()]);
+
   if (isTraderReferredByAggregator(collateralDetails.network, trader)) {
     log.info("[handleTradeDecreased] Aggregator referral {}", [
       event.transaction.hash.toHexString(),
     ]);
+    return;
+  }
+  const new_leverage_raw = BigDecimal.fromString(newLeverage.toString());
+  const new_leverage = new_leverage_raw.div(BigDecimal.fromString("1000"));
+  if (new_leverage.lt(BigDecimal.fromString(MIN_LEVERAGE.toString()))) {
+    log.info(
+      "[handleTradeDecreased] Leverage less than 20, skipping . Transaction: {}, Leverage: {}",
+      [event.transaction.hash.toHexString(), leverage.toString()]
+    );
     return;
   }
 

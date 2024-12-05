@@ -8,6 +8,7 @@ enum Collateral {
   dai
   eth
   usdc
+  ape
 }
 
 type EpochTradingStatsRecord @entity {

@@ -9,6 +9,7 @@ import {
   MUMBAI_STIP_REWARDS_TEST,
   ARBITRUM_STIP_REWARDS_1,
   BASE_GNS_REWARDS_0,
+  APECHAIN_APE_REWARDS_0,
 } from "./getActiveRewardConfigs";
 
 // @ts-ignore
@@ -30,5 +31,9 @@ export const getRewardConfig: QueryResolvers["getRewardConfig"] = (
   }
   if (id === BASE_GNS_REWARDS_0.id) {
     return BASE_GNS_REWARDS_0;
+  }
+
+  if (id === APECHAIN_APE_REWARDS_0.id) {
+    return APECHAIN_APE_REWARDS_0;
   }
 };

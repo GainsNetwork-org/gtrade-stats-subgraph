@@ -181,7 +181,7 @@ export const ARBITRUM_STIP_REWARDS_1 = {
 
 export const BASE_GNS_REWARDS_0 = {
   id: "base-gns-0",
-  active: true,
+  active: false,
   totalRewards: 20000,
   epochType: "week" as EpochType,
   numEpochs: 4,
@@ -198,6 +198,25 @@ export const BASE_GNS_REWARDS_0 = {
   capFeeRewards: true,
 };
 
+export const APECHAIN_APE_REWARDS_0 = {
+  id: "apechain-ape-0",
+  active: true,
+  totalRewards: 86956,
+  epochType: "week" as EpochType,
+  numEpochs: 4,
+  startingEpoch: 48,
+  rewardDistribution: {
+    loyalty: 0.1,
+    fee: 0.2,
+    absSkill: 0.7,
+    relSkill: 0.0,
+    diversity: 0.0,
+  },
+  rewardDistributionOverrides: [],
+  rewardsPairIx: 55, // APE
+  capFeeRewards: true,
+};
+
 export const getActiveRewardConfigs: QueryResolvers["getActiveRewardConfigs"] =
   (root, args, context): Query["getActiveRewardConfigs"] => {
     const { chainId } = context;
@@ -210,7 +229,11 @@ export const getActiveRewardConfigs: QueryResolvers["getActiveRewardConfigs"] =
     }
 
     if (+chainId === 8453) {
-      return [BASE_GNS_REWARDS_0];
+      return [];
+    }
+
+    if (+chainId === 33139) {
+      return [APECHAIN_APE_REWARDS_0];
     }
 
     return [];
