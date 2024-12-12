@@ -272,6 +272,12 @@ export const WHITELISTED_REFERRAL_ADDRESSES: string[] = [
   "0x3161d1f5edb3f9ceebfb3e258681484b82ae3ea4".toLowerCase(), // june
   "0x60d1994b91cb8566de1b2200bdf8d94e9e76b267".toLowerCase(), // exodus (epoch 34)
   "0x1E9a79b222093149592FBE97DBdB8A576B33b66A".toLowerCase(), // spindl (epoch 34)
+  "0xf3e4Cd57A1890791d4D3c86291A306Ca967d132C".toLowerCase(), // spindl1 Dec 5, 2024
+  "0x1E9a79b222093149592FBE97DBdB8A576B33b66A".toLowerCase(), // spindl2 Dec 5, 2024
+  "0x1E9a79b222093149592FBE97DBdB8A576B33b66A".toLowerCase(), // spindl3 Dec 5, 2024
+  "0xBDd11258716b2b2dE69E920a324af8fc8db98ad4".toLowerCase(), // spindl4 Dec 5, 2024
+  "0x554D7711F4D7ebE1EA18B57f150130F44E72EE6E".toLowerCase(), // spindl5 Dec 5, 2024
+  "0x721F6530a943Aa7a9eAc645145125D1813a73EB4".toLowerCase(), // spindl6 Dec 5, 2024
 ];
 
 // this is so the subgraph is backwards compatible
