@@ -14,6 +14,7 @@ import {
   WHITELISTED_REFERRER_MULTIPLIER,
   WHITELISTED_REFEREE_MULTIPLIER,
   PNL_BLACKLISTED_ADDRESSES_12,
+  PNL_BLACKLISTED_ADDRESSES_50_APECHAIN,
 } from "../constants";
 import { isTraderReferredByWhitelistedReferral } from "../contract/GNSMultiCollatDiamond";
 
@@ -563,6 +564,15 @@ function isTraderEligibleForAbsoluteSkillPoints(
   if (
     weeklyStats.epochNumber === 12 &&
     PNL_BLACKLISTED_ADDRESSES_12.includes(weeklyStats.address.toLowerCase())
+  ) {
+    return false;
+  }
+
+  if (
+    weeklyStats.epochNumber === 50 &&
+    PNL_BLACKLISTED_ADDRESSES_50_APECHAIN.includes(
+      weeklyStats.address.toLowerCase()
+    )
   ) {
     return false;
   }
