@@ -1,6 +1,6 @@
 export const GTOKEN_SUBGRAPH = {
   137: "ErSWsfLWe6J6p71S3oybMtNJrwZ6g9xEivRzU7PbSSdg",
-  42161: "J9WvpchpS1Sd5fQ4t7grJgMeC3nFTgHuJJe88YnkoaPF",
+  42161: "4HJCMUEshiv9fCFVZABYuWSgv5bbXyj7qJDAEMN8LkXo",
   80001: "",
   421614: "",
   8453: "Afnwe81PTY5Rf1wHyGafPMWbKoDn1HBNamBMLYHQucr4",
