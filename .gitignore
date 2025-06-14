@@ -139,3 +139,10 @@ lib/
 /src/contracts/types/generated/*
 
 test/local-test.ts
+
+#Claude
+.claude*
+CLAUDE.md
+**/CLAUDE.md
+**/.claude
+**/.claude/*
