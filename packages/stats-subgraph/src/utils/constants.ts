@@ -11,6 +11,8 @@ export const ETH_DECIMALS = 18;
 export const ETH_DECIMALS_BD = exponentToBigDecimal(ETH_DECIMALS);
 export const APE_DECIMALS = 18;
 export const APE_DECIMALS_BD = exponentToBigDecimal(APE_DECIMALS);
+export const BTCUSD_DECIMALS = 18;
+export const BTCUSD_DECIMALS_BD = exponentToBigDecimal(BTCUSD_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
 export const MULTI_COLLAT_BLOCK_ARBITRUM = 173285454;
@@ -46,6 +48,10 @@ export function getCollateralDecimals(collateral: string): BigDecimal {
     return APE_DECIMALS_BD;
   }
 
+  if (collateral == COLLATERALS.BTCUSD) {
+    return BTCUSD_DECIMALS_BD;
+  }
+
   throw new Error("Collateral not supported");
 }
 
@@ -69,6 +75,7 @@ class Collaterals {
   ETH!: string;
   USDC!: string;
   APE!: string;
+  BTCUSD!: string;
 }
 
 export const COLLATERALS: Collaterals = {
@@ -77,6 +84,7 @@ export const COLLATERALS: Collaterals = {
   ETH: "eth",
   USDC: "usdc",
   APE: "ape",
+  BTCUSD: "btcusd",
 };
 
 class Networks {
@@ -122,6 +130,8 @@ export function getCollateralfromIndex(
   if (network == NETWORKS.BASE) {
     if (collateralIndex == 1) {
       return "usdc";
+    } else if (collateralIndex == 2) {
+      return "btcusd";
     }
   }
 

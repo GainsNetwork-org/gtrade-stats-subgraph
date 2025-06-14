@@ -201,7 +201,9 @@ export const COLLATERALS = {
   _ALL_: "_all_" as Collateral,
   DAI: "dai" as Collateral,
   ETH: "eth" as Collateral,
-  ARB: "arb" as Collateral,
+  USDC: "usdc" as Collateral,
+  APE: "ape" as Collateral,
+  BTCUSD: "btcusd" as Collateral,
 };
 
 export const AGGREGATOR_ADDRESSES = [
