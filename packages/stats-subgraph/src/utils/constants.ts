@@ -147,10 +147,12 @@ export function getCollateralfromIndex(
 class EpochTypes {
   DAY!: string;
   WEEK!: string;
+  BIWEEKLY!: string;
 }
 export const EPOCH_TYPE: EpochTypes = {
   DAY: "day",
   WEEK: "week",
+  BIWEEKLY: "biweekly",
 };
 
 // Establish epoch 0 for day, week
@@ -158,31 +160,38 @@ export const EPOCH_TYPE: EpochTypes = {
 class EpochNumbers {
   DAY!: i32;
   WEEK!: i32;
+  BIWEEKLY!: i32;
 }
 export const EPOCH_ZERO: EpochNumbers = {
   DAY: 1703203200, // Dec 22
   WEEK: 1703203200, // Dec 22
+  BIWEEKLY: 1703203200, // Dec 22
 };
 
 const getEpochZero = (epochType: string): i32 => {
   if (epochType == EPOCH_TYPE.DAY) {
     return EPOCH_ZERO.DAY;
-  } else {
+  } else if (epochType == EPOCH_TYPE.WEEK) {
     return EPOCH_ZERO.WEEK;
+  } else {
+    return EPOCH_ZERO.BIWEEKLY;
   }
 };
 
-// Establish epoch duration for day, week
+// Establish epoch duration for day, week, biweekly
 export const EPOCH_DURATION: EpochNumbers = {
   DAY: 86400,
   WEEK: 604800,
+  BIWEEKLY: 1209600,
 };
 
 const getEpochDuration = (epochType: string): i32 => {
   if (epochType == EPOCH_TYPE.DAY) {
     return EPOCH_DURATION.DAY;
-  } else {
+  } else if (epochType == EPOCH_TYPE.WEEK) {
     return EPOCH_DURATION.WEEK;
+  } else {
+    return EPOCH_DURATION.BIWEEKLY;
   }
 };
 

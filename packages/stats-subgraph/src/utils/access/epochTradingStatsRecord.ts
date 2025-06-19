@@ -125,6 +125,17 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
   );
   _addOpenTradeStats(data, weeklyStats, dailyStats.totalOpenedTrades == 1);
 
+  // Biweekly stats
+  const currentBiweeklyNumber = determineEpochNumber(timestamp, EPOCH_TYPE.BIWEEKLY);
+  const biweeklyStats = createOrLoadEpochTradingStatsRecord(
+    address,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
+    collateral,
+    false
+  );
+  _addOpenTradeStats(data, biweeklyStats, dailyStats.totalOpenedTrades == 1);
+
   // Daily protocol stats
   const dailyProtocolStats = createOrLoadEpochTradingStatsRecord(
     PROTOCOL,
@@ -146,6 +157,20 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
   _addOpenTradeStats(
     data,
     weeklyProtocolStats,
+    dailyProtocolStats.totalOpenedTrades == 1
+  );
+
+  // Biweekly protocol stats
+  const biweeklyProtocolStats = createOrLoadEpochTradingStatsRecord(
+    PROTOCOL,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
+    collateral,
+    false
+  );
+  _addOpenTradeStats(
+    data,
+    biweeklyProtocolStats,
     dailyProtocolStats.totalOpenedTrades == 1
   );
 }
@@ -205,6 +230,17 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
   );
   _addCloseTradeStats(data, weeklyStats, dailyStats.totalClosedTrades == 1);
 
+  // Biweekly stats
+  const currentBiweeklyNumber = determineEpochNumber(timestamp, EPOCH_TYPE.BIWEEKLY);
+  const biweeklyStats = createOrLoadEpochTradingStatsRecord(
+    address,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
+    collateral,
+    false
+  );
+  _addCloseTradeStats(data, biweeklyStats, dailyStats.totalClosedTrades == 1);
+
   // Daily protocol stats
   const dailyProtocolStats = createOrLoadEpochTradingStatsRecord(
     PROTOCOL,
@@ -229,17 +265,33 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
     dailyProtocolStats.totalClosedTrades == 1
   );
 
+  // Biweekly protocol stats
+  const biweeklyProtocolStats = createOrLoadEpochTradingStatsRecord(
+    PROTOCOL,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
+    collateral,
+    false
+  );
+  _addCloseTradeStats(
+    data,
+    biweeklyProtocolStats,
+    dailyProtocolStats.totalClosedTrades == 1
+  );
+
   updatePointsOnClose(
     address,
     currentWeekNumber,
     currentDayNumber,
+    currentBiweeklyNumber,
     collateral,
     data.pnl,
     data.pnlPercentage,
     data.groupIndex,
     data.pairIndex,
     data.positionSize,
-    weeklyStats
+    weeklyStats,
+    biweeklyStats
   );
 }
 
@@ -424,6 +476,7 @@ function _addStats(
 ): EpochTradingStatsRecord[] {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
+  const currentBiweeklyNumber = determineEpochNumber(timestamp, EPOCH_TYPE.BIWEEKLY);
 
   let dailyStats = createOrLoadEpochTradingStatsRecord(
     address,
@@ -443,6 +496,15 @@ function _addStats(
   );
   weeklyStats = _addStat(stat, statName, weeklyStats);
 
+  let biweeklyStats = createOrLoadEpochTradingStatsRecord(
+    address,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
+    collateral,
+    false
+  );
+  biweeklyStats = _addStat(stat, statName, biweeklyStats);
+
   let dailyProtocolStats = createOrLoadEpochTradingStatsRecord(
     PROTOCOL,
     EPOCH_TYPE.DAY,
@@ -461,12 +523,23 @@ function _addStats(
   );
   weeklyProtocolStats = _addStat(stat, statName, weeklyProtocolStats);
 
+  let biweeklyProtocolStats = createOrLoadEpochTradingStatsRecord(
+    PROTOCOL,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
+    collateral,
+    false
+  );
+  biweeklyProtocolStats = _addStat(stat, statName, biweeklyProtocolStats);
+
   dailyStats.save();
   weeklyStats.save();
+  biweeklyStats.save();
   dailyProtocolStats.save();
   weeklyProtocolStats.save();
+  biweeklyProtocolStats.save();
 
-  return [dailyStats, weeklyStats, dailyProtocolStats, weeklyProtocolStats];
+  return [dailyStats, weeklyStats, biweeklyStats, dailyProtocolStats, weeklyProtocolStats, biweeklyProtocolStats];
 }
 
 function _addStat(

@@ -1,6 +1,7 @@
 enum EpochType {
   day
   week
+  biweekly
 }
 
 enum Collateral {

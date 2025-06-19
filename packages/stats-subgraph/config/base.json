@@ -1,8 +1,8 @@
 {
   "network": "base",
   "graft": {
-    "base": "QmPTy2XPi3VJKjtnWTbFHwk4mzzPkRN9wGpPpztveMBFsM",
-    "block": 31353000
+    "base": "QmXaAYck51ASSMhMEnTqkcPDwDNKbqmrn7pYYihUqdjaCf",
+    "block": 31792581
   },
   "GNSMultiCollatDiamond": {
     "address": "0x6cD5aC19a07518A8092eEFfDA4f1174C72704eeb",
