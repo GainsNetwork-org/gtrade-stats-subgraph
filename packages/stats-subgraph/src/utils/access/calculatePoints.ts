@@ -22,15 +22,17 @@ export function updatePointsOnClose(
   address: string,
   weekNumber: i32,
   dayNumber: i32,
+  biweeklyNumber: i32,
   collateral: string | null,
   pnl: BigDecimal,
   pnlPercentage: BigDecimal,
   groupNumber: i32,
   pairNumber: i32,
   volume: BigDecimal,
-  weeklyStats: EpochTradingStatsRecord
+  weeklyStats: EpochTradingStatsRecord,
+  biweeklyStats: EpochTradingStatsRecord
 ): void {
-  // load all 4 entries: UserDaily, ProtocolDaily, UserWeekly, ProtocolWeekly
+  // load all 6 entries: UserDaily, ProtocolDaily, UserWeekly, ProtocolWeekly, UserBiweekly, ProtocolBiweekly
   const userDailyPoints = createOrLoadEpochTradingPointsRecord(
     address,
     EPOCH_TYPE.DAY,
@@ -59,6 +61,20 @@ export function updatePointsOnClose(
     collateral,
     false
   );
+  const userBiweeklyPoints = createOrLoadEpochTradingPointsRecord(
+    address,
+    EPOCH_TYPE.BIWEEKLY,
+    biweeklyNumber,
+    collateral,
+    false
+  );
+  const protocolBiweeklyPoints = createOrLoadEpochTradingPointsRecord(
+    PROTOCOL,
+    EPOCH_TYPE.BIWEEKLY,
+    biweeklyNumber,
+    collateral,
+    false
+  );
 
   if (isTraderEligibleForAbsoluteSkillPoints(weeklyStats)) {
     updateAbsoluteSkillPoints(
@@ -66,10 +82,16 @@ export function updatePointsOnClose(
       protocolDailyPoints,
       userWeeklyPoints,
       protocolWeeklyPoints,
+      userBiweeklyPoints,
+      protocolBiweeklyPoints,
       userWeeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
         !userWeeklyPoints.isAbsSkillEligible
         ? weeklyStats.totalPnl
-        : pnl // if trader just became eligible, use totalPnl
+        : pnl, // if trader just became eligible, use totalPnl
+      userBiweeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
+        !userBiweeklyPoints.isAbsSkillEligible
+        ? biweeklyStats.totalPnl
+        : pnl
     );
   }
   // Determine if trader is eligible yet for relative skill points
@@ -79,9 +101,15 @@ export function updatePointsOnClose(
       protocolDailyPoints,
       userWeeklyPoints,
       protocolWeeklyPoints,
+      userBiweeklyPoints,
+      protocolBiweeklyPoints,
       userWeeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
         !userWeeklyPoints.isRelSkillEligible // if trader just became eligible, use totalPnlPercentage
         ? weeklyStats.totalPnlPercentage
+        : pnlPercentage,
+      userBiweeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
+        !userBiweeklyPoints.isRelSkillEligible
+        ? biweeklyStats.totalPnlPercentage
         : pnlPercentage
     );
   }
@@ -91,6 +119,8 @@ export function updatePointsOnClose(
     protocolDailyPoints,
     userWeeklyPoints,
     protocolWeeklyPoints,
+    userBiweeklyPoints,
+    protocolBiweeklyPoints,
     groupNumber,
     pairNumber,
     volume
@@ -102,49 +132,69 @@ export function updateAbsoluteSkillPoints(
   protocolDailyPoints: EpochTradingPointsRecord,
   userWeeklyPoints: EpochTradingPointsRecord,
   protocolWeeklyPoints: EpochTradingPointsRecord,
-  pnl: BigDecimal
+  userBiweeklyPoints: EpochTradingPointsRecord,
+  protocolBiweeklyPoints: EpochTradingPointsRecord,
+  pnlWeekly: BigDecimal,
+  pnlBiweekly: BigDecimal
 ): void {
   let userDailySkillPoints =
-    userDailyPoints.pnl.plus(pnl) > ZERO_BD
-      ? userDailyPoints.pnl.plus(pnl)
+    userDailyPoints.pnl.plus(pnlWeekly) > ZERO_BD
+      ? userDailyPoints.pnl.plus(pnlWeekly)
       : ZERO_BD;
   let userWeeklySkillPoints =
-    userWeeklyPoints.pnl.plus(pnl) > ZERO_BD
-      ? userWeeklyPoints.pnl.plus(pnl)
+    userWeeklyPoints.pnl.plus(pnlWeekly) > ZERO_BD
+      ? userWeeklyPoints.pnl.plus(pnlWeekly)
+      : ZERO_BD;
+  let userBiweeklySkillPoints =
+    userBiweeklyPoints.pnl.plus(pnlBiweekly) > ZERO_BD
+      ? userBiweeklyPoints.pnl.plus(pnlBiweekly)
       : ZERO_BD;
   let protocolDailySkillPoints = calculateSkillPoints(
     userDailyPoints,
     protocolDailyPoints,
-    pnl,
+    pnlWeekly,
     true
   );
   let protocolWeeklySkillPoints = calculateSkillPoints(
     userWeeklyPoints,
     protocolWeeklyPoints,
-    pnl,
+    pnlWeekly,
+    true
+  );
+  let protocolBiweeklySkillPoints = calculateSkillPoints(
+    userBiweeklyPoints,
+    protocolBiweeklyPoints,
+    pnlBiweekly,
     true
   );
 
   // update pnls
-  userDailyPoints.pnl = userDailyPoints.pnl.plus(pnl);
-  protocolDailyPoints.pnl = protocolDailyPoints.pnl.plus(pnl);
-  userWeeklyPoints.pnl = userWeeklyPoints.pnl.plus(pnl);
-  protocolWeeklyPoints.pnl = protocolWeeklyPoints.pnl.plus(pnl);
+  userDailyPoints.pnl = userDailyPoints.pnl.plus(pnlWeekly);
+  protocolDailyPoints.pnl = protocolDailyPoints.pnl.plus(pnlWeekly);
+  userWeeklyPoints.pnl = userWeeklyPoints.pnl.plus(pnlWeekly);
+  protocolWeeklyPoints.pnl = protocolWeeklyPoints.pnl.plus(pnlWeekly);
+  userBiweeklyPoints.pnl = userBiweeklyPoints.pnl.plus(pnlBiweekly);
+  protocolBiweeklyPoints.pnl = protocolBiweeklyPoints.pnl.plus(pnlBiweekly);
 
   // update skill points
   userDailyPoints.absSkillPoints = userDailySkillPoints;
   protocolDailyPoints.absSkillPoints = protocolDailySkillPoints;
   userWeeklyPoints.absSkillPoints = userWeeklySkillPoints;
   protocolWeeklyPoints.absSkillPoints = protocolWeeklySkillPoints;
+  userBiweeklyPoints.absSkillPoints = userBiweeklySkillPoints;
+  protocolBiweeklyPoints.absSkillPoints = protocolBiweeklySkillPoints;
 
   userWeeklyPoints.isAbsSkillEligible = true;
   userDailyPoints.isAbsSkillEligible = true;
+  userBiweeklyPoints.isAbsSkillEligible = true;
 
   // Saving all the entities
   userDailyPoints.save();
   protocolDailyPoints.save();
   userWeeklyPoints.save();
   protocolWeeklyPoints.save();
+  userBiweeklyPoints.save();
+  protocolBiweeklyPoints.save();
 }
 
 export function updateRelativeSkillPoints(
@@ -152,53 +202,75 @@ export function updateRelativeSkillPoints(
   protocolDailyPoints: EpochTradingPointsRecord,
   userWeeklyPoints: EpochTradingPointsRecord,
   protocolWeeklyPoints: EpochTradingPointsRecord,
-  pnlPercentage: BigDecimal
+  userBiweeklyPoints: EpochTradingPointsRecord,
+  protocolBiweeklyPoints: EpochTradingPointsRecord,
+  pnlPercentageWeekly: BigDecimal,
+  pnlPercentageBiweekly: BigDecimal
 ): void {
   let userDailySkillPoints =
-    userDailyPoints.pnlPercentage.plus(pnlPercentage) > ZERO_BD
-      ? userDailyPoints.pnlPercentage.plus(pnlPercentage)
+    userDailyPoints.pnlPercentage.plus(pnlPercentageWeekly) > ZERO_BD
+      ? userDailyPoints.pnlPercentage.plus(pnlPercentageWeekly)
       : ZERO_BD;
   let userWeeklySkillPoints =
-    userWeeklyPoints.pnlPercentage.plus(pnlPercentage) > ZERO_BD
-      ? userWeeklyPoints.pnlPercentage.plus(pnlPercentage)
+    userWeeklyPoints.pnlPercentage.plus(pnlPercentageWeekly) > ZERO_BD
+      ? userWeeklyPoints.pnlPercentage.plus(pnlPercentageWeekly)
+      : ZERO_BD;
+  let userBiweeklySkillPoints =
+    userBiweeklyPoints.pnlPercentage.plus(pnlPercentageBiweekly) > ZERO_BD
+      ? userBiweeklyPoints.pnlPercentage.plus(pnlPercentageBiweekly)
       : ZERO_BD;
   let protocolDailySkillPoints = calculateSkillPoints(
     userDailyPoints,
     protocolDailyPoints,
-    pnlPercentage,
+    pnlPercentageWeekly,
     false
   );
   let protocolWeeklySkillPoints = calculateSkillPoints(
     userWeeklyPoints,
     protocolWeeklyPoints,
-    pnlPercentage,
+    pnlPercentageWeekly,
+    false
+  );
+  let protocolBiweeklySkillPoints = calculateSkillPoints(
+    userBiweeklyPoints,
+    protocolBiweeklyPoints,
+    pnlPercentageBiweekly,
     false
   );
 
   // update pnls
   userDailyPoints.pnlPercentage =
-    userDailyPoints.pnlPercentage.plus(pnlPercentage);
+    userDailyPoints.pnlPercentage.plus(pnlPercentageWeekly);
   protocolDailyPoints.pnlPercentage =
-    protocolDailyPoints.pnlPercentage.plus(pnlPercentage);
+    protocolDailyPoints.pnlPercentage.plus(pnlPercentageWeekly);
   userWeeklyPoints.pnlPercentage =
-    userWeeklyPoints.pnlPercentage.plus(pnlPercentage);
+    userWeeklyPoints.pnlPercentage.plus(pnlPercentageWeekly);
   protocolWeeklyPoints.pnlPercentage =
-    protocolWeeklyPoints.pnlPercentage.plus(pnlPercentage);
+    protocolWeeklyPoints.pnlPercentage.plus(pnlPercentageWeekly);
+  userBiweeklyPoints.pnlPercentage =
+    userBiweeklyPoints.pnlPercentage.plus(pnlPercentageBiweekly);
+  protocolBiweeklyPoints.pnlPercentage =
+    protocolBiweeklyPoints.pnlPercentage.plus(pnlPercentageBiweekly);
 
   // update skill points
   userDailyPoints.relSkillPoints = userDailySkillPoints;
   protocolDailyPoints.relSkillPoints = protocolDailySkillPoints;
   userWeeklyPoints.relSkillPoints = userWeeklySkillPoints;
   protocolWeeklyPoints.relSkillPoints = protocolWeeklySkillPoints;
+  userBiweeklyPoints.relSkillPoints = userBiweeklySkillPoints;
+  protocolBiweeklyPoints.relSkillPoints = protocolBiweeklySkillPoints;
 
   userWeeklyPoints.isRelSkillEligible = true;
   userDailyPoints.isRelSkillEligible = true;
+  userBiweeklyPoints.isRelSkillEligible = true;
 
   // Saving all the entities
   userDailyPoints.save();
   protocolDailyPoints.save();
   userWeeklyPoints.save();
   protocolWeeklyPoints.save();
+  userBiweeklyPoints.save();
+  protocolBiweeklyPoints.save();
 }
 
 // @todo - add volume thresholds for diversity groups
@@ -208,6 +280,8 @@ export function updateDiversityPoints(
   protocolDailyPoints: EpochTradingPointsRecord,
   userWeeklyPoints: EpochTradingPointsRecord,
   protocolWeeklyPoints: EpochTradingPointsRecord,
+  userBiweeklyPoints: EpochTradingPointsRecord,
+  protocolBiweeklyPoints: EpochTradingPointsRecord,
   groupNumber: i32,
   pairNumber: i32,
   volume: BigDecimal
@@ -238,6 +312,8 @@ export function updateDiversityPoints(
       protocolDailyPoints.groupsTraded[groupId] = ONE_BD;
       userWeeklyPoints.groupsTraded[groupId] = ONE_BD;
       protocolWeeklyPoints.groupsTraded[groupId] = ONE_BD;
+      userBiweeklyPoints.groupsTraded[groupId] = ONE_BD;
+      protocolBiweeklyPoints.groupsTraded[groupId] = ONE_BD;
 
       userDailyPoints.diversityPoints =
         userDailyPoints.diversityPoints.plus(ONE_BD);
@@ -247,12 +323,18 @@ export function updateDiversityPoints(
         userWeeklyPoints.diversityPoints.plus(ONE_BD);
       protocolWeeklyPoints.diversityPoints =
         protocolWeeklyPoints.diversityPoints.plus(ONE_BD);
+      userBiweeklyPoints.diversityPoints =
+        userBiweeklyPoints.diversityPoints.plus(ONE_BD);
+      protocolBiweeklyPoints.diversityPoints =
+        protocolBiweeklyPoints.diversityPoints.plus(ONE_BD);
 
       // Saving all the entities
       userDailyPoints.save();
       protocolDailyPoints.save();
       userWeeklyPoints.save();
       protocolWeeklyPoints.save();
+      userBiweeklyPoints.save();
+      protocolBiweeklyPoints.save();
     }
   }
 }
@@ -292,6 +374,7 @@ export function updateFeeBasedPoints(
 ): void {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
+  const currentBiweeklyNumber = determineEpochNumber(timestamp, EPOCH_TYPE.BIWEEKLY);
 
   let userDailyStats = createOrLoadEpochTradingPointsRecord(
     address,
@@ -305,6 +388,14 @@ export function updateFeeBasedPoints(
     address,
     EPOCH_TYPE.WEEK,
     currentWeekNumber,
+    collateral,
+    false
+  );
+
+  let userBiweeklyStats = createOrLoadEpochTradingPointsRecord(
+    address,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
     collateral,
     false
   );
@@ -325,20 +416,32 @@ export function updateFeeBasedPoints(
     false
   );
 
+  let biweeklyProtocolStats = createOrLoadEpochTradingPointsRecord(
+    PROTOCOL,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
+    collateral,
+    false
+  );
+
   updateFeePoints(
     stat,
     userDailyStats,
     userWeeklyStats,
+    userBiweeklyStats,
     dailyProtocolStats,
     weeklyProtocolStats,
+    biweeklyProtocolStats,
     blockNumber
   );
   updateLoyaltyPoints(
     stat,
     userDailyStats,
     userWeeklyStats,
+    userBiweeklyStats,
     dailyProtocolStats,
-    weeklyProtocolStats
+    weeklyProtocolStats,
+    biweeklyProtocolStats
   );
 }
 
@@ -346,8 +449,10 @@ export function updateFeePoints(
   stat: BigDecimal,
   userDailyStats: EpochTradingPointsRecord,
   userWeeklyStats: EpochTradingPointsRecord,
+  userBiweeklyStats: EpochTradingPointsRecord,
   protocolDailyStats: EpochTradingPointsRecord,
   protocolWeeklyStats: EpochTradingPointsRecord,
+  protocolBiweeklyStats: EpochTradingPointsRecord,
   blockNumber: i32
 ): void {
   // If referee, boost points
@@ -379,23 +484,38 @@ export function updateFeePoints(
       false
     );
 
+    const biweeklyReferralPoints = createOrLoadEpochTradingPointsRecord(
+      referrerDetails.referrer,
+      EPOCH_TYPE.BIWEEKLY,
+      userBiweeklyStats.epochNumber,
+      userBiweeklyStats.collateral,
+      false
+    );
+
     dailyReferralPoints.feePoints =
       dailyReferralPoints.feePoints.plus(referrerPointBoost);
 
     weeklyReferralPoints.feePoints =
       weeklyReferralPoints.feePoints.plus(referrerPointBoost);
 
+    biweeklyReferralPoints.feePoints =
+      biweeklyReferralPoints.feePoints.plus(referrerPointBoost);
+
     dailyReferralPoints.save();
     weeklyReferralPoints.save();
+    biweeklyReferralPoints.save();
   }
 
   // Updating total fees
   userDailyStats.totalFeesPaid = userDailyStats.totalFeesPaid.plus(stat);
   userWeeklyStats.totalFeesPaid = userWeeklyStats.totalFeesPaid.plus(stat);
+  userBiweeklyStats.totalFeesPaid = userBiweeklyStats.totalFeesPaid.plus(stat);
   protocolDailyStats.totalFeesPaid =
     protocolDailyStats.totalFeesPaid.plus(stat);
   protocolWeeklyStats.totalFeesPaid =
     protocolWeeklyStats.totalFeesPaid.plus(stat);
+  protocolBiweeklyStats.totalFeesPaid =
+    protocolBiweeklyStats.totalFeesPaid.plus(stat);
 
   // Updating fee points
   userDailyStats.feePoints = userDailyStats.feePoints.plus(
@@ -404,10 +524,16 @@ export function updateFeePoints(
   userWeeklyStats.feePoints = userWeeklyStats.feePoints.plus(
     stat.plus(refereePointBoost)
   );
+  userBiweeklyStats.feePoints = userBiweeklyStats.feePoints.plus(
+    stat.plus(refereePointBoost)
+  );
   protocolDailyStats.feePoints = protocolDailyStats.feePoints.plus(
     stat.plus(referrerPointBoost).plus(refereePointBoost)
   );
   protocolWeeklyStats.feePoints = protocolWeeklyStats.feePoints.plus(
+    stat.plus(referrerPointBoost).plus(refereePointBoost)
+  );
+  protocolBiweeklyStats.feePoints = protocolBiweeklyStats.feePoints.plus(
     stat.plus(referrerPointBoost).plus(refereePointBoost)
   );
 
@@ -416,14 +542,18 @@ export function updateFeePoints(
   protocolDailyStats.save();
   userWeeklyStats.save();
   protocolWeeklyStats.save();
+  userBiweeklyStats.save();
+  protocolBiweeklyStats.save();
 }
 
 export function updateLoyaltyPoints(
   stat: BigDecimal,
   userDailyStats: EpochTradingPointsRecord,
   userWeeklyStats: EpochTradingPointsRecord,
+  userBiweeklyStats: EpochTradingPointsRecord,
   protocolDailyStats: EpochTradingPointsRecord,
-  protocolWeeklyStats: EpochTradingPointsRecord
+  protocolWeeklyStats: EpochTradingPointsRecord,
+  protocolBiweeklyStats: EpochTradingPointsRecord
 ): void {
   let totalUserDailyFees = userDailyStats.totalFeesPaid.plus(stat);
   let oldLoyaltyPoints = userDailyStats.loyaltyPoints;
@@ -434,10 +564,16 @@ export function updateLoyaltyPoints(
   userWeeklyStats.loyaltyPoints = userWeeklyStats.loyaltyPoints
     .plus(newLoyaltyPoints)
     .minus(oldLoyaltyPoints);
+  userBiweeklyStats.loyaltyPoints = userBiweeklyStats.loyaltyPoints
+    .plus(newLoyaltyPoints)
+    .minus(oldLoyaltyPoints);
   protocolDailyStats.loyaltyPoints = protocolDailyStats.loyaltyPoints
     .plus(newLoyaltyPoints)
     .minus(oldLoyaltyPoints);
   protocolWeeklyStats.loyaltyPoints = protocolWeeklyStats.loyaltyPoints
+    .plus(newLoyaltyPoints)
+    .minus(oldLoyaltyPoints);
+  protocolBiweeklyStats.loyaltyPoints = protocolBiweeklyStats.loyaltyPoints
     .plus(newLoyaltyPoints)
     .minus(oldLoyaltyPoints);
 
@@ -446,6 +582,8 @@ export function updateLoyaltyPoints(
   protocolDailyStats.save();
   userWeeklyStats.save();
   protocolWeeklyStats.save();
+  userBiweeklyStats.save();
+  protocolBiweeklyStats.save();
 }
 
 export function calculateLoyaltyPoints(fees: BigDecimal): BigDecimal {

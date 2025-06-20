@@ -1,6 +1,7 @@
 enum EpochType {
   day
   week
+  biweekly
 }
 
 enum Collateral {
@@ -9,6 +10,7 @@ enum Collateral {
   eth
   usdc
   ape
+  btcusd
 }
 
 type EpochTradingStatsRecord @entity {

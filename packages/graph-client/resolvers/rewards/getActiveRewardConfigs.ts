@@ -200,7 +200,7 @@ export const BASE_GNS_REWARDS_0 = {
 
 export const APECHAIN_APE_REWARDS_0 = {
   id: "apechain-ape-0",
-  active: true,
+  active: false,
   totalRewards: 86956,
   epochType: "week" as EpochType,
   numEpochs: 4,
@@ -217,6 +217,25 @@ export const APECHAIN_APE_REWARDS_0 = {
   capFeeRewards: true,
 };
 
+export const BASE_BTCUSD_REWARDS_0 = {
+  id: "base-btcusd-0",
+  active: true,
+  totalRewards: 200000,
+  epochType: "biweekly" as EpochType,
+  numEpochs: 6,
+  startingEpoch: 39,
+  rewardDistribution: {
+    loyalty: 0.1,
+    fee: 0.2,
+    absSkill: 0.7,
+    relSkill: 0.0,
+    diversity: 0.0,
+  },
+  rewardDistributionOverrides: [],
+  rewardsPairIx: -2, // BTCUSD
+  capFeeRewards: true,
+};
+
 export const getActiveRewardConfigs: QueryResolvers["getActiveRewardConfigs"] =
   (root, args, context): Query["getActiveRewardConfigs"] => {
     const { chainId } = context;
@@ -229,11 +248,11 @@ export const getActiveRewardConfigs: QueryResolvers["getActiveRewardConfigs"] =
     }
 
     if (+chainId === 8453) {
-      return [];
+      return [BASE_BTCUSD_REWARDS_0];
     }
 
     if (+chainId === 33139) {
-      return [APECHAIN_APE_REWARDS_0];
+      return [];
     }
 
     return [];

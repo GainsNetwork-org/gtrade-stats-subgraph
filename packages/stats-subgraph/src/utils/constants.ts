@@ -11,6 +11,8 @@ export const ETH_DECIMALS = 18;
 export const ETH_DECIMALS_BD = exponentToBigDecimal(ETH_DECIMALS);
 export const APE_DECIMALS = 18;
 export const APE_DECIMALS_BD = exponentToBigDecimal(APE_DECIMALS);
+export const BTCUSD_DECIMALS = 18;
+export const BTCUSD_DECIMALS_BD = exponentToBigDecimal(BTCUSD_DECIMALS);
 export const PRECISION_DECIMALS = 10;
 export const PRECISION_DECIMALS_BD = exponentToBigDecimal(PRECISION_DECIMALS);
 export const MULTI_COLLAT_BLOCK_ARBITRUM = 173285454;
@@ -46,6 +48,10 @@ export function getCollateralDecimals(collateral: string): BigDecimal {
     return APE_DECIMALS_BD;
   }
 
+  if (collateral == COLLATERALS.BTCUSD) {
+    return BTCUSD_DECIMALS_BD;
+  }
+
   throw new Error("Collateral not supported");
 }
 
@@ -69,6 +75,7 @@ class Collaterals {
   ETH!: string;
   USDC!: string;
   APE!: string;
+  BTCUSD!: string;
 }
 
 export const COLLATERALS: Collaterals = {
@@ -77,6 +84,7 @@ export const COLLATERALS: Collaterals = {
   ETH: "eth",
   USDC: "usdc",
   APE: "ape",
+  BTCUSD: "btcusd",
 };
 
 class Networks {
@@ -122,6 +130,8 @@ export function getCollateralfromIndex(
   if (network == NETWORKS.BASE) {
     if (collateralIndex == 1) {
       return "usdc";
+    } else if (collateralIndex == 2) {
+      return "btcusd";
     }
   }
 
@@ -137,10 +147,12 @@ export function getCollateralfromIndex(
 class EpochTypes {
   DAY!: string;
   WEEK!: string;
+  BIWEEKLY!: string;
 }
 export const EPOCH_TYPE: EpochTypes = {
   DAY: "day",
   WEEK: "week",
+  BIWEEKLY: "biweekly",
 };
 
 // Establish epoch 0 for day, week
@@ -148,31 +160,38 @@ export const EPOCH_TYPE: EpochTypes = {
 class EpochNumbers {
   DAY!: i32;
   WEEK!: i32;
+  BIWEEKLY!: i32;
 }
 export const EPOCH_ZERO: EpochNumbers = {
   DAY: 1703203200, // Dec 22
   WEEK: 1703203200, // Dec 22
+  BIWEEKLY: 1703203200, // Dec 22
 };
 
 const getEpochZero = (epochType: string): i32 => {
   if (epochType == EPOCH_TYPE.DAY) {
     return EPOCH_ZERO.DAY;
-  } else {
+  } else if (epochType == EPOCH_TYPE.WEEK) {
     return EPOCH_ZERO.WEEK;
+  } else {
+    return EPOCH_ZERO.BIWEEKLY;
   }
 };
 
-// Establish epoch duration for day, week
+// Establish epoch duration for day, week, biweekly
 export const EPOCH_DURATION: EpochNumbers = {
   DAY: 86400,
   WEEK: 604800,
+  BIWEEKLY: 1209600,
 };
 
 const getEpochDuration = (epochType: string): i32 => {
   if (epochType == EPOCH_TYPE.DAY) {
     return EPOCH_DURATION.DAY;
-  } else {
+  } else if (epochType == EPOCH_TYPE.WEEK) {
     return EPOCH_DURATION.WEEK;
+  } else {
+    return EPOCH_DURATION.BIWEEKLY;
   }
 };
 

@@ -26,32 +26,39 @@ export const generateId = (
 export const EPOCH_ZERO = {
   DAY: 1703203200, // Dec 22
   WEEK: 1703203200, // Dec 22
+  BIWEEKLY: 1703203200, // Dec 22
 };
 
 export const EPOCH_TYPE = {
   DAY: "day",
   WEEK: "week",
+  BIWEEKLY: "biweekly",
 };
 
 export const getEpochZero = (epochType: string): number => {
   if (epochType == EPOCH_TYPE.DAY) {
     return EPOCH_ZERO.DAY;
-  } else {
+  } else if (epochType == EPOCH_TYPE.WEEK) {
     return EPOCH_ZERO.WEEK;
+  } else {
+    return EPOCH_ZERO.BIWEEKLY;
   }
 };
 
-// Establish epoch duration for day, week
+// Establish epoch duration for day, week, biweekly
 export const EPOCH_DURATION = {
   DAY: 86400,
   WEEK: 604800,
+  BIWEEKLY: 1209600,
 };
 
 export const getEpochDuration = (epochType: string): number => {
   if (epochType == EPOCH_TYPE.DAY) {
     return EPOCH_DURATION.DAY;
-  } else {
+  } else if (epochType == EPOCH_TYPE.WEEK) {
     return EPOCH_DURATION.WEEK;
+  } else {
+    return EPOCH_DURATION.BIWEEKLY;
   }
 };
 
@@ -201,7 +208,9 @@ export const COLLATERALS = {
   _ALL_: "_all_" as Collateral,
   DAI: "dai" as Collateral,
   ETH: "eth" as Collateral,
-  ARB: "arb" as Collateral,
+  USDC: "usdc" as Collateral,
+  APE: "ape" as Collateral,
+  BTCUSD: "btcusd" as Collateral,
 };
 
 export const AGGREGATOR_ADDRESSES = [

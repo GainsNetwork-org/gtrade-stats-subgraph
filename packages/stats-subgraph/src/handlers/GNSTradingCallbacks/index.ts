@@ -49,6 +49,8 @@ import {
   MARKET_EXECUTED_ABI_SIGNATURE,
   LIMIT_EXECUTED_ABI_SIGNATURE,
   MIN_LEVERAGE,
+  NETWORKS,
+  COLLATERALS,
 } from "../../utils/constants";
 
 const eventHash = crypto
@@ -70,7 +72,19 @@ function wasTradeOpenCanceled(receipt: ethereum.TransactionReceipt): boolean {
   return false;
 }
 
+function isCollateralEligible(network: string, collateral: string): boolean {
+  // On Base network, only BTCUSD is eligible for rewards
+  if (network == NETWORKS.BASE) {
+    return collateral == COLLATERALS.BTCUSD;
+  }
+  // All collaterals are eligible on other networks
+  return true;
+}
+
 function getLeverage(receipt: ethereum.TransactionReceipt): boolean {
+  return true;
+
+  // Support all leverages for now
   const events = receipt.logs;
 
   for (let i = 0; i < events.length; i++) {
@@ -181,6 +195,19 @@ function _handleMarketExecuted(
     return;
   }
 
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleMarketExecuted] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
+    );
+    return;
+  }
+
   if (open) {
     _handleOpenTrade(
       collateralDetails.network,
@@ -253,6 +280,19 @@ function _handleLimitExecuted(
     return;
   }
 
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleLimitExecuted] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
+    );
+    return;
+  }
+
   if (orderType == 0 || orderType == 2 || orderType == 3) {
     _handleOpenTrade(
       collateralDetails.network,
@@ -312,6 +352,19 @@ export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
     return;
   }
 
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleBorrowingFeeCharged] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
+    );
+    return;
+  }
+
   addBorrowingFeeStats(
     trader,
     borrowingFee,
@@ -349,6 +402,19 @@ export function handleGovFeeCharged(event: GovFeeCharged): void {
     log.debug("[handleGovFeeCharged] Leverage less than 20, skipping {}", [
       event.transaction.hash.toHexString(),
     ]);
+    return;
+  }
+
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleGovFeeCharged] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
+    );
     return;
   }
 
@@ -414,6 +480,19 @@ export function handleReferralFeeCharged(event: ReferralFeeCharged): void {
     return;
   }
 
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleReferralFeeCharged] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
+    );
+    return;
+  }
+
   addReferralFeeStats(
     trader,
     referralFee,
@@ -468,6 +547,19 @@ export function handleTriggerFeeCharged(event: TriggerFeeCharged): void {
     log.debug("[handleTriggerFeeCharged] Leverage less than 20, skipping {}", [
       event.transaction.hash.toHexString(),
     ]);
+    return;
+  }
+
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleTriggerFeeCharged] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
+    );
     return;
   }
 
@@ -528,6 +620,19 @@ export function handleStakerFeeCharged(event: GnsOtcFeeCharged): void {
     return;
   }
 
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleStakerFeeCharged] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
+    );
+    return;
+  }
+
   addStakerFeeStats(trader, stakerFee, timestamp, collateralDetails.collateral);
   updateFeeBasedPoints(
     trader,
@@ -575,6 +680,19 @@ export function handleLpFeeCharged(event: GTokenFeeCharged): void {
     log.debug("[handleLpFeeCharged] Leverage less than 20, skipping {}", [
       event.transaction.hash.toHexString(),
     ]);
+    return;
+  }
+
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleLpFeeCharged] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
+    );
     return;
   }
 
@@ -746,6 +864,19 @@ function _handleTradeIncreased(
     return;
   }
 
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleTradeIncreased] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
+    );
+    return;
+  }
+
   _handleOpenTrade(
     collateralDetails.network,
     collateralDetails.collateral,
@@ -827,6 +958,19 @@ function _handleTradeDecreased(
     log.info(
       "[handleTradeDecreased] Leverage less than 20, skipping . Transaction: {}, Leverage: {}",
       [event.transaction.hash.toHexString(), leverage.toString()]
+    );
+    return;
+  }
+
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleTradeDecreased] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
     );
     return;
   }

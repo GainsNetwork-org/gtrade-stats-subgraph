@@ -10,6 +10,7 @@ import {
   ARBITRUM_STIP_REWARDS_1,
   BASE_GNS_REWARDS_0,
   APECHAIN_APE_REWARDS_0,
+  BASE_BTCUSD_REWARDS_0,
 } from "./getActiveRewardConfigs";
 
 // @ts-ignore
@@ -35,5 +36,9 @@ export const getRewardConfig: QueryResolvers["getRewardConfig"] = (
 
   if (id === APECHAIN_APE_REWARDS_0.id) {
     return APECHAIN_APE_REWARDS_0;
+  }
+
+  if (id === BASE_BTCUSD_REWARDS_0.id) {
+    return BASE_BTCUSD_REWARDS_0;
   }
 };
