@@ -15,6 +15,7 @@ import {
   WHITELISTED_REFEREE_MULTIPLIER,
   PNL_BLACKLISTED_ADDRESSES_12,
   PNL_BLACKLISTED_ADDRESSES_50_APECHAIN,
+  PNL_BLACKLISTED_ADDRESSES_39_BIWEEKLY_BTCUSD,
 } from "../constants";
 import { isTraderReferredByWhitelistedReferral } from "../contract/GNSMultiCollatDiamond";
 
@@ -750,30 +751,37 @@ function isTraderEligibleForRelativeSkillPoints(
 export const TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE = 3;
 export const TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE = 2;
 function isTraderEligibleForAbsoluteSkillPoints(
-  weeklyStats: EpochTradingStatsRecord
+  stats: EpochTradingStatsRecord
 ): boolean {
-  if (weeklyStats.epochNumber < EPOCH_ELIGIBILITY_CHECK_START) {
+  if (stats.epochNumber < EPOCH_ELIGIBILITY_CHECK_START) {
     return true;
   }
 
   if (
-    weeklyStats.epochNumber === 12 &&
-    PNL_BLACKLISTED_ADDRESSES_12.includes(weeklyStats.address.toLowerCase())
+    stats.epochNumber === 12 &&
+    PNL_BLACKLISTED_ADDRESSES_12.includes(stats.address.toLowerCase())
   ) {
     return false;
   }
 
   if (
-    weeklyStats.epochNumber === 50 &&
-    PNL_BLACKLISTED_ADDRESSES_50_APECHAIN.includes(
-      weeklyStats.address.toLowerCase()
-    )
+    stats.epochNumber === 50 &&
+    PNL_BLACKLISTED_ADDRESSES_50_APECHAIN.includes(stats.address.toLowerCase())
+  ) {
+    return false;
+  }
+
+  if (
+    stats.epochNumber === 39 &&
+    stats.epochType === EPOCH_TYPE.BIWEEKLY &&
+    stats.collateral === COLLATERALS.BTCUSD &&
+    PNL_BLACKLISTED_ADDRESSES_39_BIWEEKLY_BTCUSD.includes(stats.address.toLowerCase())
   ) {
     return false;
   }
 
   return (
-    weeklyStats.totalClosedTrades >= TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE &&
-    weeklyStats.totalDaysClosedTrades >= TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE
+    stats.totalClosedTrades >= TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE &&
+    stats.totalDaysClosedTrades >= TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE
   );
 }
