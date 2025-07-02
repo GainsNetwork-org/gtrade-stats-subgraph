@@ -774,8 +774,9 @@ function isTraderEligibleForAbsoluteSkillPoints(
   if (
     stats.epochNumber === 39 &&
     stats.epochType === EPOCH_TYPE.BIWEEKLY &&
-    stats.collateral === COLLATERALS.BTCUSD &&
-    PNL_BLACKLISTED_ADDRESSES_39_BIWEEKLY_BTCUSD.includes(stats.address.toLowerCase())
+    PNL_BLACKLISTED_ADDRESSES_39_BIWEEKLY_BTCUSD.includes(
+      stats.address.toLowerCase()
+    )
   ) {
     return false;
   }
