@@ -15,6 +15,7 @@ import {
   WHITELISTED_REFEREE_MULTIPLIER,
   PNL_BLACKLISTED_ADDRESSES_12,
   PNL_BLACKLISTED_ADDRESSES_50_APECHAIN,
+  PNL_BLACKLISTED_ADDRESSES_39_BIWEEKLY_BTCUSD,
 } from "../constants";
 import { isTraderReferredByWhitelistedReferral } from "../contract/GNSMultiCollatDiamond";
 
@@ -76,7 +77,20 @@ export function updatePointsOnClose(
     false
   );
 
-  if (isTraderEligibleForAbsoluteSkillPoints(weeklyStats)) {
+  // Handle weekly eligibility and updates
+  const weeklyAbsoluteEligible =
+    isTraderEligibleForAbsoluteSkillPoints(weeklyStats);
+  const weeklyRelativeEligible =
+    isTraderEligibleForRelativeSkillPoints(weeklyStats);
+
+  // Handle biweekly eligibility and updates
+  const biweeklyAbsoluteEligible =
+    isTraderEligibleForAbsoluteSkillPoints(biweeklyStats);
+  const biweeklyRelativeEligible =
+    isTraderEligibleForRelativeSkillPoints(biweeklyStats);
+
+  // Update absolute skill points - always update daily, conditionally update weekly/biweekly
+  if (weeklyAbsoluteEligible || biweeklyAbsoluteEligible) {
     updateAbsoluteSkillPoints(
       userDailyPoints,
       protocolDailyPoints,
@@ -84,18 +98,25 @@ export function updatePointsOnClose(
       protocolWeeklyPoints,
       userBiweeklyPoints,
       protocolBiweeklyPoints,
-      userWeeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
+      // For weekly: use totalPnl if just became eligible, otherwise current pnl
+      weeklyAbsoluteEligible &&
+        userWeeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
         !userWeeklyPoints.isAbsSkillEligible
         ? weeklyStats.totalPnl
-        : pnl, // if trader just became eligible, use totalPnl
-      userBiweeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
+        : pnl,
+      // For biweekly: use totalPnl if just became eligible, otherwise current pnl
+      biweeklyAbsoluteEligible &&
+        userBiweeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
         !userBiweeklyPoints.isAbsSkillEligible
         ? biweeklyStats.totalPnl
-        : pnl
+        : pnl,
+      weeklyAbsoluteEligible, // Pass eligibility flag for weekly
+      biweeklyAbsoluteEligible // Pass eligibility flag for biweekly
     );
   }
-  // Determine if trader is eligible yet for relative skill points
-  if (isTraderEligibleForRelativeSkillPoints(weeklyStats)) {
+
+  // Update relative skill points - always update daily, conditionally update weekly/biweekly
+  if (weeklyRelativeEligible || biweeklyRelativeEligible) {
     updateRelativeSkillPoints(
       userDailyPoints,
       protocolDailyPoints,
@@ -103,14 +124,20 @@ export function updatePointsOnClose(
       protocolWeeklyPoints,
       userBiweeklyPoints,
       protocolBiweeklyPoints,
-      userWeeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
-        !userWeeklyPoints.isRelSkillEligible // if trader just became eligible, use totalPnlPercentage
+      // For weekly: use totalPnlPercentage if just became eligible, otherwise current pnlPercentage
+      weeklyRelativeEligible &&
+        userWeeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
+        !userWeeklyPoints.isRelSkillEligible
         ? weeklyStats.totalPnlPercentage
         : pnlPercentage,
-      userBiweeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
+      // For biweekly: use totalPnlPercentage if just became eligible, otherwise current pnlPercentage
+      biweeklyRelativeEligible &&
+        userBiweeklyPoints.epochNumber >= EPOCH_ELIGIBILITY_CHECK_START &&
         !userBiweeklyPoints.isRelSkillEligible
         ? biweeklyStats.totalPnlPercentage
-        : pnlPercentage
+        : pnlPercentage,
+      weeklyRelativeEligible, // Pass eligibility flag for weekly
+      biweeklyRelativeEligible // Pass eligibility flag for biweekly
     );
   }
 
@@ -135,7 +162,9 @@ export function updateAbsoluteSkillPoints(
   userBiweeklyPoints: EpochTradingPointsRecord,
   protocolBiweeklyPoints: EpochTradingPointsRecord,
   pnlWeekly: BigDecimal,
-  pnlBiweekly: BigDecimal
+  pnlBiweekly: BigDecimal,
+  isWeeklyEligible: boolean,
+  isBiweeklyEligible: boolean
 ): void {
   let userDailySkillPoints =
     userDailyPoints.pnl.plus(pnlWeekly) > ZERO_BD
@@ -168,25 +197,37 @@ export function updateAbsoluteSkillPoints(
     true
   );
 
-  // update pnls
+  // update pnls - always update daily, conditionally update weekly/biweekly
   userDailyPoints.pnl = userDailyPoints.pnl.plus(pnlWeekly);
   protocolDailyPoints.pnl = protocolDailyPoints.pnl.plus(pnlWeekly);
-  userWeeklyPoints.pnl = userWeeklyPoints.pnl.plus(pnlWeekly);
-  protocolWeeklyPoints.pnl = protocolWeeklyPoints.pnl.plus(pnlWeekly);
-  userBiweeklyPoints.pnl = userBiweeklyPoints.pnl.plus(pnlBiweekly);
-  protocolBiweeklyPoints.pnl = protocolBiweeklyPoints.pnl.plus(pnlBiweekly);
 
-  // update skill points
+  if (isWeeklyEligible) {
+    userWeeklyPoints.pnl = userWeeklyPoints.pnl.plus(pnlWeekly);
+    protocolWeeklyPoints.pnl = protocolWeeklyPoints.pnl.plus(pnlWeekly);
+  }
+
+  if (isBiweeklyEligible) {
+    userBiweeklyPoints.pnl = userBiweeklyPoints.pnl.plus(pnlBiweekly);
+    protocolBiweeklyPoints.pnl = protocolBiweeklyPoints.pnl.plus(pnlBiweekly);
+  }
+
+  // update skill points - always update daily, conditionally update weekly/biweekly
   userDailyPoints.absSkillPoints = userDailySkillPoints;
   protocolDailyPoints.absSkillPoints = protocolDailySkillPoints;
-  userWeeklyPoints.absSkillPoints = userWeeklySkillPoints;
-  protocolWeeklyPoints.absSkillPoints = protocolWeeklySkillPoints;
-  userBiweeklyPoints.absSkillPoints = userBiweeklySkillPoints;
-  protocolBiweeklyPoints.absSkillPoints = protocolBiweeklySkillPoints;
 
-  userWeeklyPoints.isAbsSkillEligible = true;
+  if (isWeeklyEligible) {
+    userWeeklyPoints.absSkillPoints = userWeeklySkillPoints;
+    protocolWeeklyPoints.absSkillPoints = protocolWeeklySkillPoints;
+    userWeeklyPoints.isAbsSkillEligible = true;
+  }
+
+  if (isBiweeklyEligible) {
+    userBiweeklyPoints.absSkillPoints = userBiweeklySkillPoints;
+    protocolBiweeklyPoints.absSkillPoints = protocolBiweeklySkillPoints;
+    userBiweeklyPoints.isAbsSkillEligible = true;
+  }
+
   userDailyPoints.isAbsSkillEligible = true;
-  userBiweeklyPoints.isAbsSkillEligible = true;
 
   // Saving all the entities
   userDailyPoints.save();
@@ -205,7 +246,9 @@ export function updateRelativeSkillPoints(
   userBiweeklyPoints: EpochTradingPointsRecord,
   protocolBiweeklyPoints: EpochTradingPointsRecord,
   pnlPercentageWeekly: BigDecimal,
-  pnlPercentageBiweekly: BigDecimal
+  pnlPercentageBiweekly: BigDecimal,
+  isWeeklyEligible: boolean,
+  isBiweeklyEligible: boolean
 ): void {
   let userDailySkillPoints =
     userDailyPoints.pnlPercentage.plus(pnlPercentageWeekly) > ZERO_BD
@@ -238,31 +281,43 @@ export function updateRelativeSkillPoints(
     false
   );
 
-  // update pnls
+  // update pnls - always update daily, conditionally update weekly/biweekly
   userDailyPoints.pnlPercentage =
     userDailyPoints.pnlPercentage.plus(pnlPercentageWeekly);
   protocolDailyPoints.pnlPercentage =
     protocolDailyPoints.pnlPercentage.plus(pnlPercentageWeekly);
-  userWeeklyPoints.pnlPercentage =
-    userWeeklyPoints.pnlPercentage.plus(pnlPercentageWeekly);
-  protocolWeeklyPoints.pnlPercentage =
-    protocolWeeklyPoints.pnlPercentage.plus(pnlPercentageWeekly);
-  userBiweeklyPoints.pnlPercentage =
-    userBiweeklyPoints.pnlPercentage.plus(pnlPercentageBiweekly);
-  protocolBiweeklyPoints.pnlPercentage =
-    protocolBiweeklyPoints.pnlPercentage.plus(pnlPercentageBiweekly);
 
-  // update skill points
+  if (isWeeklyEligible) {
+    userWeeklyPoints.pnlPercentage =
+      userWeeklyPoints.pnlPercentage.plus(pnlPercentageWeekly);
+    protocolWeeklyPoints.pnlPercentage =
+      protocolWeeklyPoints.pnlPercentage.plus(pnlPercentageWeekly);
+  }
+
+  if (isBiweeklyEligible) {
+    userBiweeklyPoints.pnlPercentage = userBiweeklyPoints.pnlPercentage.plus(
+      pnlPercentageBiweekly
+    );
+    protocolBiweeklyPoints.pnlPercentage =
+      protocolBiweeklyPoints.pnlPercentage.plus(pnlPercentageBiweekly);
+  }
+
+  // update skill points - always update daily, conditionally update weekly/biweekly
   userDailyPoints.relSkillPoints = userDailySkillPoints;
   protocolDailyPoints.relSkillPoints = protocolDailySkillPoints;
-  userWeeklyPoints.relSkillPoints = userWeeklySkillPoints;
-  protocolWeeklyPoints.relSkillPoints = protocolWeeklySkillPoints;
-  userBiweeklyPoints.relSkillPoints = userBiweeklySkillPoints;
-  protocolBiweeklyPoints.relSkillPoints = protocolBiweeklySkillPoints;
-
-  userWeeklyPoints.isRelSkillEligible = true;
   userDailyPoints.isRelSkillEligible = true;
-  userBiweeklyPoints.isRelSkillEligible = true;
+
+  if (isWeeklyEligible) {
+    userWeeklyPoints.relSkillPoints = userWeeklySkillPoints;
+    protocolWeeklyPoints.relSkillPoints = protocolWeeklySkillPoints;
+    userWeeklyPoints.isRelSkillEligible = true;
+  }
+
+  if (isBiweeklyEligible) {
+    userBiweeklyPoints.relSkillPoints = userBiweeklySkillPoints;
+    protocolBiweeklyPoints.relSkillPoints = protocolBiweeklySkillPoints;
+    userBiweeklyPoints.isRelSkillEligible = true;
+  }
 
   // Saving all the entities
   userDailyPoints.save();
@@ -374,7 +429,10 @@ export function updateFeeBasedPoints(
 ): void {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
-  const currentBiweeklyNumber = determineEpochNumber(timestamp, EPOCH_TYPE.BIWEEKLY);
+  const currentBiweeklyNumber = determineEpochNumber(
+    timestamp,
+    EPOCH_TYPE.BIWEEKLY
+  );
 
   let userDailyStats = createOrLoadEpochTradingPointsRecord(
     address,
@@ -674,7 +732,7 @@ export function createOrLoadEpochTradingPointsRecord(
   return epochTradingPointsRecord as EpochTradingPointsRecord;
 }
 
-const EPOCH_ELIGIBILITY_CHECK_START = 7;
+const EPOCH_ELIGIBILITY_CHECK_START = 0;
 export const TOTAL_CLOSED_TRADES_THRESHOLD_RELATIVE = 5;
 export const TOTAL_CLOSED_DAYS_THRESHOLD_RELATIVE = 2;
 function isTraderEligibleForRelativeSkillPoints(
@@ -693,30 +751,38 @@ function isTraderEligibleForRelativeSkillPoints(
 export const TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE = 3;
 export const TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE = 2;
 function isTraderEligibleForAbsoluteSkillPoints(
-  weeklyStats: EpochTradingStatsRecord
+  stats: EpochTradingStatsRecord
 ): boolean {
-  if (weeklyStats.epochNumber < EPOCH_ELIGIBILITY_CHECK_START) {
+  if (stats.epochNumber < EPOCH_ELIGIBILITY_CHECK_START) {
     return true;
   }
 
   if (
-    weeklyStats.epochNumber === 12 &&
-    PNL_BLACKLISTED_ADDRESSES_12.includes(weeklyStats.address.toLowerCase())
+    stats.epochNumber === 12 &&
+    PNL_BLACKLISTED_ADDRESSES_12.includes(stats.address.toLowerCase())
   ) {
     return false;
   }
 
   if (
-    weeklyStats.epochNumber === 50 &&
-    PNL_BLACKLISTED_ADDRESSES_50_APECHAIN.includes(
-      weeklyStats.address.toLowerCase()
+    stats.epochNumber === 50 &&
+    PNL_BLACKLISTED_ADDRESSES_50_APECHAIN.includes(stats.address.toLowerCase())
+  ) {
+    return false;
+  }
+
+  if (
+    stats.epochNumber === 39 &&
+    stats.epochType === EPOCH_TYPE.BIWEEKLY &&
+    PNL_BLACKLISTED_ADDRESSES_39_BIWEEKLY_BTCUSD.includes(
+      stats.address.toLowerCase()
     )
   ) {
     return false;
   }
 
   return (
-    weeklyStats.totalClosedTrades >= TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE &&
-    weeklyStats.totalDaysClosedTrades >= TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE
+    stats.totalClosedTrades >= TOTAL_CLOSED_TRADES_THRESHOLD_ABSOLUTE &&
+    stats.totalDaysClosedTrades >= TOTAL_CLOSED_DAYS_THRESHOLD_ABSOLUTE
   );
 }
