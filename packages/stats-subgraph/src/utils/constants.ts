@@ -454,6 +454,22 @@ export const PNL_BLACKLISTED_ADDRESSES_50_APECHAIN: string[] = [
   "0xdc656eb9e411553be72539a4fcaeeae8b2b49274",
   "0xcb068a3084c34a837f1de9fbfe7b868fe3682a12",
 ];
+
+export const PNL_BLACKLISTED_ADDRESSES_39_BIWEEKLY_BTCUSD: string[] = [
+  "0xf02fb4ef2da1ea7562354fc7f2e7a8b94a33ca16",
+  "0x5a5c177d85365b6a8d0a6bc52d0f6e1c8b1f1977",
+  "0x6526cc1037213200eba4277ac9d8749d538a5110",
+  "0xb9e18a17439c505297e2955e16bcafc6a25ff705",
+  "0x108c427db9b59d13f73e13c830514c57443bd8a0",
+  "0x56ce6bb432729855634b620b3bcd9a7d951c606d",
+  "0x139348f067b33726e9d08fc9dee09f6c93d38452",
+  "0xa42e0789ea96d7dc386023290c705837af4ccb9c",
+  "0x7a665bc9e440597197ca75177d9c072daee099b0",
+  "0xcbf8656a8253966b58da6c8744a01202a66ef8a9",
+  "0xddb3b409e15bd6316b2e500461b94d81621c9374",
+  "0x504e1808b1b3c4d1aa47030b3b88ef9eccdf689d",
+];
+
 export const BLACKLIST: string[] = [
   "0x4415af1941df328b5ada8f93a7141abaec8296df",
 ];
@@ -470,4 +486,4 @@ export const MARKET_EXECUTED_ABI_SIGNATURE =
 export const LIMIT_EXECUTED_ABI_SIGNATURE =
   "(tuple(address,uint32),tuple(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,uint192),address,uint8,uint256,uint256,uint256,uint256,int256,uint256,uint256,bool)";
 
-export const MIN_LEVERAGE = 20;
+export const MIN_LEVERAGE = 0;
