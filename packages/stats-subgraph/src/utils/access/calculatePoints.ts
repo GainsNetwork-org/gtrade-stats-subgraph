@@ -16,6 +16,7 @@ import {
   PNL_BLACKLISTED_ADDRESSES_12,
   PNL_BLACKLISTED_ADDRESSES_50_APECHAIN,
   PNL_BLACKLISTED_ADDRESSES_39_BIWEEKLY_BTCUSD,
+  PNL_BLACKLISTED_ADDRESSES_40_BIWEEKLY_BTCUSD,
 } from "../constants";
 import { isTraderReferredByWhitelistedReferral } from "../contract/GNSMultiCollatDiamond";
 
@@ -744,6 +745,16 @@ function isTraderEligibleForAbsoluteSkillPoints(
     stats.epochNumber == 39 &&
     stats.epochType == EPOCH_TYPE.BIWEEKLY &&
     PNL_BLACKLISTED_ADDRESSES_39_BIWEEKLY_BTCUSD.includes(
+      stats.address.toLowerCase()
+    )
+  ) {
+    return false;
+  }
+
+  if (
+    stats.epochNumber == 40 &&
+    stats.epochType == EPOCH_TYPE.BIWEEKLY &&
+    PNL_BLACKLISTED_ADDRESSES_40_BIWEEKLY_BTCUSD.includes(
       stats.address.toLowerCase()
     )
   ) {
