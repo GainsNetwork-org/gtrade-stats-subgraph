@@ -2,7 +2,7 @@
   "network": "apechain-mainnet",
   "graft": {
     "base": "QmURYueM41nBFKXqyjvMHwKVT5p4JzwhvzzSqGDTA8nit3",
-    "block": 6250250
+    "block": 20196286
   },
   "GNSMultiCollatDiamond": {
     "address": "0x2BE5D7058AdBa14Bc38E4A83E94A81f7491b0163",
