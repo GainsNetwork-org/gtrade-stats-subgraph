@@ -509,3 +509,8 @@ export const LIMIT_EXECUTED_ABI_SIGNATURE =
   "(tuple(address,uint32),tuple(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,uint192),address,uint8,uint256,uint256,uint256,uint256,int256,uint256,uint256,bool)";
 
 export const MIN_LEVERAGE = 0;
+
+export const BLOCKED_LIMIT_TRANSACTION_HASHES: string[] = [
+  "0xe1f4b95b7e9ba19a757e0f0b1ddd7653b5fd71ed53197d78f0a14257a2363c5b".toLowerCase(),
+  "0xa24ba20de308a8a633aac253224bcebf8527135c7859c1b421f4c038226a2792".toLowerCase(),
+];

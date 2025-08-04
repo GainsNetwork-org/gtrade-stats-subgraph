@@ -51,6 +51,7 @@ import {
   MIN_LEVERAGE,
   NETWORKS,
   COLLATERALS,
+  BLOCKED_LIMIT_TRANSACTION_HASHES,
 } from "../../utils/constants";
 
 const eventHash = crypto
@@ -236,6 +237,13 @@ function _handleMarketExecuted(
 }
 
 export function handleLimitExecuted(event: LimitExecuted): void {
+  // Check if this transaction should be blocked
+  const txHash = event.transaction.hash.toHexString().toLowerCase();
+  if (BLOCKED_LIMIT_TRANSACTION_HASHES.includes(txHash)) {
+    log.info("[handleLimitExecuted] Blocked transaction: {}", [txHash]);
+    return;
+  }
+
   _handleLimitExecuted(
     event.params.t,
     event.params.orderType,
