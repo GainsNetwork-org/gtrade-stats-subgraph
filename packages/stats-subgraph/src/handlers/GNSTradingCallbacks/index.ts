@@ -25,7 +25,6 @@ import {
   LimitExecuted,
   PositionSizeDecreaseExecuted,
   PositionSizeIncreaseExecuted,
-  BorrowingFeeCharged,
   GovFeeCharged,
   ReferralFeeCharged,
   TriggerFeeCharged,
@@ -33,6 +32,8 @@ import {
   GTokenFeeCharged,
   MarketExecutedTStruct,
   LimitExecutedTStruct,
+  HoldingFeesChargedOnTrade,
+  HoldingFeesRealizedOnTrade,
 } from "../../types/GNSMultiCollatDiamond/GNSMultiCollatDiamond";
 
 import {
@@ -328,15 +329,20 @@ function _handleLimitExecuted(
   }
 }
 
-export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
+/**
+ * @dev borrowingFee now represents total holding fees charged on trade
+ */
+export function handleHoldingFeeCharged(
+  event: HoldingFeesChargedOnTrade
+): void {
   const collateralDetails = getCollateralDetails(event.params.collateralIndex);
   const trader = event.params.trader.toHexString();
   const borrowingFee = convertCollateralToDecimal(
-    event.params.amountCollateral,
+    event.params.tradeHoldingFees.totalFeeCollateral,
     collateralDetails.collateralPrecisionBd
   );
   const timestamp = event.block.timestamp.toI32();
-  log.info("[handleBorrowingFeeCharged] {}", [
+  log.info("[handleHoldingFeeCharged] {}", [
     event.transaction.hash.toHexString(),
   ]);
 
@@ -346,17 +352,16 @@ export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
       Address.fromString(trader)
     )
   ) {
-    log.info("[handleMarketExecuted] Aggregator referral {}", [
+    log.info("[handleHoldingFeeCharged] Aggregator referral {}", [
       event.transaction.hash.toHexString(),
     ]);
     return;
   }
 
   if (!getLeverage(event.receipt as ethereum.TransactionReceipt)) {
-    log.debug(
-      "[handleBorrowingFeeCharged] Leverage less than 20, skipping {}",
-      [event.transaction.hash.toHexString()]
-    );
+    log.debug("[handleHoldingFeeCharged] Leverage less than 20, skipping {}", [
+      event.transaction.hash.toHexString(),
+    ]);
     return;
   }
 
@@ -367,7 +372,68 @@ export function handleBorrowingFeeCharged(event: BorrowingFeeCharged): void {
     )
   ) {
     log.info(
-      "[handleBorrowingFeeCharged] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      "[handleHoldingFeeCharged] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
+    );
+    return;
+  }
+
+  addBorrowingFeeStats(
+    trader,
+    borrowingFee,
+    timestamp,
+    collateralDetails.collateral
+  );
+
+  // Calculate and add normalized stats
+  const borrowingFeeUsd = borrowingFee.times(collateralDetails.collateralToUsd);
+  addBorrowingFeeStats(trader, borrowingFeeUsd, timestamp, null);
+}
+
+/**
+ * @dev borrowingFee now represents total holding fees charged on trade
+ */
+export function handleHoldingFeeRealized(
+  event: HoldingFeesRealizedOnTrade
+): void {
+  const collateralDetails = getCollateralDetails(event.params.collateralIndex);
+  const trader = event.params.trader.toHexString();
+  const borrowingFee = convertCollateralToDecimal(
+    event.params.tradeHoldingFees.totalFeeCollateral,
+    collateralDetails.collateralPrecisionBd
+  );
+  const timestamp = event.block.timestamp.toI32();
+  log.info("[handleHoldingFeeRealized] {}", [
+    event.transaction.hash.toHexString(),
+  ]);
+
+  if (
+    isTraderReferredByAggregator(
+      collateralDetails.network,
+      Address.fromString(trader)
+    )
+  ) {
+    log.info("[handleHoldingFeeRealized] Aggregator referral {}", [
+      event.transaction.hash.toHexString(),
+    ]);
+    return;
+  }
+
+  if (!getLeverage(event.receipt as ethereum.TransactionReceipt)) {
+    log.debug("[handleHoldingFeeRealized] Leverage less than 20, skipping {}", [
+      event.transaction.hash.toHexString(),
+    ]);
+    return;
+  }
+
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleHoldingFeeRealized] Collateral not eligible for rewards. Network: {}, Collateral: {}",
       [collateralDetails.network, collateralDetails.collateral]
     );
     return;
@@ -400,7 +466,7 @@ export function handleGovFeeCharged(event: GovFeeCharged): void {
       Address.fromString(trader)
     )
   ) {
-    log.info("[handleMarketExecuted] Aggregator referral {}", [
+    log.info("[handleGovFeeCharged] Aggregator referral {}", [
       event.transaction.hash.toHexString(),
     ]);
     return;
@@ -906,11 +972,10 @@ export function handleTradeDecreased(
       event.params.leverageDelta,
       event.params.collateralIndex,
       event.params.values.newLeverage,
-      event.params.values.borrowingFeeCollateral,
       event.params.values.closingFeeCollateral,
-      event.params.values.existingPnlCollateral,
+      event.params.values.collateralSentToTrader,
       event.params.values.positionSizeCollateralDelta,
-      event.params.values.existingPositionSizeCollateral,
+      event.params.values.partialNetPnlCollateral,
       event
     );
   }
@@ -922,25 +987,16 @@ function _handleTradeDecreased(
   leverageDelta: BigInt,
   collateralIndex: i32,
   newLeverage: i32,
-  borrowingFeeCollateral: BigInt,
   closingFeeCollateral: BigInt,
-  existingPnlCollateral: BigInt,
+  _collateralSentToTrader: BigInt,
   positionSizeCollateralDelta: BigInt,
-  existingPositionSizeCollateral: BigInt,
+  partialNetPnlCollateral: BigInt,
   event: ethereum.Event
 ): void {
   const collateralDetails = getCollateralDetails(collateralIndex);
-  const totalFees = closingFeeCollateral.plus(borrowingFeeCollateral);
-  // pnl  = (existingPnlCollateral*positionSizeCollateralDelta/existingPositionSizeCollateral) - borrowingFee
-  const pnlWithFees = existingPnlCollateral
-    .times(positionSizeCollateralDelta)
-    .div(existingPositionSizeCollateral);
-  const pnlWithoutFees = pnlWithFees.minus(totalFees);
-  // in this case, collateralSentToTrader means pnl
-  const collateralSentToTrader = convertCollateralToDecimal(
-    pnlWithoutFees,
-    collateralDetails.collateralPrecisionBd
-  );
+  // net pnl  = partialNetPnlCollateral - closingFeeCollateral
+  const netPnlCollateral = partialNetPnlCollateral.minus(closingFeeCollateral);
+
   // If delta leverage is 0, we use existing leverage, otherwise delta leverage
   const levDelta =
     leverageDelta != BigInt.fromI32(0)
@@ -993,7 +1049,11 @@ function _handleTradeDecreased(
     volume,
     event.block.timestamp.toI32(),
     event.block.number.toI32(),
-    collateralSentToTrader,
+    // use netPnlCollateral as collateralSentToTrader
+    convertCollateralToDecimal(
+      netPnlCollateral,
+      collateralDetails.collateralPrecisionBd
+    ),
     true
   );
 }

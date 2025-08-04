@@ -26,12 +26,15 @@ dataSources:
         - name: GNSMultiCollatDiamond
           file: ./abis/GNSMultiCollatDiamond.json
       eventHandlers:
-        - event: MarketExecuted((address,uint32),indexed address,indexed uint32,(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,uint192),bool,uint256,uint256,uint256,uint256,int256,uint256,uint256)
+        - event: MarketExecuted((address,uint32),indexed address,indexed uint32,(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,bool,uint160,uint24),bool,uint256,uint256,uint256,(uint256,int256,int256,int256,int256,uint64),int256,uint256,uint256)
           handler: handleMarketExecuted
-        - event: LimitExecuted((address,uint32),indexed address,indexed uint32,indexed uint32,(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,uint192),address,uint8,uint256,uint256,uint256,uint256,int256,uint256,uint256,bool)
+        - event: LimitExecuted((address,uint32),indexed address,indexed uint32,indexed uint32,(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,bool,uint160,uint24),address,uint8,uint256,uint256,uint256,(uint256,int256,int256,int256,int256,uint64),int256,uint256,uint256,bool)
           handler: handleLimitExecuted
-        - event: BorrowingFeeCharged(indexed address,indexed uint32,indexed uint8,uint256)
-          handler: handleBorrowingFeeCharged
+        - event: HoldingFeesChargedOnTrade(indexed uint8,indexed address,indexed uint32,uint64,(int256,uint256,uint256,int256),uint256,uint256,uint256,int256)
+          handler: handleHoldingFeeCharged
+          receipt: true
+        - event: HoldingFeesRealizedOnTrade(indexed uint8,indexed address,indexed uint32,uint64,(int256,uint256,uint256,int256),int256)
+          handler: handleHoldingFeeRealized
           receipt: true
         - event: GovFeeCharged(indexed address,indexed uint8,uint256)
           handler: handleGovFeeCharged
@@ -45,8 +48,8 @@ dataSources:
         - event: GTokenFeeCharged(indexed address,indexed uint8,uint256)
           handler: handleLpFeeCharged
           receipt: true
-        - event: PositionSizeDecreaseExecuted((address,uint32),uint8,indexed uint8,indexed address,uint256,indexed uint256,bool,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint256,int256,uint256,uint256,int256,int256,uint120,uint24))
+        - event: PositionSizeDecreaseExecuted((address,uint32),uint8,indexed uint8,indexed address,uint256,indexed uint256,bool,uint256,uint256,uint256,uint256,(bool,uint256,uint256,uint256,uint256,(uint256,int256,int256,int256,int256,uint64),int256,int256,int256,int256,uint256,uint256,int256,int256,uint120,uint24))
           handler: handleTradeDecreased
-        - event: PositionSizeIncreaseExecuted((address,uint32),uint8,indexed uint8,indexed address,uint256,indexed uint256,bool,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256,uint256,uint256,uint256))
+        - event: PositionSizeIncreaseExecuted((address,uint32),uint8,indexed uint8,indexed address,uint256,indexed uint256,bool,uint256,uint256,uint256,uint256,(uint256,uint256,uint256,uint256,uint256,(uint256,int256,int256,int256,int256,uint64),int256,uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256,uint256))
           handler: handleTradeIncreased             
       file: ./src/handlers/GNSTradingCallbacks/index.ts      
