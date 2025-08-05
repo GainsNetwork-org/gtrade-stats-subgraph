@@ -1164,10 +1164,10 @@ export function handleTradePositivePnlWithdrawn(
   );
   const groupIndex = getGroupIndex(
     collateralDetails.network,
-    trade.pairIndex
+    BigInt.fromI32(trade.pairIndex)
   ).toI32();
   const volume = convertCollateralToDecimal(
-    trade.collateralAmount.times(trade.leverage),
+    trade.collateralAmount.times(BigInt.fromI32(trade.leverage)),
     collateralDetails.collateralPrecisionBd
   );
 
@@ -1197,7 +1197,7 @@ export function handleTradePositivePnlWithdrawn(
     pnlWithdrawnCollateral,
     pnlPercentageWithdrawn,
     groupIndex,
-    trade.pairIndex.toI32(),
+    trade.pairIndex,
     volume,
     weeklyStats,
     biweeklyStats
@@ -1230,7 +1230,7 @@ export function handleTradePositivePnlWithdrawn(
     pnlWithdrawnUsd,
     pnlPercentageWithdrawn,
     groupIndex,
-    trade.pairIndex.toI32(),
+    trade.pairIndex,
     volumeUsd,
     weeklyStatsUsd,
     biweeklyStatsUsd

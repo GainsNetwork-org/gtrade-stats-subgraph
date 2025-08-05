@@ -1,5 +1,9 @@
 import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
-import { GNSMultiCollatDiamond } from "../../../types/GNSMultiCollatDiamond/GNSMultiCollatDiamond";
+import { 
+  GNSMultiCollatDiamond,
+  GNSMultiCollatDiamond__getTradeResultValue0Struct as Trade
+} from "../../../types/GNSMultiCollatDiamond/GNSMultiCollatDiamond";
+export { Trade };
 import {
   AGGREGATOR_ADDRESSES,
   exponentToBigDecimal,
@@ -76,22 +80,6 @@ export function getGroupIndex(network: string, pairIndex: BigInt): BigInt {
   return pairsStorageContract.pairs(pairIndex).groupIndex;
 }
 
-export class Trade {
-  user: Address;
-  index: BigInt;
-  pairIndex: BigInt;
-  leverage: BigInt;
-  long: boolean;
-  isOpen: boolean;
-  collateralIndex: i32;
-  tradeType: i32;
-  collateralAmount: BigInt;
-  openPrice: BigInt;
-  tp: BigInt;
-  sl: BigInt;
-  __placeholder: BigInt;
-}
-
 export function getTrade(
   network: string,
   trader: Address,
@@ -103,5 +91,5 @@ export function getTrade(
     return null;
   }
   // Return the whole trade object
-  return trade.value as Trade;
+  return trade.value;
 }
