@@ -19,6 +19,9 @@ import {
   addStakerFeeStats,
   addTriggerFeeStats,
   updateFeeBasedPoints,
+  addPnlWithdrawnStats,
+  updatePointsOnClose,
+  createOrLoadEpochTradingStatsRecord,
 } from "../../utils/access";
 import {
   MarketExecuted,
@@ -34,6 +37,7 @@ import {
   LimitExecutedTStruct,
   HoldingFeesChargedOnTrade,
   HoldingFeesRealizedOnTrade,
+  TradePositivePnlWithdrawn,
 } from "../../types/GNSMultiCollatDiamond/GNSMultiCollatDiamond";
 
 import {
@@ -41,7 +45,10 @@ import {
   getGroupIndex,
   isTraderReferredByAggregator,
 } from "../../utils/contract";
-import { getCollateralPrice } from "../../utils/contract/GNSMultiCollatDiamond";
+import {
+  getCollateralPrice,
+  getTrade,
+} from "../../utils/contract/GNSMultiCollatDiamond";
 import {
   getCollateralDecimals,
   getCollateralfromIndex,
@@ -53,6 +60,9 @@ import {
   NETWORKS,
   COLLATERALS,
   BLOCKED_LIMIT_TRANSACTION_HASHES,
+  ZERO_BD,
+  determineEpochNumber,
+  EPOCH_TYPE,
 } from "../../utils/constants";
 
 const eventHash = crypto
@@ -1055,5 +1065,174 @@ function _handleTradeDecreased(
       collateralDetails.collateralPrecisionBd
     ),
     true
+  );
+}
+
+export function handleTradePositivePnlWithdrawn(
+  event: TradePositivePnlWithdrawn
+): void {
+  const collateralDetails = getCollateralDetails(event.params.collateralIndex);
+  const trader = event.params.trader.toHexString();
+  const pnlWithdrawnCollateral = convertCollateralToDecimal(
+    event.params.pnlWithdrawnCollateral,
+    collateralDetails.collateralPrecisionBd
+  );
+
+  // Fetch the trade to get the initial collateral amount
+  const trade = getTrade(
+    collateralDetails.network,
+    Address.fromString(trader),
+    event.params.index
+  );
+
+  if (trade == null) {
+    log.error(
+      "[handleTradePositivePnlWithdrawn] Trade not found for trader {} index {}",
+      [trader, event.params.index.toString()]
+    );
+    return;
+  }
+
+  // Calculate PNL percentage the same way as in _handleCloseTrade
+  const initialCollateral = convertCollateralToDecimal(
+    trade.collateralAmount,
+    collateralDetails.collateralPrecisionBd
+  );
+
+  const pnlPercentageWithdrawn = pnlWithdrawnCollateral
+    .div(initialCollateral)
+    .times(BigDecimal.fromString("100"));
+
+  const timestamp = event.block.timestamp.toI32();
+
+  log.info("[handleTradePositivePnlWithdrawn] {}", [
+    event.transaction.hash.toHexString(),
+  ]);
+
+  if (
+    isTraderReferredByAggregator(
+      collateralDetails.network,
+      Address.fromString(trader)
+    )
+  ) {
+    log.info("[handleTradePositivePnlWithdrawn] Aggregator referral {}", [
+      event.transaction.hash.toHexString(),
+    ]);
+    return;
+  }
+
+  if (
+    !isCollateralEligible(
+      collateralDetails.network,
+      collateralDetails.collateral
+    )
+  ) {
+    log.info(
+      "[handleTradePositivePnlWithdrawn] Collateral not eligible for rewards. Network: {}, Collateral: {}",
+      [collateralDetails.network, collateralDetails.collateral]
+    );
+    return;
+  }
+
+  // Add PNL withdrawn to stats without treating it as a trade close
+  addPnlWithdrawnStats(
+    trader,
+    pnlWithdrawnCollateral,
+    pnlPercentageWithdrawn,
+    timestamp,
+    collateralDetails.collateral
+  );
+
+  // Calculate and add normalized stats
+  const pnlWithdrawnUsd = pnlWithdrawnCollateral.times(
+    collateralDetails.collateralToUsd
+  );
+  addPnlWithdrawnStats(
+    trader,
+    pnlWithdrawnUsd,
+    pnlPercentageWithdrawn,
+    timestamp,
+    null
+  );
+
+  // Update points based on the withdrawn PnL
+  const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
+  const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
+  const currentBiweeklyNumber = determineEpochNumber(
+    timestamp,
+    EPOCH_TYPE.BIWEEKLY
+  );
+  const groupIndex = getGroupIndex(
+    collateralDetails.network,
+    trade.pairIndex
+  ).toI32();
+  const volume = convertCollateralToDecimal(
+    trade.collateralAmount.times(trade.leverage),
+    collateralDetails.collateralPrecisionBd
+  );
+
+  // Load stats records for points calculation
+  const weeklyStats = createOrLoadEpochTradingStatsRecord(
+    trader,
+    EPOCH_TYPE.WEEK,
+    currentWeekNumber,
+    collateralDetails.collateral,
+    false
+  );
+  const biweeklyStats = createOrLoadEpochTradingStatsRecord(
+    trader,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
+    collateralDetails.collateral,
+    false
+  );
+
+  // Update points for collateral-specific stats
+  updatePointsOnClose(
+    trader,
+    currentWeekNumber,
+    currentDayNumber,
+    currentBiweeklyNumber,
+    collateralDetails.collateral,
+    pnlWithdrawnCollateral,
+    pnlPercentageWithdrawn,
+    groupIndex,
+    trade.pairIndex.toI32(),
+    volume,
+    weeklyStats,
+    biweeklyStats
+  );
+
+  // Load USD stats records
+  const weeklyStatsUsd = createOrLoadEpochTradingStatsRecord(
+    trader,
+    EPOCH_TYPE.WEEK,
+    currentWeekNumber,
+    null,
+    false
+  );
+  const biweeklyStatsUsd = createOrLoadEpochTradingStatsRecord(
+    trader,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
+    null,
+    false
+  );
+
+  // Update points for USD-normalized stats
+  const volumeUsd = volume.times(collateralDetails.collateralToUsd);
+  updatePointsOnClose(
+    trader,
+    currentWeekNumber,
+    currentDayNumber,
+    currentBiweeklyNumber,
+    null, // USD stats
+    pnlWithdrawnUsd,
+    pnlPercentageWithdrawn,
+    groupIndex,
+    trade.pairIndex.toI32(),
+    volumeUsd,
+    weeklyStatsUsd,
+    biweeklyStatsUsd
   );
 }

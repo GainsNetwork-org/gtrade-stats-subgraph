@@ -82,19 +82,6 @@ export function updatePointsOnClose(
   const biweeklyAbsoluteEligible =
     isTraderEligibleForAbsoluteSkillPoints(biweeklyStats);
 
-  if (
-    biweeklyStats.address.toLowerCase() ==
-    "0x6526cc1037213200eba4277ac9d8749d538a5110"
-  ) {
-    log.info(
-      "0x6526cc1037213200eba4277ac9d8749d538a5110 absolute eligible: {} | epochType: {} | epochNumber: {}",
-      [
-        biweeklyAbsoluteEligible.toString(),
-        biweeklyStats.epochType.toString(),
-        biweeklyStats.epochNumber.toString(),
-      ]
-    );
-  }
   const biweeklyRelativeEligible =
     isTraderEligibleForRelativeSkillPoints(biweeklyStats);
 

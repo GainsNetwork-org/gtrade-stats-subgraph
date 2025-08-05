@@ -75,3 +75,33 @@ export function getGroupIndex(network: string, pairIndex: BigInt): BigInt {
   const pairsStorageContract = getMultiCollatDiamondContract(network);
   return pairsStorageContract.pairs(pairIndex).groupIndex;
 }
+
+export class Trade {
+  user: Address;
+  index: BigInt;
+  pairIndex: BigInt;
+  leverage: BigInt;
+  long: boolean;
+  isOpen: boolean;
+  collateralIndex: i32;
+  tradeType: i32;
+  collateralAmount: BigInt;
+  openPrice: BigInt;
+  tp: BigInt;
+  sl: BigInt;
+  __placeholder: BigInt;
+}
+
+export function getTrade(
+  network: string,
+  trader: Address,
+  index: BigInt
+): Trade | null {
+  const diamond = getMultiCollatDiamondContract(network);
+  const trade = diamond.try_getTrade(trader, index);
+  if (trade.reverted) {
+    return null;
+  }
+  // Return the whole trade object
+  return trade.value as Trade;
+}

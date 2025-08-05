@@ -126,7 +126,10 @@ export function addOpenTradeStats(data: addOpenTradeStatsInput): void {
   _addOpenTradeStats(data, weeklyStats, dailyStats.totalOpenedTrades == 1);
 
   // Biweekly stats
-  const currentBiweeklyNumber = determineEpochNumber(timestamp, EPOCH_TYPE.BIWEEKLY);
+  const currentBiweeklyNumber = determineEpochNumber(
+    timestamp,
+    EPOCH_TYPE.BIWEEKLY
+  );
   const biweeklyStats = createOrLoadEpochTradingStatsRecord(
     address,
     EPOCH_TYPE.BIWEEKLY,
@@ -231,7 +234,10 @@ export function addCloseTradeStats(data: addCloseTradeStatsInput): void {
   _addCloseTradeStats(data, weeklyStats, dailyStats.totalClosedTrades == 1);
 
   // Biweekly stats
-  const currentBiweeklyNumber = determineEpochNumber(timestamp, EPOCH_TYPE.BIWEEKLY);
+  const currentBiweeklyNumber = determineEpochNumber(
+    timestamp,
+    EPOCH_TYPE.BIWEEKLY
+  );
   const biweeklyStats = createOrLoadEpochTradingStatsRecord(
     address,
     EPOCH_TYPE.BIWEEKLY,
@@ -467,6 +473,102 @@ export function addStakerFeeStats(
   );
 }
 
+export function addPnlWithdrawnStats(
+  address: string,
+  pnlWithdrawn: BigDecimal,
+  pnlPercentageWithdrawn: BigDecimal,
+  timestamp: i32,
+  collateral: string | null
+): void {
+  const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
+  const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
+  const currentBiweeklyNumber = determineEpochNumber(
+    timestamp,
+    EPOCH_TYPE.BIWEEKLY
+  );
+
+  // Update daily stats
+  let dailyStats = createOrLoadEpochTradingStatsRecord(
+    address,
+    EPOCH_TYPE.DAY,
+    currentDayNumber,
+    collateral,
+    false
+  );
+  dailyStats.totalPnl = dailyStats.totalPnl.plus(pnlWithdrawn);
+  dailyStats.totalPnlPercentage = dailyStats.totalPnlPercentage.plus(
+    pnlPercentageWithdrawn
+  );
+  dailyStats.save();
+
+  // Update weekly stats
+  let weeklyStats = createOrLoadEpochTradingStatsRecord(
+    address,
+    EPOCH_TYPE.WEEK,
+    currentWeekNumber,
+    collateral,
+    false
+  );
+  weeklyStats.totalPnl = weeklyStats.totalPnl.plus(pnlWithdrawn);
+  weeklyStats.totalPnlPercentage = weeklyStats.totalPnlPercentage.plus(
+    pnlPercentageWithdrawn
+  );
+  weeklyStats.save();
+
+  // Update biweekly stats
+  let biweeklyStats = createOrLoadEpochTradingStatsRecord(
+    address,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
+    collateral,
+    false
+  );
+  biweeklyStats.totalPnl = biweeklyStats.totalPnl.plus(pnlWithdrawn);
+  biweeklyStats.totalPnlPercentage = biweeklyStats.totalPnlPercentage.plus(
+    pnlPercentageWithdrawn
+  );
+  biweeklyStats.save();
+
+  // Update protocol stats
+  let dailyProtocolStats = createOrLoadEpochTradingStatsRecord(
+    PROTOCOL,
+    EPOCH_TYPE.DAY,
+    currentDayNumber,
+    collateral,
+    false
+  );
+  dailyProtocolStats.totalPnl = dailyProtocolStats.totalPnl.plus(pnlWithdrawn);
+  dailyProtocolStats.totalPnlPercentage =
+    dailyProtocolStats.totalPnlPercentage.plus(pnlPercentageWithdrawn);
+  dailyProtocolStats.save();
+
+  let weeklyProtocolStats = createOrLoadEpochTradingStatsRecord(
+    PROTOCOL,
+    EPOCH_TYPE.WEEK,
+    currentWeekNumber,
+    collateral,
+    false
+  );
+  weeklyProtocolStats.totalPnl =
+    weeklyProtocolStats.totalPnl.plus(pnlWithdrawn);
+  weeklyProtocolStats.totalPnlPercentage =
+    weeklyProtocolStats.totalPnlPercentage.plus(pnlPercentageWithdrawn);
+  weeklyProtocolStats.save();
+
+  let biweeklyProtocolStats = createOrLoadEpochTradingStatsRecord(
+    PROTOCOL,
+    EPOCH_TYPE.BIWEEKLY,
+    currentBiweeklyNumber,
+    collateral,
+    false
+  );
+  biweeklyProtocolStats.totalPnl =
+    biweeklyProtocolStats.totalPnl.plus(pnlWithdrawn);
+  biweeklyProtocolStats.totalPnlPercentage =
+    biweeklyProtocolStats.totalPnlPercentage.plus(pnlPercentageWithdrawn);
+  biweeklyProtocolStats.save();
+}
+
 function _addStats(
   address: string,
   stat: BigDecimal,
@@ -476,7 +578,10 @@ function _addStats(
 ): EpochTradingStatsRecord[] {
   const currentDayNumber = determineEpochNumber(timestamp, EPOCH_TYPE.DAY);
   const currentWeekNumber = determineEpochNumber(timestamp, EPOCH_TYPE.WEEK);
-  const currentBiweeklyNumber = determineEpochNumber(timestamp, EPOCH_TYPE.BIWEEKLY);
+  const currentBiweeklyNumber = determineEpochNumber(
+    timestamp,
+    EPOCH_TYPE.BIWEEKLY
+  );
 
   let dailyStats = createOrLoadEpochTradingStatsRecord(
     address,
@@ -539,7 +644,14 @@ function _addStats(
   weeklyProtocolStats.save();
   biweeklyProtocolStats.save();
 
-  return [dailyStats, weeklyStats, biweeklyStats, dailyProtocolStats, weeklyProtocolStats, biweeklyProtocolStats];
+  return [
+    dailyStats,
+    weeklyStats,
+    biweeklyStats,
+    dailyProtocolStats,
+    weeklyProtocolStats,
+    biweeklyProtocolStats,
+  ];
 }
 
 function _addStat(
@@ -560,6 +672,8 @@ function _addStat(
     currentStats.totalLpFees = currentStats.totalLpFees.plus(stat);
   } else if (statName == "totalStakerFees") {
     currentStats.totalStakerFees = currentStats.totalStakerFees.plus(stat);
+  } else if (statName == "totalPnl") {
+    currentStats.totalPnl = currentStats.totalPnl.plus(stat);
   }
 
   return currentStats;
