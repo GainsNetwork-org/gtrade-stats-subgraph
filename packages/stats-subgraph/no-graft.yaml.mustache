@@ -19,7 +19,7 @@ dataSources:
         - AggregateTradingStats
       abis:
         - name: GNSMultiCollatDiamond
-          file: ./abis/GNSMultiCollatDiamond.json
+          file: ./abis/GNSMultiCollatDiamond_v10.json
       eventHandlers:
         - event: MarketExecuted((address,uint32),indexed address,indexed uint32,(address,uint32,uint16,uint24,bool,bool,uint8,uint8,uint120,uint64,uint64,uint64,uint192),bool,uint256,uint256,uint256,uint256,int256,uint256,uint256)
           handler: handleMarketExecuted

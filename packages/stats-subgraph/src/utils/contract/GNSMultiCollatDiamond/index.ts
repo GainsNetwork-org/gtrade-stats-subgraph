@@ -1,8 +1,8 @@
 import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
-import { 
-  GNSMultiCollatDiamond,
-  GNSMultiCollatDiamond__getTradeResultValue0Struct as Trade
-} from "../../../types/GNSMultiCollatDiamond/GNSMultiCollatDiamond";
+import {
+  GNSMultiCollatDiamond_v10,
+  GNSMultiCollatDiamond_v10__getTradeResultValue0Struct as Trade,
+} from "../../../types/GNSMultiCollatDiamond_v10/GNSMultiCollatDiamond_v10";
 export { Trade };
 import {
   AGGREGATOR_ADDRESSES,
@@ -19,9 +19,9 @@ export class WhitelistedReferralResponse {
 
 export function getMultiCollatDiamondContract(
   network: string
-): GNSMultiCollatDiamond {
+): GNSMultiCollatDiamond_v10 {
   const contractAddress = getDiamondAddress(network);
-  return GNSMultiCollatDiamond.bind(Address.fromString(contractAddress));
+  return GNSMultiCollatDiamond_v10.bind(Address.fromString(contractAddress));
 }
 
 export function isTraderReferredByAggregator(

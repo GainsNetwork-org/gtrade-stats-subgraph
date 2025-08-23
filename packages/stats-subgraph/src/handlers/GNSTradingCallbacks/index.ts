@@ -38,7 +38,7 @@ import {
   HoldingFeesChargedOnTrade,
   HoldingFeesRealizedOnTrade,
   TradePositivePnlWithdrawn,
-} from "../../types/GNSMultiCollatDiamond/GNSMultiCollatDiamond";
+} from "../../types/GNSMultiCollatDiamond_v10/GNSMultiCollatDiamond_v10";
 
 import {
   convertCollateralToDecimal,
@@ -160,6 +160,10 @@ function getCollateralDetails(collateralIndex: i32): CollateralDetails {
   const collateralPrecisionBd = getCollateralDecimals(collateral);
   return { collateral, collateralToUsd, network, collateralPrecisionBd };
 }
+
+/**
+ * v10
+ */
 
 export function handleMarketExecuted(event: MarketExecuted): void {
   _handleMarketExecuted(
